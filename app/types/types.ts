@@ -1,12 +1,14 @@
 export interface SwimmingPackage {
   id: string;
   name: string;
-  description: string;
-  details: string[];
-  pricePerSession: number;
+  category: 'asisten' | 'dewasa' | 'homevisit' | 'missyenny';
+  type: 'privat' | 'semiprivat' | 'grup' | 'oncecourse';
+  sessions: number;
+  frequency: string;
+  maxKids: number;
+  pricePerPerson: number;
   highlightColor: string;
   badge: string;
-  bestFor: string;
 }
 
 export interface SemarangLocation {
@@ -30,12 +32,17 @@ export interface BookingSubmission {
   bookingCode: string;
   studentName: string;
   parentName?: string; // If student is child
+  gender: string;
+  birthDate: string;
   age: number;
   phone: string;
   packageId: string;
   locationId: string;
-  sessions: number; // 4, 8, or 12
-  schedulePreference: string;
+  sessions?: number;
+  courseDays: string[];
+  courseTime: string;
+  startDate: string;
+  schedulePreference?: string;
   notes?: string;
   totalPrice: number;
   submittedAt: string;

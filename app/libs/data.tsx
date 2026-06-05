@@ -54,90 +54,55 @@ export const SOCIAL_LINKS = [
 ];
 
 export const MYCA_PACKAGES: SwimmingPackage[] = [
-  {
-    id: 'privat',
-    name: 'Les Privat (1-on-1)',
-    description: 'Bimbingan privat intensif eksklusif dengan perhatian 100% dari instruktur. Direkomendasikan untuk progres tercepat dan kenyamanan maksimal.',
-    details: [
-      '1 Instruktur Khusus Mengajar 1 Murid',
-      'Jadwal Sangat Fleksibel (Bisa Sesuai Janji)',
-      'Lokasi Kolam Bisa Dipilih (Home Private / MYCA Center)',
-      'Program Khusus (Anak Takut Air, Dewasa, Terapi, Gaya Khusus)',
-      'Laporan Evaluasi & Progres Setiap Bulan'
-    ],
-    pricePerSession: 250000,
-    highlightColor: 'from-blue-500 to-cyan-500',
-    badge: 'Progres Tercepat',
-    bestFor: 'Anak-anak takut air, dewasa pemula, terapi kesehatan, atau pelatihan kompetisi.'
-  },
-  {
-    id: 'semiprivat',
-    name: 'Les Semi Privat (2-3 Murid)',
-    description: 'Belajar berenang dengan suasana yang lebih interaktif tetapi tetap fokus tinggi. Sangat tepat untuk saudara kandung, pasangan, maupun teman dekat.',
-    details: [
-      '1 Instruktur Mengajar Maksimal 2-3 Murid',
-      'Atmosfer Belajar yang Menyenangkan dan Kompetitif Sehat',
-      'Jadwal Fleksibel (Disepakati Bersama Peserta Grup)',
-      'Teknis Latihan yang Rinci & Dukungan Kelompok',
-      'Biaya Lebih Hemat dengan Manfaat Pendampingan Tinggi'
-    ],
-    pricePerSession: 145000,
-    highlightColor: 'from-teal-500 to-emerald-500 border-marine-500',
-    badge: 'Terbaik & Hemat',
-    bestFor: 'Bersaudara, teman sebaya, pasangan, atau rekan kerja yang ingin belajar bersama.'
-  },
-  {
-    id: 'grup',
-    name: 'Les Grup (4-8 Murid)',
-    description: 'Program berkelompok reguler yang interaktif, penuh permainan, dan memotivasi anak-anak untuk bersosialisasi sambil menguasai keahlian berenang.',
-    details: [
-      'Kelas Kelompok Berisi 4 hingga 8 Anak',
-      'Instruktur Bersertifikasi & Asisten Pengawas Kolam',
-      'Kurikulum Bertingkat Kurikulum dari Pemula ke Mahir',
-      'Banyak Program Games & Relaksasi Keberanian Air',
-      'Sertifikat Kelulusan Level Penguasaan Renang'
-    ],
-    pricePerSession: 85000,
-    highlightColor: 'from-marine-600 to-blue-700',
-    badge: 'Paling Ceria & Seru',
-    bestFor: 'Anak-anak usia sekolah dasar, melatih sosialisasi, dan hobi rekreasi aktif.'
-  }
+  // === ASISTEN ===
+  { id: 'a-semiprivat-4x', category: 'asisten', type: 'semiprivat', name: 'Semi Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 2, pricePerPerson: 400000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Hemat' },
+  { id: 'a-semiprivat-8x', category: 'asisten', type: 'semiprivat', name: 'Semi Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 2, pricePerPerson: 700000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Populer' },
+  { id: 'a-privat-4x', category: 'asisten', type: 'privat', name: 'Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 1, pricePerPerson: 500000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Intensif' },
+  { id: 'a-privat-8x', category: 'asisten', type: 'privat', name: 'Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 1, pricePerPerson: 900000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Progres Cepat' },
+  { id: 'a-grup-4x', category: 'asisten', type: 'grup', name: 'Grup – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 4, pricePerPerson: 300000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Paling Hemat' },
+  { id: 'a-grup-8x', category: 'asisten', type: 'grup', name: 'Grup – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 4, pricePerPerson: 500000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Aktif' },
+  { id: 'a-once', category: 'asisten', type: 'oncecourse', name: 'Once Course', sessions: 1, frequency: 'Per pertemuan', maxKids: 1, pricePerPerson: 150000, highlightColor: 'from-amber-500 to-orange-500', badge: 'Fleksibel' },
+  // === DEWASA ===
+  { id: 'd-semiprivat-4x', category: 'dewasa', type: 'semiprivat', name: 'Semi Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 2, pricePerPerson: 550000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Hemat' },
+  { id: 'd-semiprivat-8x', category: 'dewasa', type: 'semiprivat', name: 'Semi Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 2, pricePerPerson: 800000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Populer' },
+  { id: 'd-privat-4x', category: 'dewasa', type: 'privat', name: 'Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 1, pricePerPerson: 650000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Intensif' },
+  { id: 'd-privat-8x', category: 'dewasa', type: 'privat', name: 'Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 1, pricePerPerson: 1000000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Progres Cepat' },
+  { id: 'd-grup-4x', category: 'dewasa', type: 'grup', name: 'Grup – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 4, pricePerPerson: 350000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Paling Hemat' },
+  { id: 'd-grup-8x', category: 'dewasa', type: 'grup', name: 'Grup – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 4, pricePerPerson: 600000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Aktif' },
+  { id: 'd-once', category: 'dewasa', type: 'oncecourse', name: 'Once Course', sessions: 1, frequency: 'Per pertemuan', maxKids: 1, pricePerPerson: 200000, highlightColor: 'from-amber-500 to-orange-500', badge: 'Fleksibel' },
+  // === HOME VISIT ===
+  { id: 'h-semiprivat-4x', category: 'homevisit', type: 'semiprivat', name: 'Semi Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 2, pricePerPerson: 650000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Hemat' },
+  { id: 'h-semiprivat-8x', category: 'homevisit', type: 'semiprivat', name: 'Semi Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 2, pricePerPerson: 900000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Populer' },
+  { id: 'h-privat-4x', category: 'homevisit', type: 'privat', name: 'Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 1, pricePerPerson: 750000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Intensif' },
+  { id: 'h-privat-8x', category: 'homevisit', type: 'privat', name: 'Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 1, pricePerPerson: 1400000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Progres Cepat' },
+  { id: 'h-grup-4x', category: 'homevisit', type: 'grup', name: 'Grup – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 4, pricePerPerson: 450000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Paling Hemat' },
+  { id: 'h-grup-8x', category: 'homevisit', type: 'grup', name: 'Grup – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 4, pricePerPerson: 700000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Aktif' },
+  { id: 'h-once', category: 'homevisit', type: 'oncecourse', name: 'Once Course', sessions: 1, frequency: 'Per pertemuan', maxKids: 1, pricePerPerson: 200000, highlightColor: 'from-amber-500 to-orange-500', badge: 'Fleksibel' },
+  // === MISS YENNY ===
+  { id: 'y-semiprivat-4x', category: 'missyenny', type: 'semiprivat', name: 'Semi Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 2, pricePerPerson: 550000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Hemat' },
+  { id: 'y-semiprivat-8x', category: 'missyenny', type: 'semiprivat', name: 'Semi Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 2, pricePerPerson: 800000, highlightColor: 'from-teal-500 to-emerald-500', badge: 'Populer' },
+  { id: 'y-privat-4x', category: 'missyenny', type: 'privat', name: 'Privat – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 1, pricePerPerson: 650000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Intensif' },
+  { id: 'y-privat-8x', category: 'missyenny', type: 'privat', name: 'Privat – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 1, pricePerPerson: 1000000, highlightColor: 'from-blue-500 to-cyan-500', badge: 'Progres Cepat' },
+  { id: 'y-grup-4x', category: 'missyenny', type: 'grup', name: 'Grup – 4x pertemuan', sessions: 4, frequency: '1x seminggu', maxKids: 4, pricePerPerson: 350000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Paling Hemat' },
+  { id: 'y-grup-8x', category: 'missyenny', type: 'grup', name: 'Grup – 8x pertemuan', sessions: 8, frequency: '2x seminggu', maxKids: 4, pricePerPerson: 600000, highlightColor: 'from-marine-600 to-blue-700', badge: 'Aktif' },
+  { id: 'y-once', category: 'missyenny', type: 'oncecourse', name: 'Once Course', sessions: 1, frequency: 'Per pertemuan', maxKids: 1, pricePerPerson: 200000, highlightColor: 'from-amber-500 to-orange-500', badge: 'Fleksibel' },
 ];
 
 export const MYCA_LOCATIONS: SemarangLocation[] = [
-  {
-    id: 'candi',
-    name: 'MYCA Aquatic Center - Gajahmungkur (Candi)',
-    address: 'Jl. Papandayan Raya No. 12, Gajahmungkur, Kota Semarang, Jawa Tengah 50232',
-    facilities: [
-      'Kolam Indoor Air Hangat (Suhu Stabil 30-32°C)',
-      'Sistem Filter Air Non-Klorin Garam (Sangat Aman untuk Kulit Sensitif & Bayi)',
-      'Kamar Bilas Air Hangat Lengkap Sabun/Sampo',
-      'Ruang Menunggu Ber-AC Dilengkapi Kafe & Live Streaming Monitor Kolam'
-    ]
-  },
-  {
-    id: 'tembalang',
-    name: 'MYCA Center - Tembalang Garden Pool',
-    address: 'Jl. Prof. Soedarto No. 45, Tembalang, Kota Semarang, Jawa Tengah 50275 (Dekat UNDIP)',
-    facilities: [
-      'Kolam Semi-Olympic Outdoor Panjang 25 Meter',
-      'Kedalaman Berjenjang Mulai 0.8 Meter sampai 1.8 Meter',
-      'Taman Teduh & Area Tribun Penonton Luas',
-      'Sistem Keamanan Supervised Lengkap dengan Pelampung Selamatan'
-    ]
-  },
-  {
-    id: 'marina',
-    name: 'MYCA Partner - Marina Grand Aquatic',
-    address: 'Grand Taruma Aquatic Club, Jl. Marina Raya No. 8, Semarang Barat, Kota Semarang 50144',
-    facilities: [
-      'Kolam Rekreasi dengan Water Playground Kids',
-      'Kolam Dewasa Standar Event Nasional',
-      'Angin Laut yang Menyegarkan & Lapang',
-      'Area Parkir Luas & Food Court Terintegrasi'
-    ]
-  }
+  { id: 'mijen-lakers', name: 'Mijen Lakers BSB City', address: 'BSB City, Mijen, Semarang', facilities: ['Kolam Renang Outdoor', 'Area Parkir Luas', 'Loker & Kamar Bilas'] },
+  { id: 'metro-javamall', name: 'Metro Sebelah Java Mall', address: 'Sebelah Java Mall, Semarang', facilities: ['Kolam Indoor', 'Lokasi Strategis Pusat Kota', 'Kamar Bilas'] },
+  { id: 'kedaton-bsb', name: 'Kedaton BSB', address: 'BSB, Semarang', facilities: ['Kolam Renang Bersih', 'Area Aman untuk Anak', 'Parkir Tersedia'] },
+  { id: 'royal-dome-marina', name: 'Royal Dome Marina', address: 'Kawasan Marina, Semarang Barat', facilities: ['Kolam Outdoor View Laut', 'Area Rekreasi', 'Food Court'] },
+  { id: 'graha-wahid', name: 'Perum Graha Wahid Kedungmundu', address: 'Kedungmundu, Semarang', facilities: ['Kolam Renang Perumahan', 'Lingkungan Tenang', 'Parkir'] },
+  { id: 'hotel-serata', name: 'Hotel Serata Tembalang', address: 'Tembalang, Semarang', facilities: ['Kolam Hotel Bersih', 'Air Hangat', 'Kamar Bilas Lengkap'] },
+  { id: 'hotel-gets', name: 'Hotel Gets MT Haryono', address: 'MT Haryono, Semarang', facilities: ['Kolam Hotel Indoor', 'AC & Loker', 'Kamar Bilas'] },
+  { id: 'jungle-toon', name: 'Jungle Toon', address: 'Semarang', facilities: ['Kolam Anak Tematik', 'Water Playground', 'Area Bermain'] },
+  { id: 'hotel-stay-maja', name: 'Hotel Stay Maja', address: 'Semarang', facilities: ['Kolam Hotel Nyaman', 'Kamar Bilas', 'Parkir'] },
+  { id: 'hotel-grasia', name: 'Hotel Grasia', address: 'Semarang', facilities: ['Kolam Hotel Bersih', 'Fasilitas Lengkap', 'Kamar Bilas'] },
+  { id: 'hotel-quest', name: 'Hotel Quest', address: 'Semarang', facilities: ['Kolam Hotel Modern', 'Kamar Bilas', 'Parkir Tersedia'] },
+  { id: 'pandanaran-hills', name: 'Pandanaran Hills', address: 'Pandanaran, Semarang', facilities: ['Kolam Outdoor View Hills', 'Udara Sejuk', 'Area Parkir'] },
+  { id: 'wujil-resort', name: 'Wujil Resort Ungaran', address: 'Ungaran, Kabupaten Semarang', facilities: ['Kolam Resort Premium', 'Suasana Alam', 'Fasilitas Resort Lengkap'] },
+  { id: 'bali', name: 'Provinsi Bali', address: 'Bali', facilities: ['Kolam Villa / Resort', 'Instruktur Tersertifikasi', 'Jadwal Fleksibel'] },
 ];
 
 export const MYCA_TESTIMONIALS: SwimTestimonial[] = [

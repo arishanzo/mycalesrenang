@@ -8,7 +8,6 @@ import BookingForm from "./components/booking";
 export default function Home() {
 
     const [activeSection, setActiveSection] = useState('home');
-  const [selectedPackageId, setSelectedPackageId] = useState('');
 
   // Track active section for high UX navbar highlight
   useEffect(() => {
@@ -65,7 +64,7 @@ export default function Home() {
       {/* Main Structural Content Layout */}
       <main className="relative">
         
-         <BookingForm selectedPackageId={selectedPackageId} />
+         <BookingForm />
 
       </main>
 
