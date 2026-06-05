@@ -1,26 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  /* Oceanic & Premium color palette */
+  --color-marine-950: #031525;
+  --color-marine-900: #072640;
+  --color-marine-800: #0e3a60;
+  --color-marine-700: #1a5182;
+  --color-marine-600: #296da4;
+  --color-marine-500: #3b8bc4;
+  --color-marine-400: #5da4d6;
+  --color-marine-300: #86bee5;
+  --color-marine-200: #b3d7f0;
+  --color-marine-100: #dbebfa;
+  --color-marine-50: #f0f7fe;
+  
+  --color-aqua-500: #06b6d4;
+  --color-aqua-400: #22d3ee;
+  
+  --color-sand-500: #d4af37;
+  --color-sand-400: #e5c158;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base style resets and customizations */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--color-marine-50);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  color: var(--color-marine-950);
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-marine-200);
+  color: var(--color-marine-950);
+}
+
+/* Custom Scrollbar for aquatic feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-marine-50);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-marine-300);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-marine-500);
+}
+
+.nav-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* GSAP Animations hardware acceleration */
+.gsap-reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.premium-blur-glass {
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.premium-card-glass {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(7, 38, 64, 0.08);
+}
+
+.premium-dark-card {
+  background: linear-gradient(135deg, var(--color-marine-950) 0%, var(--color-marine-900) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px -15px rgba(3, 21, 37, 0.3);
+}
+
+/* Fluid animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

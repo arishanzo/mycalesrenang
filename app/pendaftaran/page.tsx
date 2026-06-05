@@ -1,14 +1,9 @@
 'use client';
 
-import Footer from "./layout/footer";
-import Header from "./layout/navbar";
-import Hero from "./components/hero";
-import About from "./components/about";
-import Layanan from "./components/layanan";
-import BookingForm from "./pendaftaran/components/booking";
-import Testimonials from "./components/testimoni";
+import Footer from "../layout/footer";
+import Header from "../layout/navbar";
 import { useState, useEffect } from "react";
-import Contact from "./components/contact";
+import BookingForm from "./components/booking";
 
 export default function Home() {
 
@@ -54,43 +49,12 @@ export default function Home() {
     };
   }, []);
 
-  const handleSelectPackageFromCard = (pkgId: string) => {
-    setSelectedPackageId(pkgId);
-    // Clear the selection briefly to permit subsequent triggers of the same button
-    setTimeout(() => {
-      setSelectedPackageId('');
-    }, 400);
-  };
-
+ 
   const handleNavigateToSection = (sectionId: string) => {
     setActiveSection(sectionId === 'services' ? 'services' : sectionId);
   };
 
-  const handleScrollToBooking = () => {
-    const el = document.getElementById('booking-form');
-    if (el) {
-      const headerOffset = 80;
-      const elementPosition = el.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
 
-  const handleScrollToServices = () => {
-    const el = document.getElementById('services');
-    if (el) {
-      const headerOffset = 80;
-      const elementPosition = el.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   return (
      <div className="relative min-h-screen bg-marine-50 selection:bg-cyan-200 selection:text-marine-950">
@@ -101,22 +65,7 @@ export default function Home() {
       {/* Main Structural Content Layout */}
       <main className="relative">
         
-        {/* HERO SECTION */}
-        <Hero
-          onJoinClick={handleScrollToBooking}
-          onExploreClick={handleScrollToServices}
-        />
-
-        {/* ABOUT SECTION */}
-        <About />
-
-        {/* LAYANAN CATALOG SECTION */}
-        <Layanan onSelectPackage={handleSelectPackageFromCard} />
-
-        {/* CUSTOM ALUMNI TESTIMONIALS */}
-        <Testimonials />
-
-        <Contact />
+         <BookingForm selectedPackageId={selectedPackageId} />
 
       </main>
 
