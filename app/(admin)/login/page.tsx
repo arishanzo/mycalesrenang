@@ -27,7 +27,7 @@ export default function AdminLogin() {
   return (
     <div className="h-screen w-screen flex overflow-hidden">
 
-      {/* ── LEFT: Full-bleed brand panel ── */}
+    
       <div
         className="hidden lg:flex lg:w-[52%] h-full relative flex-col"
         style={{ background: 'linear-gradient(160deg,#020e1a 0%,#0b2d4e 45%,#1a5182 80%,#296da4 100%)' }}
