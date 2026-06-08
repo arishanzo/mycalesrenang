@@ -12,9 +12,14 @@ export default function SettingPage() {
   const [passwords, setPasswords] = useState({ current: '', newPass: '', confirm: '' });
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
+
+
+
  
 
   const handleSave = () => {
+
+    
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };

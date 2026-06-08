@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
 import { UseGetBooking } from '../hook/useGetBooking';
-import { BiDetail } from 'react-icons/bi';
 import { Eye } from 'lucide-react';
 
 const BADGE: Record<string, string> = {

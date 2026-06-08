@@ -1,18 +1,15 @@
 
 
-type SessionResponse = {
-  loggedIn: boolean;
-  user?: { id: number; email: string };
-};
-
 
 export async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const res = await fetch(`${apiUrl}${endpoint}`, { ...options, cache: options?.cache || "no-store", });
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const res = await fetch(`${apiUrl}${endpoint}`, {
+    ...options,
+    cache: options?.cache || "no-store",
+  });
 
   if (!res.ok) {
     let errorMessage = `Failed to fetch data from ${endpoint}`;
@@ -23,19 +20,28 @@ const res = await fetch(`${apiUrl}${endpoint}`, { ...options, cache: options?.ca
       console.log(e);
     }
 
+    // Normalisasi error auth agar bisa ditangani di layer UI
+    if (
+      /token expired/i.test(errorMessage) ||
+      /please login again/i.test(errorMessage) ||
+      /invalid token/i.test(errorMessage)
+    ) {
+      const err = new Error(errorMessage);
+      (err as Error & { code?: string }).code = "AUTH_EXPIRED";
+      throw err;
+    }
+
     throw new Error(errorMessage);
   }
 
   return res.json();
 }
 
-export async function getAuthHeaders() {
 
-    const res = await fetchAPI<SessionResponse>("/auth/session", {
-              credentials: "include",
-            });
-  
-  return {
-    Authorization: `Bearer ${res}`,
-  };
+// NOTE: Auth di backend pakai httpOnly cookie `token`.
+// Jadi untuk request authenticated cukup gunakan `credentials: "include"`
+// dan jangan bikin Authorization header secara manual.
+export function getAuthHeaders(): Record<string, string> {
+  return {};
 }
+

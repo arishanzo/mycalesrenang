@@ -14,11 +14,6 @@ const PROGRAM_STYLE: Record<string, { bg: string; text: string; dot: string }> =
   'Grup':        { bg: 'bg-emerald-50', text: 'text-emerald-700',dot: '#059669' },
 };
 
-const LEVEL_STYLE: Record<string, string> = {
-  'Pemula':   'bg-sky-50 text-sky-700 ring-sky-100',
-  'Menengah': 'bg-violet-50 text-violet-700 ring-violet-100',
-  'Lanjutan': 'bg-orange-50 text-orange-700 ring-orange-100',
-};
 
 // Hitung tanggal Senin minggu ini lalu map tiap hari
 function getWeekDates() {
@@ -158,7 +153,7 @@ export default function JadwalPage() {
             (
                <>
             {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari)?.map((j) => {
-              const ps = j.package_id;
+           
               const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                        weekday: 'long'}));
                   
@@ -217,7 +212,7 @@ export default function JadwalPage() {
 <> 
 
             {booking?.filter((i) => i.status === 'Terkonfirmasi')?.map((j) => {
-              const ps = j.package_id;
+           
               const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                        weekday: 'long'}));
                   
@@ -294,7 +289,7 @@ export default function JadwalPage() {
                     <>
                     
                       {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari)?.map((j) => {
-                       const ps = PROGRAM_STYLE[j.package_id];
+                     
                     const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                      weekday: 'long' }));
                     return (
@@ -319,7 +314,7 @@ export default function JadwalPage() {
                   ): (
                    <>
                     {booking?.filter((i) => i.status === 'Terkonfirmasi').map((j) => {
-                    const ps = PROGRAM_STYLE[j.package_id];
+                   
                     const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                      weekday: 'long' }));
                     return (

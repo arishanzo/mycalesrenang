@@ -22,21 +22,33 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const checkSession = async () => {
-    
-        const res = await fetchAPI<SessionResponse>("/auth/session", {
-          credentials: "include",
-        });
-        if (res.loggedIn) {
-          router.replace("/dashboard");
-        } else {
-          setTimeout(() => setChecking(false), 5000);
-        }
-   
-    };
+   const checkSession = async () => {
+  try {
+    const res = await fetchAPI<SessionResponse>("/auth/session", {
+      credentials: "include",
+    });
+
+    if (res.loggedIn) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    setChecking(false);
+  } catch (error: any) {
+    if (error.status === 401) {
+      // session habis atau belum login
+      setChecking(false);
+      return;
+    }
+
+    console.error("Session check failed:", error);
+    setChecking(false);
+  }
+};
 
     checkSession();
   }, [router]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

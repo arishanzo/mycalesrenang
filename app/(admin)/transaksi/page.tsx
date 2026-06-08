@@ -21,22 +21,10 @@ type Transaksi = {
   metode: string; status: string; tanggal: string; keterangan: string;
 };
 
-const INIT: Transaksi[] = [
-  { id: 'TRX-001', name: 'Anisa Putri', program: 'Privat', nominal: 850000, metode: 'Transfer', status: 'Lunas', tanggal: '12 Jun 2025', keterangan: 'Pembayaran bulan Juni' },
-  { id: 'TRX-002', name: 'Budi Santoso', program: 'Semi Privat', nominal: 600000, metode: 'QRIS', status: 'Lunas', tanggal: '10 Jun 2025', keterangan: 'Pembayaran bulan Juni' },
-  { id: 'TRX-003', name: 'Citra Dewi', program: 'Grup', nominal: 450000, metode: 'Transfer', status: 'Pending', tanggal: '09 Jun 2025', keterangan: 'Menunggu konfirmasi' },
-  { id: 'TRX-004', name: 'Dika Ramadhan', program: 'Privat', nominal: 850000, metode: 'Cash', status: 'Lunas', tanggal: '08 Jun 2025', keterangan: 'Pembayaran tunai' },
-  { id: 'TRX-005', name: 'Eva Lestari', program: 'Grup', nominal: 450000, metode: 'Transfer', status: 'Gagal', tanggal: '05 Jun 2025', keterangan: 'Transfer gagal' },
-  { id: 'TRX-006', name: 'Fandi Ahmad', program: 'Semi Privat', nominal: 600000, metode: 'QRIS', status: 'Pending', tanggal: '04 Jun 2025', keterangan: 'Menunggu verifikasi' },
-  { id: 'TRX-007', name: 'Gita Nuraini', program: 'Privat', nominal: 850000, metode: 'Transfer', status: 'Lunas', tanggal: '01 Jun 2025', keterangan: 'Pembayaran bulan Juni' },
-  { id: 'TRX-008', name: 'Hendra Wijaya', program: 'Grup', nominal: 450000, metode: 'Cash', status: 'Lunas', tanggal: '28 Mei 2025', keterangan: 'Pembayaran tunai' },
-];
-
 const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
 
 export default function TransaksiPage() {
    const { booking } =  UseGetBooking();
-  const [data] = useState(INIT);
     const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('Semua');

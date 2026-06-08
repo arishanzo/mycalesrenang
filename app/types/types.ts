@@ -57,6 +57,11 @@ export interface LoginCredentials {
   password: string;
 }
 
+
+export interface UbahPasswordCredentials {
+   passwordlama : string, passwordbaru : string, komfirmpassword : string
+}
+
 export interface LoginResponse {
   token: string;
   user: {
