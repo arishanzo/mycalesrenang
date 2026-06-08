@@ -1,28 +1,66 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { fetchAPI } from '@/app/libs/api';
+import { login } from '@/app/services/auth.service';
+import { LoginCredentials } from '@/app/types/types';
+import { Loader2 } from "lucide-react";
+
+type SessionResponse = {
+  loggedIn: boolean;
+  user?: { id: number; email: string };
+};
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState<LoginCredentials>({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const checkSession = async () => {
+    
+        const res = await fetchAPI<SessionResponse>("/auth/session", {
+          credentials: "include",
+        });
+        if (res.loggedIn) {
+          router.replace("/dashboard");
+        } else {
+          setTimeout(() => setChecking(false), 5000);
+        }
+   
+    };
+
+    checkSession();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    if (form.email === 'admin@myca.id' && form.password === 'admin123') {
-      router.push('/dashboard');
-    } else {
-      setError('Email atau password salah.');
+
+    try {
+      const res = await login({ email: form.email, password: form.password });
+      if (res?.token) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError('Terjadi kesalahan saat menghubungkan ke server.');
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-screen flex overflow-hidden">

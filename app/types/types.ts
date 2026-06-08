@@ -33,19 +33,35 @@ export interface BookingSubmission {
   studentName: string;
   parentName?: string; // If student is child
   gender: string;
-  birthDate: string;
+  birth_date: string;
   age: number;
   phone: string;
-  packageId: string;
-  locationId: string;
+  package_id: string;
+  location_id: string;
   sessions?: number;
-  courseDays: string[];
-  courseTime: string;
-  startDate: string;
-  schedulePreference?: string;
+  course_days: string[];
+  course_time: string;
+  start_date: string;
+  schedule_preference?: string;
   notes?: string;
-  totalPrice: number;
-  submittedAt: string;
+  total_price: number;
+   paymentProof?: string; // base64 image or file URL
   status: 'Menunggu Konfirmasi' | 'Terkonfirmasi' | 'Pembayaran Diterima';
-  paymentProof?: string; // base64 image or file URL
+ 
+}
+
+
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }

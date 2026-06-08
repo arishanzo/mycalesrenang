@@ -26,6 +26,11 @@ const IconSetting = () => (
     <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
   </svg>
 );
+const IconJadwal = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+  </svg>
+);
 const IconLogout = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
     <path fillRule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
@@ -47,6 +52,7 @@ const IconBell = () => (
 const NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard', Icon: IconDashboard },
   { id: 'siswa', label: 'Data Siswa', href: '/siswa', Icon: IconSiswa },
+  { id: 'jadwal', label: 'Jadwal', href: '/jadwal', Icon: IconJadwal },
   { id: 'transaksi', label: 'Transaksi', href: '/transasksi', Icon: IconTransaksi },
   { id: 'setting-akun', label: 'Pengaturan', href: '/setting-akun', Icon: IconSetting },
 ];
@@ -270,34 +276,30 @@ export default function AdminDashboard() {
 
             {/* Right column */}
             <div className="flex flex-col gap-3">
-              {/* Distribusi */}
+              {/* Jadwal Renang */}
               <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <p className="text-marine-900 font-semibold text-sm mb-3">Distribusi Program</p>
-                <div className="space-y-2.5">
-                  {PROGRAMS.map((p) => (
-                    <div key={p.label}>
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span className="text-marine-700 font-medium">{p.label}</span>
-                        <span className="text-marine-400">{p.pct}%</span>
+                <p className="text-marine-900 font-semibold text-sm mb-3">Jadwal Renang</p>
+                <div className="space-y-1.5">
+                  {[
+                    { hari: 'Senin', waktu: '07:00 - 09:00', program: 'Privat', color: '#0e3a60' },
+                    { hari: 'Selasa', waktu: '15:00 - 17:00', program: 'Grup', color: '#296da4' },
+                    { hari: 'Rabu', waktu: '07:00 - 09:00', program: 'Semi Privat', color: '#0891b2' },
+                    { hari: 'Kamis', waktu: '15:00 - 17:00', program: 'Privat', color: '#0e3a60' },
+                    { hari: 'Sabtu', waktu: '08:00 - 11:00', program: 'Grup', color: '#296da4' },
+                  ].map((j) => (
+                    <div key={j.hari} className="flex items-center justify-between rounded-lg px-2.5 py-2 bg-slate-50 border border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: j.color }} />
+                        <div>
+                          <p className="text-marine-900 text-[11px] font-semibold">{j.hari}</p>
+                          <p className="text-marine-400 text-[10px]">{j.waktu}</p>
+                        </div>
                       </div>
-                      <div className="h-1.5 bg-slate-100 rounded-full">
-                        <div className="h-1.5 rounded-full" style={{ width: `${p.pct}%`, background: p.color }} />
-                      </div>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full text-white" style={{ background: j.color }}>
+                        {j.program}
+                      </span>
                     </div>
                   ))}
-                </div>
-                {/* Pie visual */}
-                <div className="mt-4 flex items-center justify-center">
-                  <svg width="80" height="80" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#0e3a60" strokeWidth="3.2"
-                      strokeDasharray="45 55" strokeDashoffset="25" />
-                    <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#296da4" strokeWidth="3.2"
-                      strokeDasharray="30 70" strokeDashoffset="-20" />
-                    <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#5da4d6" strokeWidth="3.2"
-                      strokeDasharray="25 75" strokeDashoffset="-50" />
-                    <text x="18" y="20" textAnchor="middle" fontSize="5.5" fill="#031525" fontWeight="bold">248</text>
-                    <text x="18" y="25.5" textAnchor="middle" fontSize="3.5" fill="#296da4">siswa</text>
-                  </svg>
                 </div>
               </div>
 
