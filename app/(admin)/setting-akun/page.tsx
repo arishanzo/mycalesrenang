@@ -1,7 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { AdminShell } from '../components/AdminShell';
+import { fetchAPI } from '@/app/libs/api';
+import { ubahPassword } from '@/app/services/auth.service';
+import Swal from 'sweetalert2';
+
+type SessionResponse = {
+  loggedIn: boolean;
+  user?: { iduser: string; email: string };
+};
 
 const TABS = ['Keamanan'];
 
@@ -13,13 +21,54 @@ export default function SettingPage() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
 
+  const handleSave = async () => {
+
+    try {
 
 
- 
+    const res = await fetchAPI<SessionResponse>("/auth/session", {
+      credentials: "include",
+    });
 
-  const handleSave = () => {
+    if (res.user?.email) {
+      const payload = {
+        email: res.user?.email,
+        passwordlama: passwords.current,
+        passwordbaru: passwords.newPass,
+        komfirmpassword: passwords.confirm,
+      };
 
-    
+      const updateRes: any = await ubahPassword(payload);
+
+      if (updateRes) {
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: updateRes?.message,
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        window.location.reload();
+        
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: updateRes?.message,
+        });
+      }
+    }
+
+    }catch(err: any){
+          Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: err?.message,
+        });
+    }
+
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -90,19 +139,6 @@ export default function SettingPage() {
               </button>
             </div>
 
-            {/* Danger zone */}
-            <div className="bg-white rounded-xl border border-red-200 p-5">
-              <p className="text-red-700 font-semibold text-sm mb-1">Zona Berbahaya</p>
-              <p className="text-marine-400 text-xs mb-4">Tindakan berikut bersifat permanen dan tidak dapat dibatalkan.</p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-amber-700 border border-amber-200 bg-amber-50 hover:bg-amber-100 transition-colors">
-                  Nonaktifkan Akun
-                </button>
-                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors">
-                  Hapus Akun Permanen
-                </button>
-              </div>
-            </div>
           </div>
         )}
 

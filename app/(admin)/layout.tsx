@@ -61,9 +61,10 @@ if (loading) {
 } 
 
   return (
-     
+     <AuthProvider>
     <div className="min-h-screen bg-marine-50" suppressHydrationWarning>
       {children}
     </div>
+    </AuthProvider>
   );
 }

@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 
 type SessionResponse = {
   loggedIn: boolean;
-  user?: { id: number; email: string };
+  user?: { iduser: string; email: string };
 };
 
 export default function AdminLogin() {
@@ -60,8 +60,8 @@ export default function AdminLogin() {
       if (res?.token) {
         router.push("/dashboard");
       }
-    } catch (err) {
-      setError('Terjadi kesalahan saat menghubungkan ke server.');
+    } catch (err: any) {
+      setError( err.message|| 'Terjadi kesalahan saat menghubungkan ke server.');
       setLoading(false);
     }
   };

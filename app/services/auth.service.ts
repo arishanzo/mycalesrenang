@@ -16,9 +16,9 @@ export const login = async ( credentials: LoginCredentials): Promise<LoginRespon
 };
 
 
-export const ubahPassword = async (id: string, data: UbahPasswordCredentials): Promise<UbahPasswordCredentials> => {
+export const ubahPassword = async (data: UbahPasswordCredentials): Promise<UbahPasswordCredentials> => {
   // Gunakan id dari parameter (lebih stabil, tidak perlu hit /auth/session di awal).
-  return await fetchAPI<UbahPasswordCredentials>(`/auth/ubahpassword/${id}/`, {
+  return await fetchAPI<UbahPasswordCredentials>(`/auth/ubahpw/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
