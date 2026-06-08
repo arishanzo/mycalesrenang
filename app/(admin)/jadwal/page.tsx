@@ -2,20 +2,11 @@
 
 import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
+import { UseGetBooking } from '../hook/useGetBooking';
+import { Phone } from 'lucide-react';
 
 const HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
-const JADWAL_DATA = [
-  { id: 1, hari: 'Senin', waktuMulai: '07:00', waktuSelesai: '09:00', program: 'Privat', layanan: 'Renang Privat', kolam: 'Kolam A', level: 'Pemula' },
-  { id: 2, hari: 'Senin', waktuMulai: '15:00', waktuSelesai: '17:00', program: 'Grup', layanan: 'Renang Grup', kolam: 'Kolam B', level: 'Menengah' },
-  { id: 3, hari: 'Selasa', waktuMulai: '07:00', waktuSelesai: '08:30', program: 'Semi Privat', layanan: 'Renang Semi Privat', kolam: 'Kolam A', level: 'Lanjutan' },
-  { id: 4, hari: 'Rabu', waktuMulai: '07:00', waktuSelesai: '09:00', program: 'Privat', layanan: 'Renang Privat', kolam: 'Kolam C', level: 'Pemula' },
-  { id: 5, hari: 'Rabu', waktuMulai: '16:00', waktuSelesai: '18:00', program: 'Grup', layanan: 'Renang Grup', kolam: 'Kolam B', level: 'Pemula' },
-  { id: 6, hari: 'Kamis', waktuMulai: '07:00', waktuSelesai: '09:00', program: 'Semi Privat', layanan: 'Renang Semi Privat', kolam: 'Kolam A', level: 'Menengah' },
-  { id: 7, hari: 'Jumat', waktuMulai: '15:00', waktuSelesai: '17:00', program: 'Privat', layanan: 'Renang Privat', kolam: 'Kolam C', level: 'Lanjutan' },
-  { id: 8, hari: 'Sabtu', waktuMulai: '07:00', waktuSelesai: '10:00', program: 'Grup', layanan: 'Renang Grup', kolam: 'Kolam B', level: 'Pemula' },
-  { id: 9, hari: 'Sabtu', waktuMulai: '10:00', waktuSelesai: '12:00', program: 'Semi Privat', layanan: 'Renang Semi Privat', kolam: 'Kolam A', level: 'Menengah' },
-];
 
 const PROGRAM_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
   'Privat':      { bg: 'bg-indigo-50',  text: 'text-indigo-700', dot: '#4f46e5' },
@@ -51,14 +42,18 @@ function getWeekDates() {
 }
 
 export default function JadwalPage() {
+  const { booking }  = UseGetBooking();
   const weekDates = getWeekDates();
   const todayNama = weekDates.find((w) => w.isToday)?.nama ?? null;
-  const [activeHari, setActiveHari] = useState<string | null>(todayNama);
+  const [activeHari, setActiveHari] = useState<string | null>('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const filtered = activeHari
-    ? JADWAL_DATA.filter((j) => j.hari === activeHari)
-    : JADWAL_DATA;
+  console.log(todayNama);
+
+  
+
+
+  const filtered = activeHari ? (booking ?? []).filter((i) => i.status === 'Terkonfirmasi')  : booking;
 
   const activeWeek = weekDates.find((w) => w.nama === activeHari);
 
@@ -69,9 +64,9 @@ export default function JadwalPage() {
         {/* ── Stat Cards ── */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { label: 'Total Sesi', value: JADWAL_DATA.length, sub: 'per minggu', icon: '📅', accent: '#296da4' },
-            { label: 'Layanan', value: [...new Set(JADWAL_DATA.map((j) => j.layanan))].length, sub: 'jenis layanan aktif', icon: '🏊', accent: '#0891b2' },
-            { label: 'Hari Aktif', value: [...new Set(JADWAL_DATA.map((j) => j.hari))].length, sub: 'dari 7 hari', icon: '📆', accent: '#059669' },
+            { label: 'Total Jadwal Terkonfirmasi', value: booking?.filter((i) => i.status === 'Terkonfirmasi')?.length, sub: 'per minggu', icon: '📅', accent: '#296da4' },
+            { label: 'Jadwal Layanan', value: [...new Set(booking?.map((j) => j.package_id))].length, sub: 'jenis layanan aktif', icon: '🏊', accent: '#0891b2' },
+            { label: 'Total Jadwal Tertunda', value:  booking?.filter((i) => i.status === 'Menunggu Konfirmasi')?.length, sub: 'dari 7 hari', icon: '📆', accent: '#059669' },
           ].map((s) => (
             <div key={s.label} className="bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg transition-all duration-200">
               <div className="flex items-start justify-between mb-3">
@@ -92,7 +87,7 @@ export default function JadwalPage() {
           <p className="text-marine-400 text-[11px] font-semibold uppercase tracking-widest mb-3">Minggu Ini</p>
           <div className="grid grid-cols-7 gap-1.5">
             {weekDates.map((w) => {
-              const hasSesi = JADWAL_DATA.some((j) => j.hari === w.nama);
+              const hasSesi = booking?.some((j) => new Date(j.start_date).toLocaleDateString('id-ID', {weekday: 'long'}) === w.nama);
               const isActive = activeHari === w.nama;
               return (
                 <button
@@ -122,7 +117,7 @@ export default function JadwalPage() {
             <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
               <p className="text-marine-700 text-xs font-semibold">{activeWeek.full}</p>
               <span className="text-[11px] text-marine-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
-                {filtered.length} sesi
+                { activeHari ? booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari).length : booking?.filter((i) => i.status === 'Terkonfirmasi')?.length} sesi
               </span>
             </div>
           )}
@@ -132,7 +127,7 @@ export default function JadwalPage() {
         <div className="flex items-center justify-between gap-2">
           <p className="text-marine-600 text-sm font-semibold">
             {activeHari ? `Jadwal ${activeHari}` : 'Semua Jadwal'}
-            <span className="ml-2 text-marine-400 font-normal text-xs">({filtered.length} sesi)</span>
+            <span className="ml-2 text-marine-400 font-normal text-xs">(  { activeHari ?booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari).length :  booking?.filter((i) => i.status === 'Terkonfirmasi')?.length} sesi)</span>
           </p>
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
             {(['grid', 'list'] as const).map((m) => (
@@ -158,16 +153,23 @@ export default function JadwalPage() {
         {/* ── Grid View ── */}
         {viewMode === 'grid' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {filtered.map((j) => {
-              const ps = PROGRAM_STYLE[j.program];
-              const dateInfo = weekDates.find((w) => w.nama === j.hari);
+
+            {activeHari ? 
+            (
+               <>
+            {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari)?.map((j) => {
+              const ps = j.package_id;
+              const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
+                       weekday: 'long'}));
+                  
+
               return (
                 <div key={j.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                   {/* Header */}
                   <div className="px-4 pt-4 pb-3 flex items-start justify-between" style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
                     <div>
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <span className="text-[11px] font-bold text-marine-400 uppercase tracking-widest">{j.hari}</span>
+                      <div className="flex items-center gap-1.5 mb-4">
+                        <span className="text-[11px] font-bold text-marine-400 uppercase tracking-widest">{j.student_name}</span>
                         {dateInfo && (
                           <span className="text-[10px] text-marine-300">· {dateInfo.tanggal} {dateInfo.bulan}</span>
                         )}
@@ -176,11 +178,11 @@ export default function JadwalPage() {
                         )}
                       </div>
                       <p className="text-marine-950 font-bold text-lg leading-none">
-                        {j.waktuMulai} <span className="text-marine-400 font-normal text-sm">–</span> {j.waktuSelesai}
+                        {j.course_time} 
                       </p>
                     </div>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${ps.dot}15` }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={ps.dot} viewBox="0 0 16 16">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `#4f46e515` }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill='#4f46e5' viewBox="0 0 16 16">
                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
                       </svg>
                     </div>
@@ -189,28 +191,88 @@ export default function JadwalPage() {
                   {/* Body */}
                   <div className="px-4 pb-4 pt-3 space-y-2.5">
                     <div className="flex flex-wrap gap-1.5">
-                      <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${ps.bg} ${ps.text}`}>{j.program}</span>
-                      <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ring-1 ${LEVEL_STYLE[j.level]}`}>{j.level}</span>
+                      <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700`}>{j.package_id}</span>
                     </div>
                     <div className="space-y-1.5 text-[11px]">
                       <div className="flex items-center gap-2 text-marine-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-                        </svg>
-                        <span>{j.layanan}</span>
+                        <Phone  className='w-3 h-3 text-marine-500'/>
+                        <span>{j.phone}</span>
                       </div>
                       <div className="flex items-center gap-2 text-marine-500">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
                           <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                         </svg>
-                        <span>{j.kolam}</span>
+                        <span>{j.location_id}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               );
             })}
+               </>
+            )
+            
+            :
+            (
+<> 
+
+            {booking?.filter((i) => i.status === 'Terkonfirmasi')?.map((j) => {
+              const ps = j.package_id;
+              const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
+                       weekday: 'long'}));
+                  
+
+              return (
+                <div key={j.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                  {/* Header */}
+                  <div className="px-4 pt-4 pb-3 flex items-start justify-between" style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-4">
+                        <span className="text-[11px] font-bold text-marine-400 uppercase tracking-widest">{j.student_name}</span>
+                        {dateInfo && (
+                          <span className="text-[10px] text-marine-300">· {dateInfo.tanggal} {dateInfo.bulan}</span>
+                        )}
+                        {dateInfo?.isToday && (
+                          <span className="text-[9px] font-bold bg-aqua-500 text-white px-1.5 py-0.5 rounded-full">Hari ini</span>
+                        )}
+                      </div>
+                      <p className="text-marine-950 font-bold text-lg leading-none">
+                        {j.course_time} 
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `#4f46e515` }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill='#4f46e5' viewBox="0 0 16 16">
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Body */}
+                  <div className="px-4 pb-4 pt-3 space-y-2.5">
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700`}>{j.package_id}</span>
+                    </div>
+                    <div className="space-y-1.5 text-[11px]">
+                      <div className="flex items-center gap-2 text-marine-500">
+                        <Phone  className='w-3 h-3 text-marine-500'/>
+                        <span>{j.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-marine-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                        <span>{j.location_id}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+</>
+            )
+          }
+
           </div>
         )}
 
@@ -221,41 +283,74 @@ export default function JadwalPage() {
               <table className="w-full text-xs">
                 <thead>
                   <tr style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
-                    {['Hari & Tanggal', 'Waktu', 'Program', 'Level', 'Layanan', 'Kolam'].map((h) => (
+                    {['Nama Siswa', 'No Hp', 'Hari & Tanggal', 'Waktu', 'Program',  'Layanan', 'Kolam'].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-marine-400 font-bold uppercase tracking-widest text-[10px] border-b border-slate-100">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {filtered.map((j) => {
-                    const ps = PROGRAM_STYLE[j.program];
-                    const dateInfo = weekDates.find((w) => w.nama === j.hari);
+                  {activeHari ? (
+
+                    <>
+                    
+                      {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari)?.map((j) => {
+                       const ps = PROGRAM_STYLE[j.package_id];
+                    const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
+                     weekday: 'long' }));
                     return (
                       <tr key={j.id} className="hover:bg-marine-50/40 transition-colors">
+                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.student_name}</td>
+                          <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.phone}</td>
                         <td className="px-4 py-3">
-                          <p className="font-bold text-marine-800">{j.hari}</p>
-                          <p className="text-marine-400 text-[10px]">{dateInfo?.tanggal} {dateInfo?.bulan}</p>
+                          <p className="text-marine-400 ">{dateInfo?.tanggal} {dateInfo?.bulan}</p>
                           {dateInfo?.isToday && <span className="text-[9px] font-bold text-aqua-600">Hari ini</span>}
                         </td>
-                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.waktuMulai} – {j.waktuSelesai}</td>
+                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_time}</td>
                         <td className="px-4 py-3">
-                          <span className={`font-semibold px-2.5 py-1 rounded-full text-[11px] ${ps.bg} ${ps.text}`}>{j.program}</span>
+                          <span className={`font-semibold px-2.5 py-1 rounded-full text-[11px] bg-indigo-50 $text-indigo-700`}>{j.package_id}</span>
                         </td>
-                        <td className="px-4 py-3">
-                          <span className={`font-semibold px-2 py-0.5 rounded-full ring-1 ${LEVEL_STYLE[j.level]}`}>{j.level}</span>
-                        </td>
-                        <td className="px-4 py-3 text-marine-600">{j.layanan}</td>
-                        <td className="px-4 py-3 text-marine-500">{j.kolam}</td>
+                       
+                        <td className="px-4 py-3 text-marine-600">{j.package_id}</td>
+                        <td className="px-4 py-3 text-marine-500">{j.location_id}</td>
                       </tr>
                     );
                   })}
+                    </>
+                  ): (
+                   <>
+                    {booking?.filter((i) => i.status === 'Terkonfirmasi').map((j) => {
+                    const ps = PROGRAM_STYLE[j.package_id];
+                    const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
+                     weekday: 'long' }));
+                    return (
+                      <tr key={j.id} className="hover:bg-marine-50/40 transition-colors">
+                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.student_name}</td>
+                          <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.phone}</td>
+                        <td className="px-4 py-3">
+                          <p className="text-marine-400 ">{dateInfo?.tanggal} {dateInfo?.bulan}</p>
+                          {dateInfo?.isToday && <span className="text-[9px] font-bold text-aqua-600">Hari ini</span>}
+                        </td>
+                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_time}</td>
+                        <td className="px-4 py-3">
+                          <span className={`font-semibold px-2.5 py-1 rounded-full text-[11px] bg-indigo-50 $text-indigo-700`}>{j.package_id}</span>
+                        </td>
+                       
+                        <td className="px-4 py-3 text-marine-600">{j.package_id}</td>
+                        <td className="px-4 py-3 text-marine-500">{j.location_id}</td>
+                      </tr>
+                    );
+                  })}
+                   
+                   </>
+                  )}
+                 
                 </tbody>
               </table>
             </div>
           </div>
         )}
 
-        {filtered.length === 0 && (
+        {filtered?.length === 0 && (
           <div className="bg-white rounded-2xl border border-slate-200 py-16 flex flex-col items-center gap-3">
             <span className="text-4xl">📅</span>
             <p className="text-marine-500 text-sm font-medium">Tidak ada jadwal untuk hari ini</p>

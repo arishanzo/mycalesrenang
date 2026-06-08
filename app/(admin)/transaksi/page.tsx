@@ -2,6 +2,12 @@
 
 import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
+import { UseGetBooking } from '../hook/useGetBooking';
+import { BookingSubmission } from '@/app/types/types';
+import Image from 'next/image';
+import { CheckCircle2 } from 'lucide-react';
+import { updateStatusBooking } from '@/app/services/transaksi.services';
+import Swal from 'sweetalert2';
 
 const BADGE: Record<string, string> = {
   Lunas: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
@@ -9,11 +15,6 @@ const BADGE: Record<string, string> = {
   Gagal: 'bg-red-50 text-red-600 ring-1 ring-red-200',
 };
 
-const METODE_COLOR: Record<string, string> = {
-  Transfer: 'bg-blue-50 text-blue-700',
-  QRIS: 'bg-purple-50 text-purple-700',
-  Cash: 'bg-slate-100 text-slate-700',
-};
 
 type Transaksi = {
   id: string; name: string; program: string; nominal: number;
@@ -34,28 +35,68 @@ const INIT: Transaksi[] = [
 const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
 
 export default function TransaksiPage() {
+   const { booking } =  UseGetBooking();
   const [data] = useState(INIT);
+    const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterMetode, setFilterMetode] = useState('Semua');
-  const [detail, setDetail] = useState<Transaksi | null>(null);
+  const [detail, setDetail] = useState<BookingSubmission | null>(null);
 
-  const filtered = data.filter((t) => {
-    const matchSearch = t.name.toLowerCase().includes(search.toLowerCase()) || t.id.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = filterStatus === 'Semua' || t.status === filterStatus;
-    const matchMetode = filterMetode === 'Semua' || t.metode === filterMetode;
-    return matchSearch && matchStatus && matchMetode;
-  });
 
-  const totalLunas = data.filter((t) => t.status === 'Lunas').reduce((a, t) => a + t.nominal, 0);
-  const totalPending = data.filter((t) => t.status === 'Pending').reduce((a, t) => a + t.nominal, 0);
+  const filtered = booking?.filter((s) => {
+    const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === 'Semua' || s.status === filterStatus;
+    const matchProgram = filterMetode === 'Semua' || String(s.package_id) === filterMetode;
+    return matchSearch && matchStatus && matchProgram;
+  }) ?? [];
+
+  const totalLunas = booking?.filter((t) => t.status ===  'Terkonfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
+  const totalPending = booking?.filter((t) => t.status ===  'Menunggu Konfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
 
   const stats = [
-    { label: 'Total Transaksi', value: `${data.length}`, sub: 'semua waktu', color: '#296da4' },
+    { label: 'Total Transaksi', value: `${booking?.length}`, sub: 'semua waktu', color: '#296da4' },
     { label: 'Pendapatan Lunas', value: fmt(totalLunas), sub: 'terkonfirmasi', color: '#059669' },
     { label: 'Menunggu', value: fmt(totalPending), sub: 'belum dikonfirmasi', color: '#d97706' },
     { label: 'Bulan Ini', value: fmt(totalLunas), sub: 'Jun 2025', color: '#7c3aed' },
   ];
+
+ const handleKonfirmasi = async (t: BookingSubmission) => {
+   const newStatus = "Terkonfirmasi";
+   setLoading(true);
+  try {
+    const res = await updateStatusBooking(t.id, newStatus);
+
+    if (res) {
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "Konfirmasi berhasil dilakukan.",
+        timer: 2000,
+        showConfirmButton: false,
+     })
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: "Konfirmasi gagal, coba lagi.",
+      })
+    }
+  } catch (err) {
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text: "Terjadi kesalahan server.",
+    })
+
+  } finally {
+     setTimeout(() => {
+        window.location.reload();
+      }, 4500);
+    setLoading(false);
+  }
+};
+
 
   return (
     <AdminShell title="Transaksi" subtitle="Riwayat dan kelola transaksi pembayaran">
@@ -100,14 +141,7 @@ export default function TransaksiPage() {
               {['Semua', 'Transfer', 'QRIS', 'Cash'].map((o) => <option key={o}>{o}</option>)}
             </select>
           </div>
-          <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white shrink-0 transition-all active:scale-95 border border-marine-300 text-marine-600 bg-marine-50 hover:bg-marine-100"
-            style={{ color: '#296da4', background: 'transparent' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-            </svg>
-            Export
-          </button>
+       
         </div>
 
         {/* Table */}
@@ -119,7 +153,7 @@ export default function TransaksiPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-100">
-                  {['ID', 'Siswa', 'Program', 'Nominal', 'Metode', 'Status', 'Tanggal', ''].map((h) => (
+                  {['ID', 'Siswa', 'Paket',  'Nominal', 'Status',  'Program',  'Tanggal', 'Lihat Pembayaran', 'Aksi'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -134,20 +168,24 @@ export default function TransaksiPage() {
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold shrink-0"
                           style={{ background: 'linear-gradient(135deg,#1a5182,#3b8bc4)' }}>
-                          {t.name.charAt(0)}
+                          {t.student_name.charAt(0)}
                         </div>
-                        <span className="text-marine-900 font-semibold whitespace-nowrap">{t.name}</span>
+                        <span className="text-marine-900 font-semibold whitespace-nowrap">{t.student_name}</span>
                       </div>
                     </td>
-                    <td className="px-3 py-2.5 text-marine-500">{t.program}</td>
-                    <td className="px-3 py-2.5 text-marine-900 font-semibold whitespace-nowrap">{fmt(t.nominal)}</td>
-                    <td className="px-3 py-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${METODE_COLOR[t.metode]}`}>{t.metode}</span>
-                    </td>
-                    <td className="px-3 py-2.5">
+                    <td className="px-3 py-2.5 text-marine-500">{t.package_id}</td>
+                    <td className="px-3 py-2.5 text-marine-900 font-semibold whitespace-nowrap">{fmt(t.total_price)}</td>
+                     <td className="px-3 py-2.5">
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${BADGE[t.status]}`}>{t.status}</span>
                     </td>
-                    <td className="px-3 py-2.5 text-marine-400 whitespace-nowrap">{t.tanggal}</td>
+                       <td className="px-3 py-2.5">
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full`}>{t.package_id}</span>
+                    </td>
+                   
+                      <td className="px-3 py-2.5 text-marine-400 whitespace-nowrap">{new Date(t.start_date).toLocaleDateString('id-ID')}</td>
+
+                   
+                   
                     <td className="px-3 py-2.5">
                       <button onClick={() => setDetail(t)}
                         className="p-1.5 rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors">
@@ -157,6 +195,20 @@ export default function TransaksiPage() {
                         </svg>
                       </button>
                     </td>
+
+                    <td className="px-3 py-2.5">
+              <button
+                onClick={() => handleKonfirmasi(t)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg 
+                          bg-gradient-to-r from-green-500 to-emerald-600 
+                          text-white text-xs font-semibold shadow-sm 
+                          hover:shadow-md transition-all duration-200 cursor-pointer"
+              >
+                <CheckCircle2 className='w-4 h-4' />
+                <span> { loading ? 'Prosess...' : ' Konfirmasi' }</span>
+              </button>
+            </td>
+
                   </tr>
                 ))}
                 {filtered.length === 0 && (
@@ -168,56 +220,69 @@ export default function TransaksiPage() {
         </div>
       </div>
 
-      {/* Detail Modal */}
-      {detail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between"
-              style={{ background: 'linear-gradient(135deg,#020e1a,#0e3a60)' }}>
-              <div>
-                <p className="text-white font-semibold text-sm">Detail Transaksi</p>
-                <p className="text-marine-400 text-[11px] font-mono">{detail.id}</p>
-              </div>
-              <button onClick={() => setDetail(null)} className="text-marine-400 hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                </svg>
-              </button>
-            </div>
-            <div className="p-5 space-y-3">
-              {[
-                ['Nama Siswa', detail.name],
-                ['Program', detail.program],
-                ['Nominal', fmt(detail.nominal)],
-                ['Metode Bayar', detail.metode],
-                ['Tanggal', detail.tanggal],
-                ['Keterangan', detail.keterangan],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-                  <span className="text-marine-400 text-xs">{label}</span>
-                  <span className="text-marine-900 text-xs font-semibold">{value}</span>
-                </div>
-              ))}
-              <div className="flex items-center justify-between py-2">
-                <span className="text-marine-400 text-xs">Status</span>
-                <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${BADGE[detail.status]}`}>{detail.status}</span>
-              </div>
-            </div>
-            <div className="px-5 pb-5 flex gap-2">
-              {detail.status === 'Pending' && (
-                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-white transition-all"
-                  style={{ background: 'linear-gradient(135deg,#065f46,#059669)' }}>
-                  Konfirmasi Lunas
-                </button>
-              )}
-              <button onClick={() => setDetail(null)}
-                className="flex-1 py-2 rounded-lg text-xs font-semibold border border-slate-200 text-marine-500 hover:bg-slate-50 transition-colors">
-                Tutup
-              </button>
-            </div>
-          </div>
+   {/* Detail Modal */}
+{detail && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 
+                  bg-black/40 backdrop-blur-sm">
+    <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+      
+      {/* Header */}
+      <div className="px-5 py-4 flex items-center justify-between 
+                      bg-gradient-to-r from-slate-900 to-blue-900">
+        <div>
+          <p className="text-white font-semibold text-sm">Detail Bukti Pembayaran</p>
+          <p className="text-slate-300 text-[11px] font-mono">{detail.id}</p>
         </div>
-      )}
+        <button
+          onClick={() => setDetail(null)}
+          className="text-slate-300 hover:text-white transition-colors"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Body */}
+      <div className="p-5 space-y-4">
+        {/* Image Preview */}
+        <div className="flex justify-center">
+          <Image
+            width={300}
+            height={200}
+            className="rounded-lg shadow-md object-cover"
+            src={`/images/buktitf/${detail.paymentProof}`}
+            alt="Bukti Pembayaran"
+          />
+        </div>
+
+        {/* Status */}
+        <div className="flex items-center justify-between py-2 border-t border-slate-100">
+          <span className="text-slate-500 text-xs">Status</span>
+          <span
+            className={`text-[11px] font-semibold px-3 py-1 rounded-full 
+                        ${BADGE[detail.status]}`}
+          >
+            {detail.status}
+          </span>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 pb-5 flex gap-2">
+        <button
+          onClick={() => setDetail(null)}
+          className="flex-1 py-2 rounded-lg text-xs font-semibold 
+                     border border-slate-200 text-slate-600 
+                     hover:bg-slate-50 transition-colors"
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
     </AdminShell>
   );
 }

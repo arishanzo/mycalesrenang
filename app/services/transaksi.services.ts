@@ -5,7 +5,7 @@ import { BookingSubmission } from "../types/types";
 
 
 export const getAllBooking = async (): Promise<BookingSubmission[]> => {
-      return await fetchAPI<BookingSubmission[]>("/transaksi");
+      return await fetchAPI<BookingSubmission[]>("/transaksi/");
 };
 
 
@@ -21,7 +21,7 @@ export const createBooking = async (data: Partial<BookingSubmission>): Promise<B
 };
 
 
-export const updateStatusBooking = async ( id: string, data: Partial<BookingSubmission>) : Promise<BookingSubmission> => {
+export const updateStatusBooking = async ( id: string, status: string) : Promise<BookingSubmission> => {
     
     return await fetchAPI<BookingSubmission>(`/transaksi/${id}/status`, {
         method: "PUT",
@@ -29,7 +29,7 @@ export const updateStatusBooking = async ( id: string, data: Partial<BookingSubm
        ...authHeaders,
         "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({status}),
     });
 
 }

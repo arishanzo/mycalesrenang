@@ -3,28 +3,16 @@
 import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
 
-const TABS = ['Profil', 'Keamanan', 'Notifikasi', 'Sistem'];
+const TABS = ['Keamanan'];
 
 export default function SettingPage() {
-  const [tab, setTab] = useState('Profil');
+  const [tab, setTab] = useState('Keamanan');
   const [saved, setSaved] = useState(false);
-  const [profile, setProfile] = useState({
-    name: 'Administrator',
-    email: 'admin@myca.id',
-    phone: '0812-0000-0001',
-    role: 'Super Admin',
-    bio: 'Admin utama MYCA Center of Aquatic Semarang.',
-  });
+  
   const [passwords, setPasswords] = useState({ current: '', newPass: '', confirm: '' });
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [notif, setNotif] = useState({
-    emailTransaksi: true,
-    emailPendaftaran: true,
-    pushTransaksi: false,
-    pushPendaftaran: true,
-    weeklyReport: true,
-  });
+ 
 
   const handleSave = () => {
     setSaved(true);
@@ -46,82 +34,7 @@ export default function SettingPage() {
           ))}
         </div>
 
-        {/* ── Profil ── */}
-        {tab === 'Profil' && (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            {/* Header banner */}
-            <div className="h-20 relative" style={{ background: 'linear-gradient(135deg,#020e1a 0%,#0e3a60 60%,#296da4 100%)' }}>
-              <div className="absolute inset-0 opacity-10">
-                <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                  <defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <circle cx="10" cy="10" r="1" fill="white"/>
-                  </pattern></defs>
-                  <rect width="100%" height="100%" fill="url(#dots)" />
-                </svg>
-              </div>
-            </div>
-            <div className="px-5 pb-5">
-              {/* Avatar */}
-              <div className="flex items-end gap-4 -mt-7 mb-5">
-                <div className="w-14 h-14 rounded-2xl ring-4 ring-white flex items-center justify-center text-white text-xl font-bold shrink-0"
-                  style={{ background: 'linear-gradient(135deg,#0e3a60,#296da4)' }}>
-                  {profile.name.charAt(0)}
-                </div>
-                <div className="pb-1">
-                  <p className="text-marine-900 font-bold text-base leading-none">{profile.name}</p>
-                  <p className="text-marine-400 text-xs mt-0.5">{profile.role}</p>
-                </div>
-                <button className="ml-auto text-xs text-marine-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors mb-0.5">
-                  Ganti Foto
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  { label: 'Nama Lengkap', key: 'name' },
-                  { label: 'Email', key: 'email' },
-                  { label: 'No. HP', key: 'phone' },
-                  { label: 'Role', key: 'role' },
-                ].map(({ label, key }) => (
-                  <div key={key}>
-                    <label className="block text-[11px] font-semibold text-marine-600 uppercase tracking-wider mb-1">{label}</label>
-                    <input
-                      value={profile[key as keyof typeof profile]}
-                      onChange={(e) => setProfile({ ...profile, [key]: e.target.value })}
-                      disabled={key === 'role'}
-                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 text-marine-900 outline-none focus:border-marine-400 focus:bg-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                    />
-                  </div>
-                ))}
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-marine-600 uppercase tracking-wider mb-1">Bio</label>
-                  <textarea rows={2} value={profile.bio}
-                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 text-marine-900 outline-none focus:border-marine-400 focus:bg-white transition-all resize-none" />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 mt-4">
-                <button onClick={handleSave}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all active:scale-95"
-                  style={{ background: 'linear-gradient(135deg,#0e3a60,#296da4)', boxShadow: '0 3px 12px -3px rgba(41,109,164,0.5)' }}>
-                  {saved ? (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                      </svg>
-                      Tersimpan!
-                    </>
-                  ) : 'Simpan Perubahan'}
-                </button>
-                <button className="px-4 py-2 rounded-lg text-xs font-semibold border border-slate-200 text-marine-500 hover:bg-slate-50 transition-colors">
-                  Reset
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
+      
         {/* ── Keamanan ── */}
         {tab === 'Keamanan' && (
           <div className="space-y-3">
@@ -188,85 +101,7 @@ export default function SettingPage() {
           </div>
         )}
 
-        {/* ── Notifikasi ── */}
-        {tab === 'Notifikasi' && (
-          <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
-            {[
-              { key: 'emailTransaksi', label: 'Email — Transaksi Baru', desc: 'Terima email setiap ada transaksi masuk' },
-              { key: 'emailPendaftaran', label: 'Email — Pendaftaran Siswa', desc: 'Terima email saat ada siswa baru mendaftar' },
-              { key: 'pushTransaksi', label: 'Push — Transaksi Baru', desc: 'Notifikasi browser untuk transaksi baru' },
-              { key: 'pushPendaftaran', label: 'Push — Pendaftaran Siswa', desc: 'Notifikasi browser untuk pendaftaran baru' },
-              { key: 'weeklyReport', label: 'Laporan Mingguan', desc: 'Ringkasan aktivitas dikirim setiap Senin' },
-            ].map(({ key, label, desc }) => (
-              <div key={key} className="flex items-center justify-between px-5 py-3.5">
-                <div>
-                  <p className="text-marine-900 text-xs font-semibold">{label}</p>
-                  <p className="text-marine-400 text-[11px] mt-0.5">{desc}</p>
-                </div>
-                <button
-                  onClick={() => setNotif({ ...notif, [key]: !notif[key as keyof typeof notif] })}
-                  className={`relative w-10 h-5.5 rounded-full transition-colors shrink-0 ml-4 ${notif[key as keyof typeof notif] ? '' : 'bg-slate-200'}`}
-                  style={notif[key as keyof typeof notif] ? { background: 'linear-gradient(135deg,#0e3a60,#296da4)' } : {}}
-                >
-                  <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${notif[key as keyof typeof notif] ? 'translate-x-5' : 'translate-x-0.5'}`} />
-                </button>
-              </div>
-            ))}
-            <div className="px-5 py-3.5">
-              <button onClick={handleSave}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all active:scale-95"
-                style={{ background: 'linear-gradient(135deg,#0e3a60,#296da4)', boxShadow: '0 3px 12px -3px rgba(41,109,164,0.5)' }}>
-                {saved ? 'Tersimpan!' : 'Simpan Preferensi'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Sistem ── */}
-        {tab === 'Sistem' && (
-          <div className="space-y-3">
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <p className="text-marine-900 font-semibold text-sm mb-4">Informasi Sistem</p>
-              <div className="space-y-0 divide-y divide-slate-50">
-                {[
-                  ['Versi Aplikasi', 'v1.0.0'],
-                  ['Framework', 'Next.js 15'],
-                  ['Database', 'PostgreSQL'],
-                  ['Server', 'Vercel Edge'],
-                  ['Terakhir Diperbarui', '15 Jun 2025'],
-                  ['Status Sistem', '🟢 Online'],
-                ].map(([label, value]) => (
-                  <div key={label} className="flex items-center justify-between py-2.5">
-                    <span className="text-marine-400 text-xs">{label}</span>
-                    <span className="text-marine-900 text-xs font-semibold">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <p className="text-marine-900 font-semibold text-sm mb-4">Pengaturan Umum</p>
-              <div className="space-y-3">
-                {[
-                  { label: 'Nama Aplikasi', value: 'MYCA Admin Panel' },
-                  { label: 'Zona Waktu', value: 'Asia/Jakarta (WIB)' },
-                  { label: 'Bahasa', value: 'Bahasa Indonesia' },
-                ].map(({ label, value }) => (
-                  <div key={label}>
-                    <label className="block text-[11px] font-semibold text-marine-600 uppercase tracking-wider mb-1">{label}</label>
-                    <input defaultValue={value}
-                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 text-marine-900 outline-none focus:border-marine-400 focus:bg-white transition-all" />
-                  </div>
-                ))}
-              </div>
-              <button onClick={handleSave}
-                className="mt-4 flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all active:scale-95"
-                style={{ background: 'linear-gradient(135deg,#0e3a60,#296da4)', boxShadow: '0 3px 12px -3px rgba(41,109,164,0.5)' }}>
-                {saved ? 'Tersimpan!' : 'Simpan Pengaturan'}
-              </button>
-            </div>
-          </div>
-        )}
+     
       </div>
     </AdminShell>
   );
