@@ -130,7 +130,7 @@ const BookingForm = () => {
     const targetId = document.getElementById('printable-invoice') ? 'printable-invoice' : 'printable-ticket';
     
     printDocument(targetId, {
-      booking_code: confirmedBooking?.booking_code,
+      bookingCode: confirmedBooking?.booking_code,
       isInvoice: targetId === 'printable-invoice'
     });
   };

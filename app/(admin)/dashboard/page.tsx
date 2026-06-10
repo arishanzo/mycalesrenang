@@ -156,14 +156,7 @@ export default function AdminDashboard() {
 
                               <span   className="text-slate-900 text-xs font-semibold leading-tight py-8 rounded-md px-2  text-center">Nama: {j.student_name}</span>
                           <div className="grid md:grid-cols-3 grid-cols-2 gap-2 mb-2 py-2">
-                            {j.course_days.map((i) => (
-                              <p
-                                key={i}
-                                className="text-slate-900 text-xs font-semibold leading-tight bg-slate-100 rounded-md px-2 py-1 text-center"
-                              >
-                                {i}
-                              </p>
-                            ))}
+                           
                           </div>
 
                               <p className="text-slate-500 text-xs">{j.course_time} - {j.location_id}</p>
