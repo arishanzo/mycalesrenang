@@ -35,12 +35,12 @@ const HistoryModal = ({ bookings, onClose, onSelectBooking }: { bookings: Bookin
                 {bookings.map(book => (
                   <div key={book.id} className="p-4 border border-marine-150 rounded-2xl hover:border-cyan-500/60 bg-marine-50/30">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold font-mono tracking-wider text-cyan-600">{book.bookingCode}</span>
-                      <span className="text-[10px] text-marine-600">{book.submittedAt}</span>
+                      <span className="text-xs font-bold font-mono tracking-wider text-cyan-600">{book.booking_code}</span>
+                      <span className="text-[10px] text-marine-600">{new Date(book.start_date).toLocaleDateString('id-ID')}</span>
                     </div>
-                    <p className="text-sm font-semibold text-marine-950 mt-2">{book.studentName}</p>
+                    <p className="text-sm font-semibold text-marine-950 mt-2">{book.student_name}</p>
                     <p className="text-xs text-marine-800">
-                      {MYCA_PACKAGES.find(p => p.id === book.packageId)?.name} • {(book.courseDays ?? []).length}× pertemuan
+                      {MYCA_PACKAGES.find(p => p.id === book.package_id)?.name}
                     </p>
                     <div className="mt-3 pt-3 border-t border-marine-100/60 flex justify-between items-center">
                       <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full ${
