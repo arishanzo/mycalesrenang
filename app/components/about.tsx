@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ShieldAlert, Award, Smile, Anchor, CheckCircle2 } from 'lucide-react';
 import { coreValues } from '../libs/data';
+import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -87,7 +88,9 @@ export default function About() {
               <div className="absolute -bottom-6 -right-6 w-1/2 h-1/2 bg-marine-200/40 rounded-3xl -z-10" />
 
               <div className="rounded-3xl overflow-hidden shadow-xl border-4 border-white transform hover:rotate-1 transition-transform duration-500">
-                <img
+                <Image
+                width={90}
+                height={90}
                   id="about-img-coach"
                   src="/images/private_coach_1780638055912.png"
                   alt="Instruktur Renang MYCA Les Renang Semarang Mengajar Privat"

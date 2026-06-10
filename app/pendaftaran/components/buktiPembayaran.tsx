@@ -12,14 +12,15 @@ interface BuktiPembayaranProps {
 
     paymentProof: string | null;
      handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    isStep3Valid: boolean;
+    isStep4Valid: boolean;
      setPaymentProof: (e: string | null) => void; 
    handlePrevStep: () => void;
+    handleNextStep: () => void;
    totalPrice: number;
 
 }
 
-const BuktiPembayaran = ( {  paymentProof, handleFileChange, isStep3Valid,  setPaymentProof, handlePrevStep, totalPrice} : BuktiPembayaranProps) => {
+const BuktiPembayaran = ( {  paymentProof, handleFileChange, isStep4Valid,  setPaymentProof, handlePrevStep, handleNextStep, totalPrice} : BuktiPembayaranProps) => {
 
       const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,7 +108,8 @@ const BuktiPembayaran = ( {  paymentProof, handleFileChange, isStep3Valid,  setP
                   <button
                     id="btn-step3-submit"
                     type="submit"
-                    disabled={!isStep3Valid}
+                    disabled={!isStep4Valid}
+                     onClick={handleNextStep}
                     className="flex items-center gap-2 py-3.5 px-8 text-sm font-bold text-white bg-cyan-600 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow-lg shadow-cyan-200/50 transition-all duration-300"
                   >
                     <CheckCircle className="h-4 w-4" />

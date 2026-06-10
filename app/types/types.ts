@@ -29,19 +29,17 @@ export interface SwimTestimonial {
 
 export interface BookingSubmission {
   id: string;
-  bookingCode: string;
+  booking_code: string;
   student_name: string;
   parent_name?: string; // If student is child
   gender: string;
   birth_date: string;
   age: number;
   phone: string;
-  program: string;
   package_id: string;
   location_id: string;
-  course_days: string[];
   course_time: string;
-  start_date: string;
+  start_date: Date;
   schedule_preference?: string;
   notes?: string;
   total_price: number;

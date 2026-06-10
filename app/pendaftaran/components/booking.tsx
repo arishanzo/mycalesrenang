@@ -8,6 +8,8 @@ import LayananJadwal from './layananJadwal';
 import BiodataSiswa from './biodataSiswa';
 import BuktiPembayaran from './buktiPembayaran';
 import StepPemesanan from './stepsPemesanan';
+import { InvoiceStep } from './invoice';
+import { printDocument } from '@/app/utils/print';
 
 // Steps: 1=Biodata, 2=Layanan & Jadwal, 3=Upload Bukti Bayar, 4=Status
 const BookingForm = () => {
@@ -24,7 +26,6 @@ const BookingForm = () => {
   // Step 2 – Layanan & Jadwal
   const [packageId, setPackageId] = useState('a-semiprivat-4x');
   const [locationId, setLocationId] = useState('mijen-lakers');
-  const [courseDays, setCourseDays] = useState<string[]>([]);
   const [courseTime, setCourseTime] = useState('');
   const [startDate, setStartDate] = useState('');
   const [notes, setNotes] = useState('');
@@ -38,19 +39,25 @@ const BookingForm = () => {
   const [bookingHistory, setBookingHistory] = useState<BookingSubmission[]>([]);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
+  const [status, setStatus] = useState('');
+  
+  const [invoicePrinted, setInvoicePrinted] = useState(false);
+  const [printError, setPrintError] = useState('');
 
 
   const selectedPackage = MYCA_PACKAGES.find(p => p.id === packageId) || MYCA_PACKAGES[0];
   const totalPrice = selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
-  const isStep2Valid = packageId !== '' && locationId !== '' && courseDays.length > 0 && courseTime !== '' && startDate !== '';
-  const isStep3Valid = paymentProof !== null;
+  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '';
+  const isStep3Valid = confirmedBooking !== null;
+  const isStep4Valid = paymentProof !== null;
 
   const handleNextStep = () => {
     if (currentStep === 1 && !isStep1Valid) return;
     if (currentStep === 2 && !isStep2Valid) return;
     if (currentStep === 3 && !isStep3Valid) return;
+    if (currentStep === 4 && !isStep4Valid) return;
     setCurrentStep(prev => prev + 1);
   };
 
@@ -64,33 +71,28 @@ const BookingForm = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmitBooking = (e: React.FormEvent) => {
+ const handleSubmitBooking = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isStep1Valid || !isStep2Valid || !isStep3Valid) return;
+    if (!isStep1Valid || !isStep2Valid) return;
 
     const randomCode = 'MYCA-' + Math.floor(1000 + Math.random() * 9000);
     const newBooking: BookingSubmission = {
       id: Math.random().toString(36).substr(2, 9),
-      bookingCode: randomCode,
-      studentName,
-      parentName: Number(age) < 15 ? parentName : undefined,
+      booking_code: randomCode,
+      student_name: studentName,
+      parent_name: Number(age) < 15 ? parentName : undefined,
       gender,
-      birthDate,
+      birth_date: birthDate,
       age: Number(age),
       phone,
-      packageId,
-      locationId,
-      courseDays,
-      courseTime,
-      startDate,
-      schedulePreference: `${courseDays.join(', ')} · ${courseTime} WIB · Mulai ${startDate}`,
+      package_id: packageId,
+      location_id: locationId,
+      course_time: courseTime,
+      start_date: new Date(startDate),
+      schedule_preference: `${courseTime} WIB · Mulai ${startDate}`,
       notes,
-      totalPrice,
+      total_price: totalPrice,
       paymentProof: paymentProof ?? undefined,
-      submittedAt: new Date().toLocaleDateString('id-ID', {
-        year: 'numeric', month: 'long', day: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      }),
       status: 'Menunggu Konfirmasi'
     };
 
@@ -98,23 +100,42 @@ const BookingForm = () => {
     setBookingHistory(updatedHistory);
     localStorage.setItem('myca_bookings', JSON.stringify(updatedHistory));
     setConfirmedBooking(newBooking);
-    setCurrentStep(4);
+
+     setInvoicePrinted(false);
+    setPrintError('');
+    setCurrentStep(3);
   };
 
   const resetForm = () => {
     setStudentName(''); setParentName(''); setAge(''); setPhone(''); setGender(''); setBirthDate('');
-    setCourseDays([]); setCourseTime(''); setStartDate(''); setNotes('');
+     setCourseTime(''); setStartDate(''); setNotes('');
     setPaymentProof(null); setConfirmedBooking(null); setCurrentStep(1);
   };
 
   const openWhatsApp = (booking: BookingSubmission) => {
-    const loc = MYCA_LOCATIONS.find(l => l.id === booking.locationId)?.name || '';
-    const pkg = MYCA_PACKAGES.find(p => p.id === booking.packageId)?.name || '';
-    const text = `Halo MYCA Semarang,%0A%0ASaya ingin konfirmasi pendaftaran.%0A%0A*KODE:* ${booking.bookingCode}%0A*Murid:* ${booking.studentName}%0A*Paket:* ${pkg}%0A*Lokasi:* ${loc}%0A*Jadwal:* ${booking.schedulePreference ?? '-'}%0A*Total:* Rp ${booking.totalPrice.toLocaleString('id-ID')}%0A%0ATerima kasih!`;
+    const loc = MYCA_LOCATIONS.find(l => l.id === booking.location_id)?.name || '';
+    const pkg = MYCA_PACKAGES.find(p => p.id === booking.package_id)?.name || '';
+    const text = `Halo MYCA Semarang,%0A%0ASaya ingin konfirmasi pendaftaran.%0A%0A*KODE:* ${booking.booking_code}%0A*Murid:* ${booking.student_name}%0A*Paket:* ${pkg}%0A*Lokasi:* ${loc}%0A*Jadwal:* ${booking.schedule_preference ?? '-'}%0A*Total:* Rp ${booking.total_price.toLocaleString('id-ID')}%0A%0ATerima kasih!`;
     window.open(`https://wa.me/6289675211854?text=${text}`, '_blank');
   };
 
 
+  
+  const handlePrint = () => {
+    // Proactively unlock next steps to ensure sandbox frames don't leave users in an unclickable state
+    setInvoicePrinted(true);
+    setPrintError('');
+
+    // Detect which printable element is currently present on screen
+    const targetId = document.getElementById('printable-invoice') ? 'printable-invoice' : 'printable-ticket';
+    
+    printDocument(targetId, {
+      booking_code: confirmedBooking?.booking_code,
+      isInvoice: targetId === 'printable-invoice'
+    });
+  };
+
+  console.log(confirmedBooking)
   return (
     <section id="booking-form" className="py-24 bg-white relative overflow-hidden">
       <div className="absolute top-[15%] right-[-10%] w-[350px] h-[350px] bg-cyan-100/30 rounded-full blur-[100px] pointer-events-none" />
@@ -187,8 +208,6 @@ const BookingForm = () => {
               setPackageId={setPackageId}
               locationId={locationId}
               setLocationId={setLocationId}
-              courseDays={courseDays}
-              setCourseDays={setCourseDays}
               courseTime={courseTime}
               setCourseTime={setCourseTime}
               startDate={startDate}
@@ -197,31 +216,44 @@ const BookingForm = () => {
               setNotes={setNotes}
               selectedPackage={selectedPackage}
               handlePrevStep={handlePrevStep}
-              handleNextStep={handleNextStep}
               isStep2Valid={isStep2Valid}
+              handleSubmitBooking={handleSubmitBooking}
              />
             )}
 
             {/* ── STEP 3: UPLOAD BUKTI PEMBAYARAN ── */}
-            {currentStep === 3 && (
+            {currentStep === 4 &&  (
              <BuktiPembayaran
                paymentProof={paymentProof}
                setPaymentProof={setPaymentProof}
                handleFileChange={handleFileChange}
                handlePrevStep={handlePrevStep}
                totalPrice={totalPrice}
-               isStep3Valid={isStep3Valid}
+               isStep4Valid={isStep4Valid}
+               handleNextStep={handleNextStep}
              />
             )}
 
-            {/* ── STEP 4: STATUS ── */}
-            {currentStep === 4 && confirmedBooking && (
+             {/* STEP 4: TAGIHAN INVOICE RESMI (Cetak PDF) */}
+            {currentStep === 3 && confirmedBooking && (
+              <InvoiceStep
+                confirmedBooking={confirmedBooking}
+                invoicePrinted={invoicePrinted}
+                printError={printError}
+                setPrintError={setPrintError}
+                setCurrentStep={setCurrentStep}
+                handlePrint={handlePrint}
+              />
+            )}
 
-              <ConfirmedBooking 
+
+            {/* ── STEP 4: STATUS ── */}
+            {currentStep === 5 && confirmedBooking && (
+
+              <ConfirmedBooking
                 Booking={confirmedBooking}
                 onReset={resetForm}
                 onWhatsApp={ () => openWhatsApp(confirmedBooking) }
-                courseDays={courseDays}
 
               />
              

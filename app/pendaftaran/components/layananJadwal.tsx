@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag } from "lucide-react";
+import { BookingSubmission } from '@/app/types/types';
 
 const CATEGORIES = [
   { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
@@ -27,12 +28,12 @@ const TIME_SLOTS = [
 ];
 
 interface LayananJadwalProps {
+  
+    handleSubmitBooking: (e: React.FormEvent) => void;
   packageId: string | number;
   setPackageId: (id: string) => void;
   locationId: string;
   setLocationId: (id: string) => void;
-  courseDays: string[];
-  setCourseDays: (days: string[]) => void;
   courseTime: string;
   setCourseTime: (time: string) => void;
   startDate: string;
@@ -49,17 +50,15 @@ interface LayananJadwalProps {
     category: string;
   };
   handlePrevStep: () => void;
-  handleNextStep: () => void;
   isStep2Valid: boolean;
 }
 
 const LayananJadwal = ({
+ handleSubmitBooking,
   packageId,
   setPackageId,
   locationId,
   setLocationId,
-  courseDays,
-  setCourseDays,
   courseTime,
   setCourseTime,
   startDate,
@@ -68,7 +67,6 @@ const LayananJadwal = ({
   setNotes,
   selectedPackage,
   handlePrevStep,
-  handleNextStep,
   isStep2Valid,
 }: LayananJadwalProps) => {
   const [category, setCategory] = useState<string>('asisten');
@@ -81,13 +79,6 @@ const LayananJadwal = ({
     if (first) setPackageId(first.id);
   };
 
-  const toggleDay = (day: string) => {
-    setCourseDays(
-      courseDays.includes(day)
-        ? courseDays.filter(d => d !== day)
-        : [...courseDays, day]
-    );
-  };
 
   const catLabel = CATEGORIES.find(c => c.id === category)?.label ?? '';
   const selectedLoc = MYCA_LOCATIONS.find(l => l.id === locationId);
@@ -179,36 +170,6 @@ const LayananJadwal = ({
             )}
           </div>
 
-          {/* Hari Les */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
-              <CalendarDays className="h-4 w-4 text-cyan-600" />
-              Hari Les <span className="text-red-500">*</span>
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {DAYS.map(day => (
-                <button
-                  key={day}
-                  type="button"
-                  id={`day-btn-${day}`}
-                  onClick={() => toggleDay(day)}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                    courseDays.includes(day)
-                      ? 'bg-cyan-500 border-cyan-500 text-white shadow-sm'
-                      : 'bg-white border-marine-100 text-marine-700 hover:bg-marine-50'
-                  }`}
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-            {courseDays.length > 0 && (
-              <p className="text-[10px] text-cyan-700 font-medium">
-                ✓ Dipilih: {courseDays.join(', ')}
-              </p>
-            )}
-          </div>
-
           {/* Jam Les */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
@@ -268,14 +229,7 @@ const LayananJadwal = ({
                 <p className="text-sm text-marine-200 mt-1 font-light">
                   <strong className="text-white">{catLabel}</strong>
                 </p>
-                <p className="text-xs text-marine-300 mt-0.5">
-                  {TYPE_LABEL[selectedPackage.type]} · {toggleDay.length}x pertemuan
-                </p>
-                {courseDays.length > 0 && courseTime && (
-                  <p className="text-xs text-marine-400 mt-0.5">
-                    {courseDays.join(', ')} · {courseTime} WIB
-                  </p>
-                )}
+              
                 {startDate && (
                   <p className="text-xs text-marine-400">
                     Mulai: {new Date(startDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -305,10 +259,10 @@ const LayananJadwal = ({
             id="btn-step2-next"
             type="button"
             disabled={!isStep2Valid}
-            onClick={handleNextStep}
+            onClick={handleSubmitBooking}
             className="flex items-center gap-1.5 py-3 px-6 text-xs md:text-sm font-semibold text-white bg-marine-800 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition duration-300"
           >
-            Lanjut Upload Bukti Bayar
+            Lanjut Unduh Invoice 
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>

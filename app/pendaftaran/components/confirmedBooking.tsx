@@ -5,7 +5,7 @@ import { BookingSubmission } from "@/app/types/types";
 import { BadgeCheck, Hourglass, Phone, Waves } from "lucide-react";
 import Image from "next/image";
 
-const ConfirmedBooking = ({ Booking, onReset, onWhatsApp, courseDays }: { Booking:  BookingSubmission; onReset: () => void; onWhatsApp: () => void;  courseDays: string[] }) => {
+const ConfirmedBooking = ({ Booking, onReset, onWhatsApp }: { Booking:  BookingSubmission; onReset: () => void; onWhatsApp: () => void;  }) => {
     return (
 
         <>
@@ -30,33 +30,29 @@ const ConfirmedBooking = ({ Booking, onReset, onWhatsApp, courseDays }: { Bookin
                       <Waves className="h-5 w-5 text-marine-800" />
                       <span className="font-display font-bold text-marine-900">MYCA Les Renang</span>
                     </div>
-                    <span className="font-mono font-bold text-cyan-600 tracking-wider">{Booking.bookingCode}</span>
+                    <span className="font-mono font-bold text-cyan-600 tracking-wider">{Booking.booking_code}</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-y-3 text-xs border-t border-marine-100 pt-4">
                     <div>
                       <p className="text-marine-500 uppercase tracking-wider font-mono">Nama Murid</p>
-                      <p className="font-semibold text-marine-900 mt-0.5">{Booking.studentName}</p>
+                      <p className="font-semibold text-marine-900 mt-0.5">{Booking.student_name}</p>
                     </div>
                     <div>
                       <p className="text-marine-500 uppercase tracking-wider font-mono">Paket</p>
-                      <p className="font-semibold text-cyan-600 mt-0.5">{MYCA_PACKAGES.find(p => p.id === Booking.packageId)?.name}</p>
+                      <p className="font-semibold text-cyan-600 mt-0.5">{MYCA_PACKAGES.find(p => p.id === Booking.package_id)?.name}</p>
                     </div>
                     <div>
                       <p className="text-marine-500 uppercase tracking-wider font-mono">Lokasi</p>
-                      <p className="font-semibold text-marine-900 mt-0.5">{MYCA_LOCATIONS.find(l => l.id === Booking.locationId)?.name}</p>
+                      <p className="font-semibold text-marine-900 mt-0.5">{MYCA_LOCATIONS.find(l => l.id === Booking.location_id)?.name}</p>
                     </div>
                     <div>
                       <p className="text-marine-500 uppercase tracking-wider font-mono">Jadwal</p>
-                      <p className="font-semibold text-marine-900 mt-0.5">{Booking.schedulePreference}</p>
-                    </div>
-                    <div>
-                      <p className="text-marine-500 uppercase tracking-wider font-mono">Sesi</p>
-                      <p className="font-semibold text-marine-900 mt-0.5">{courseDays?.length}× Pertemuan</p>
+                      <p className="font-semibold text-marine-900 mt-0.5">{Booking.schedule_preference}</p>
                     </div>
                     <div>
                       <p className="text-marine-500 uppercase tracking-wider font-mono">Total Bayar</p>
-                      <p className="font-bold text-marine-900 mt-0.5">Rp {Booking.totalPrice.toLocaleString('id-ID')}</p>
+                      <p className="font-bold text-marine-900 mt-0.5">Rp {Booking.total_price.toLocaleString('id-ID')}</p>
                     </div>
                   </div>
 
