@@ -135,7 +135,17 @@ const BookingForm = () => {
     });
   };
 
-  console.log(confirmedBooking)
+const handleFinishPayment = () => {
+    if (!confirmedBooking) return;
+
+    const completedBooking: BookingSubmission = {
+      ...confirmedBooking,
+      paymentProof: paymentProof || 'bukti_transfer.jpg'
+    };
+
+    setConfirmedBooking(completedBooking);
+  }
+
   return (
     <section id="booking-form" className="py-24 bg-white relative overflow-hidden">
       <div className="absolute top-[15%] right-[-10%] w-[350px] h-[350px] bg-cyan-100/30 rounded-full blur-[100px] pointer-events-none" />
@@ -231,6 +241,7 @@ const BookingForm = () => {
                totalPrice={totalPrice}
                isStep4Valid={isStep4Valid}
                handleNextStep={handleNextStep}
+                handleFinishPayment={handleFinishPayment}
              />
             )}
 
@@ -251,9 +262,10 @@ const BookingForm = () => {
             {currentStep === 5 && confirmedBooking && (
 
               <ConfirmedBooking
-                Booking={confirmedBooking}
-                onReset={resetForm}
-                onWhatsApp={ () => openWhatsApp(confirmedBooking) }
+                confirmedBooking={confirmedBooking}
+                resetForm={resetForm}
+                openWhatsApp={ () => openWhatsApp(confirmedBooking) }
+                handlePrint={handlePrint}
 
               />
              

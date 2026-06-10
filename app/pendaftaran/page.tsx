@@ -2,7 +2,7 @@
 
 import Footer from "../layout/footer";
 import Header from "../layout/navbar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ComponentType } from "react";
 import BookingForm from "./components/booking";
 
 export default function Home() {
@@ -64,8 +64,7 @@ export default function Home() {
       {/* Main Structural Content Layout */}
       <main className="relative">
         
-         <BookingForm />
-
+        <BookingForm />
       </main>
 
       {/* FOOTER BLOCK WITH LOCATION MAP DETAILS */}
