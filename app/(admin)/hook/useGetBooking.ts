@@ -15,7 +15,7 @@ export const UseGetBooking = () => {
       try {
         setLoading(true);
         const result = await getFetchCache( () => getAllBooking(), 5, 3000);
-        if (isMounted) setBooking(result?.data || null);
+        if (isMounted) setBooking(result || null);
 
       } catch (error: any) {
 
