@@ -37,19 +37,65 @@ const BuktiPembayaran = ( {  paymentProof, handleFileChange, isStep4Valid, handl
                 </div>
 
                 {/* Info Rekening */}
-                <div className="bg-cyan-50 border border-cyan-200 rounded-2xl p-5 space-y-2 text-sm">
+                <div className="border border-cyan-200 rounded-2xl p-5 space-y-2 text-sm">
                   <p className="font-bold text-marine-900">Informasi Rekening MYCA Les Renang:</p>
-                  <div className="grid grid-cols-2 gap-y-1 text-xs text-marine-800">
-                    <span className="text-marine-600">Bank</span>
-                    <span className="font-semibold">BCA / BRI / Mandiri</span>
-                    <span className="text-marine-600">No. Rekening</span>
-                    <span className="font-mono font-bold text-marine-950">1234-5678-90</span>
-                    <span className="text-marine-600">Atas Nama</span>
-                    <span className="font-semibold">MYCA Semarang Aquatic</span>
-                    <span className="text-marine-600">Nominal</span>
-                    <span className="font-bold text-cyan-700">Rp {totalPrice.toLocaleString('id-ID')}</span>
-                  </div>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Bank BCA account */}
+            <div className="bg-marine-50/50 p-4 rounded-2xl border border-marine-100 flex justify-between items-center">
+              <div>
+                <p className="text-[10px] text-marine-500 font-bold uppercase tracking-wider">Bank BCA</p>
+                <p className="text-sm font-black font-mono text-marine-950 mt-1">0095332728</p>
+                <p className="text-[10px] text-marine-600 mt-0.5 font-sans">a.n. <strong className="font-semibold">Yenny Sarwokusumo</strong></p>
+              </div>
+              <span className="text-[10px] bg-cyan-100/70 border border-cyan-200 text-cyan-700 px-2 py-1 rounded-lg select-none font-bold">
+                Utama
+              </span>
+            </div>
+
+            {/* Bank Mandiri account */}
+            <div className="bg-marine-50/50 p-4 rounded-2xl border border-marine-100 flex justify-between items-center">
+              <div>
+                <p className="text-[10px] text-marine-500 font-bold uppercase tracking-wider">Bank BRI</p>
+                <p className="text-sm font-black font-mono text-marine-950 mt-1">008301193936502</p>
+                <p className="text-[10px] text-marine-600 mt-0.5 font-sans">a.n. <strong className="font-semibold">Yenny Sarwokusumo</strong></p>
+              </div>
+              <span className="text-[10px] bg-marine-100 border border-marine-200 text-marine-700 px-2 py-1 rounded-lg select-none font-bold">
+                Alternatif
+              </span>
+            </div>
+
+              {/* Bank Mandiri account */}
+            <div className="bg-marine-50/50 p-4 rounded-2xl border border-marine-100 flex justify-between items-center">
+              <div>
+                <p className="text-[10px] text-marine-500 font-bold uppercase tracking-wider">Bank Mandiri</p>
+                <p className="text-sm font-black font-mono text-marine-950 mt-1">1350016264911</p>
+                <p className="text-[10px] text-marine-600 mt-0.5 font-sans">a.n. <strong className="font-semibold">Yenny Sarwokusumo</strong></p>
+              </div>
+              <span className="text-[10px] bg-marine-100 border border-marine-200 text-marine-700 px-2 py-1 rounded-lg select-none font-bold">
+                Alternatif
+              </span>
+            </div>
+          </div>
+
+          
                 </div>
+<div className="mt-6 bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 rounded-2xl p-5 shadow-sm">
+  <div className="grid grid-cols-2 items-center">
+    <div>
+      <p className="text-xs font-semibold text-marine-700 uppercase tracking-wider">
+        Total Pembayaran
+      </p>
+    </div>
+    <div className="text-right">
+      <p className="text-xl font-bold text-marine-950">
+        Rp {totalPrice.toLocaleString("id-ID")}
+      </p>
+      <p className="text-[11px] text-marine-500 mt-0.5">
+       Tidak Termasuk Asuransi dan Tiket Masuk Kolam Renang
+      </p>
+    </div>
+  </div>
+</div>
 
                 {/* Upload Area */}
                 <div className="flex flex-col gap-2">

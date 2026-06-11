@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MYCA_PACKAGES, MYCA_LOCATIONS } from '../../libs/data';
-import { BookingSubmission } from '../../types/types';
+import { BookingSubmission, CourseDays } from '../../types/types';
 import { CheckCircle, History,} from 'lucide-react';
 import HistoryModal from './historyModal';
 import ConfirmedBooking from './confirmedBooking';
@@ -10,6 +10,9 @@ import BuktiPembayaran from './buktiPembayaran';
 import StepPemesanan from './stepsPemesanan';
 import { InvoiceStep } from './invoice';
 import { printDocument } from '@/app/utils/print';
+
+
+
 
 // Steps: 1=Biodata, 2=Layanan & Jadwal, 3=Upload Bukti Bayar, 4=Status
 const BookingForm = () => {
@@ -27,8 +30,12 @@ const BookingForm = () => {
   const [packageId, setPackageId] = useState('a-semiprivat-4x');
   const [locationId, setLocationId] = useState('mijen-lakers');
   const [courseTime, setCourseTime] = useState('');
-  const [startDate, setStartDate] = useState('');
+  const [courseDays, setCourseDays] = useState<CourseDays[]>([]);
+  const [startDate, setStartDate] = useState<Date>(new Date());
   const [notes, setNotes] = useState('');
+  
+  const [customLocation, setCustomLocation] = useState('');
+
 
   // Step 3 – Bukti Pembayaranh
   const [paymentProof, setPaymentProof] = useState<string | null>(null);
@@ -38,8 +45,6 @@ const BookingForm = () => {
   const [confirmedBooking, setConfirmedBooking] = useState<BookingSubmission | null>(null);
   const [bookingHistory, setBookingHistory] = useState<BookingSubmission[]>([]);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-
-  const [status, setStatus] = useState('');
   
   const [invoicePrinted, setInvoicePrinted] = useState(false);
   const [printError, setPrintError] = useState('');
@@ -49,7 +54,7 @@ const BookingForm = () => {
   const totalPrice = selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
-  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '';
+  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== new Date();
   const isStep3Valid = confirmedBooking !== null;
   const isStep4Valid = paymentProof !== null;
 
@@ -71,8 +76,8 @@ const BookingForm = () => {
     reader.readAsDataURL(file);
   };
 
- const handleSubmitBooking = (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmitBooking = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!isStep1Valid || !isStep2Valid) return;
 
     const randomCode = 'MYCA-' + Math.floor(1000 + Math.random() * 9000);
@@ -86,9 +91,10 @@ const BookingForm = () => {
       age: Number(age),
       phone,
       package_id: packageId,
-      location_id: locationId,
+      location_id: customLocation ? customLocation : locationId,
+      course_day: courseDays as unknown as [],
       course_time: courseTime,
-      start_date: new Date(startDate),
+      start_date: startDate ?? new Date() ,
       schedule_preference: `${courseTime} WIB · Mulai ${startDate}`,
       notes,
       total_price: totalPrice,
@@ -108,7 +114,7 @@ const BookingForm = () => {
 
   const resetForm = () => {
     setStudentName(''); setParentName(''); setAge(''); setPhone(''); setGender(''); setBirthDate('');
-     setCourseTime(''); setStartDate(''); setNotes('');
+     setCourseTime(''); setStartDate( new Date('')); setNotes('');
     setPaymentProof(null); setConfirmedBooking(null); setCurrentStep(1);
   };
 
@@ -228,6 +234,10 @@ const handleFinishPayment = () => {
               handlePrevStep={handlePrevStep}
               isStep2Valid={isStep2Valid}
               handleSubmitBooking={handleSubmitBooking}
+              courseDays={courseDays}
+              setCourseDays={setCourseDays}
+              customLocation={customLocation}
+              setCustomLocation={setCustomLocation}
              />
             )}
 
@@ -249,7 +259,6 @@ const handleFinishPayment = () => {
             {currentStep === 3 && confirmedBooking && (
               <InvoiceStep
                 confirmedBooking={confirmedBooking}
-                invoicePrinted={invoicePrinted}
                 printError={printError}
                 setPrintError={setPrintError}
                 setCurrentStep={setCurrentStep}
@@ -266,6 +275,7 @@ const handleFinishPayment = () => {
                 resetForm={resetForm}
                 openWhatsApp={ () => openWhatsApp(confirmedBooking) }
                 handlePrint={handlePrint}
+                invoicePrinted={invoicePrinted}
 
               />
              

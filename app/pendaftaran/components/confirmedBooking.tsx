@@ -2,7 +2,7 @@
 
 import { MYCA_PACKAGES,  MYCA_LOCATIONS } from "@/app/libs/data";
 import { BookingSubmission } from "@/app/types/types";
-import {  CheckCircle, Phone, Printer } from "lucide-react";
+import {  AlertCircle, CheckCircle, Phone, Printer } from "lucide-react";
 import Image from "next/image";
 
 
@@ -11,13 +11,14 @@ interface InvoiceStepProps {
   handlePrint: () => void;
   openWhatsApp: () => void;
   resetForm: () => void
+  invoicePrinted: boolean;
 }
 
-const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePrint, } : InvoiceStepProps) => {
+const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePrint, invoicePrinted } : InvoiceStepProps) => {
     return (
 
         <>
-         <div id="step-6-content" className="space-y-8 animate-reveal">
+         <div id="step-6-content" className="space-y-2 animate-reveal">
                 
                 {/* Visual success splash */}
                 <div className="text-center py-6">
@@ -38,8 +39,8 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                   className="p-6 sm:p-8 bg-dashed border-2 border-marine-300 bg-marine-50/50 rounded-3xl relative"
                 >
                   {/* Decorative stamp watermark */}
-                  <div className="absolute top-4 right-4 border-2 border-marine-800/20 text-marine-800/25 rotate-12 py-1 px-4 font-mono font-bold text-xs rounded tracking-widest uppercase">
-                    Official MYCA
+                  <div className="absolute top-4 md:right-42 right-2 mt-3 border-2 border-green-800/20 text-green-800/25  py-1 px-4 font-mono font-bold text-xs rounded tracking-widest uppercase">
+                    Lunas Pembayaran
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-dashed border-marine-300">
@@ -104,9 +105,17 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                      </div>
            
                       <div>
-                       <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Jam Mulai</p>
+                       <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Jam</p>
                        <p className="font-bold text-marine-800 mt-0.5 font-sans">
                        {confirmedBooking?.course_time }
+                       
+                       </p>
+                     </div>
+
+                     <div>
+                       <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Hari</p>
+                       <p className="font-bold text-marine-800 mt-0.5 font-sans">
+                     {((confirmedBooking?.course_day as { name: string }[]) || []).map(i => i.name).join(', ') || '-'} 
                        
                        </p>
                      </div>
@@ -170,21 +179,29 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                 {/* Confirm on whatsapp and local commands */}
                 <div className="flex flex-col sm:flex-row gap-4 items-stretch justify-center pt-4">
                   <button
-                    id="btn-print-ticket"
-                    type="button"
-                    onClick={handlePrint}
-                    className="flex items-center justify-center gap-1.5 py-3 px-5 border border-marine-200 rounded-xl hover:bg-marine-50 transition-colors text-sm font-semibold text-marine-800 cursor-pointer"
-                  >
-                    <Printer className="h-4 w-4" />
-                    Cetak Tiket (Print)
-                  </button>
+                  id="btn-print-invoice"
+                  type="button"
+                  onClick={handlePrint}
+                  className={`flex items-center justify-center gap-1.5 py-3 px-5 border-2 rounded-xl transition-all text-sm font-semibold cursor-pointer ${
+                    !invoicePrinted 
+                      ? 'border-amber-400 bg-amber-50 hover:bg-amber-100 text-amber-900 animate-pulse shadow-md shadow-amber-200/50' 
+                      : 'border-marine-250 bg-marine-50 hover:bg-marine-100 text-marine-800'
+                  }`}
+                >
+                  <Printer className="h-4 w-4" />
+                  Cetak / Simpan PDF Invoice {invoicePrinted && '✓'}
+                </button> 
 
                   <button
                     id="btn-confirm-wa"
+                    disabled= { invoicePrinted ? false : true }
                     type="button"
                     onClick={openWhatsApp}
-                    className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md hover:shadow-emerald-250/20 transition-all cursor-pointer"
-                  >
+                              className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold transition-all cursor-pointer text-sm sm:text-base pointer-events-auto ${
+            invoicePrinted 
+              ? 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-md hover:shadow-cyan-200/20' 
+              : 'bg-slate-100 text-slate-400 border border-slate-200 hover:bg-slate-200/50 cursor-pointer '
+          } `}                  >
                     <Phone className="h-4 w-4 shrink-0" />
                     Kirim Pesan Konfirmasi ke Pelatih (WA)
                   </button>
@@ -198,6 +215,14 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                     Daftar Murid Baru Lagi
                   </button>
                 </div>
+
+                 <div className="no-print mt-4 p-4 bg-cyan-50/70 border border-cyan-150 rounded-2xl flex gap-3 items-start text-xs text-cyan-800 leading-relaxed max-w-2xl mx-auto shadow-sm">
+        <AlertCircle className="h-4.5 w-4.5 text-cyan-600 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold text-cyan-950 block mb-0.5">💡 Tips Cetak & Simpan PDF:</span>
+          Jika tombol cetak tidak berespon pada tampilan pratinjau saat ini, silakan tekan tombol <strong>Open App in New Tab (ikon panah keluar di pojok kanan atas layar pratinjau browser)</strong> untuk membukanya di tab baru secara utuh, lalu tekan kembali tombol Cetak. Anda dapat memilih printer <strong>Save as PDF</strong> untuk mengunduhnya secara digital.
+        </div>
+      </div>
 
         </>
 

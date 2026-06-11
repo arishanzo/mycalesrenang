@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag } from "lucide-react";
-import { BookingSubmission } from '@/app/types/types';
+import { BookingSubmission, CourseDays } from '@/app/types/types';
+import Swal from 'sweetalert2';
 
 const CATEGORIES = [
   { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
@@ -18,26 +19,26 @@ const TYPE_LABEL: Record<string, string> = {
   oncecourse: 'Once Course',
 };
 
-const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-
 const TIME_SLOTS = [
   '06:00', '06:30', '07:00', '07:30', '08:00', '08:30',
   '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
   '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
-  '17:00', '17:30', '18:00', '18:30', '19:00',
+  '17:00', '17:30', '18:00',
 ];
 
 interface LayananJadwalProps {
   
-    handleSubmitBooking: (e: React.FormEvent) => void;
+    handleSubmitBooking: (e?: React.FormEvent) => void;
   packageId: string | number;
   setPackageId: (id: string) => void;
+  customLocation: string;
+  setCustomLocation: (id: string) => void;
   locationId: string;
   setLocationId: (id: string) => void;
   courseTime: string;
   setCourseTime: (time: string) => void;
-  startDate: string;
-  setStartDate: (date: string) => void;
+  startDate: Date;
+  setStartDate: (date: Date) => void;
   notes: string;
   setNotes: (value: string) => void;
   selectedPackage: {
@@ -51,6 +52,8 @@ interface LayananJadwalProps {
   };
   handlePrevStep: () => void;
   isStep2Valid: boolean;
+    courseDays: CourseDays[];
+  setCourseDays: (days: CourseDays[]) => void;
 }
 
 const LayananJadwal = ({
@@ -68,6 +71,11 @@ const LayananJadwal = ({
   selectedPackage,
   handlePrevStep,
   isStep2Valid,
+    courseDays,
+  setCourseDays,
+  customLocation,
+  setCustomLocation,
+  
 }: LayananJadwalProps) => {
   const [category, setCategory] = useState<string>('asisten');
 
@@ -77,14 +85,70 @@ const LayananJadwal = ({
     setCategory(cat);
     const first = MYCA_PACKAGES.find(p => p.category === cat);
     if (first) setPackageId(first.id);
+    setCourseDays([]);
   };
 
+  const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPackageId(e.target.value);
+    setCourseDays([]);
+  };
 
   const catLabel = CATEGORIES.find(c => c.id === category)?.label ?? '';
-  const selectedLoc = MYCA_LOCATIONS.find(l => l.id === locationId);
 
   // min date = today
   const today = new Date().toISOString().split('T')[0];
+
+  const endDate = new Date(startDate);
+endDate.setDate(startDate.getDate() + 1);
+
+  //  Hari
+  // const DAYS = Array.from(
+  //   { length: selectedPackage.sessions },
+  //   (_, i) => {
+  //     const date = new Date(endDate);
+  //     date.setDate(date.getDate() + i);
+
+  //     return date.toLocaleDateString('id-ID', {
+  //       weekday: 'long',
+  //     });
+  //   }
+  // );
+ 
+  const DaysList = [ 
+    { id: 1,name: 'senin'},
+    { id: 2,name: 'selasa'},
+    { id: 3,name: 'rabu'},
+    { id: 4,name: 'kamis'},
+    { id: 5,name: 'jumat'},
+    { id: 6,name: 'sabtu'},
+    { id: 7,name: 'minggu'},
+    { id: 8,name: 'senin'},]
+    ;
+
+  
+
+ const toggleDay = (id: number , day: string) => {
+
+  const data = { id: id, name: day}
+    setCourseDays(
+      courseDays.some(d => d.id === data.id) ? courseDays.filter(d => d.id !== data.id) : courseDays.length < selectedPackage.sessions ? [...courseDays, data] : courseDays
+    );
+  };
+
+  const handleCek = () => {
+     
+      if (courseDays.length < selectedPackage.sessions) {
+    Swal.fire({
+      icon: "warning",
+      title: `Hari Les Belum Dipilih`,
+      text: `Maksimal ${selectedPackage.sessions} x Pertemuan / Hari`,
+      confirmButtonColor: "#06b6d4"
+    });
+  }
+    return;
+  }
+
+  console.log(courseDays.length)
 
   return (
     <>
@@ -125,7 +189,7 @@ const LayananJadwal = ({
             <select
               id="select-package"
               value={packageId as string}
-              onChange={e => setPackageId(e.target.value)}
+              onChange={(handlePackageChange)}
               className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
             >
               {filteredPackages.map(pkg => (
@@ -144,32 +208,37 @@ const LayananJadwal = ({
             )}
           </div>
 
-          {/* Lokasi */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="h-4 w-4 text-cyan-600" />
-              Lokasi Kolam <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="select-arena-location"
-              value={locationId}
-              onChange={e => setLocationId(e.target.value)}
-              className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
-            >
-              {MYCA_LOCATIONS.map(loc => (
-                <option key={loc.id} value={loc.id}>{loc.name}</option>
-              ))}
-            </select>
-            {selectedLoc && (
-              <div className="p-3 bg-marine-50 rounded-xl border border-marine-100 text-xs text-marine-800 space-y-0.5">
-                <p className="font-semibold text-marine-950 mb-1">Fasilitas:</p>
-                {selectedLoc.facilities.map((f, i) => (
-                  <p key={i} className="font-light">• {f}</p>
+         {/* Lokasi */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
+                <MapPin className="h-4 w-4 text-cyan-600" />
+                Lokasi Kolam <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="select-arena-location"
+                value={locationId}
+                onChange={e => setLocationId(e.target.value)}
+                className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+              >
+                {MYCA_LOCATIONS.map(loc => (
+                  <option key={loc.id} value={loc.id}>{loc.name}</option>
                 ))}
-              </div>
-            )}
-          </div>
+                <option value="custom">Tulis sendiri...</option>
+              </select>
 
+              {locationId === "custom" && (
+                <input
+                  type="text"
+                  placeholder="Masukkan lokasi kolam"
+                  value={customLocation}
+                  onChange={e =>  setCustomLocation(e.target.value)}
+                  className="w-full bg-white text-sm py-3 px-4 rounded-xl border border-cyan-500 focus:outline-none"
+                />
+              )}
+
+            </div>
+
+           
           {/* Jam Les */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
@@ -189,6 +258,40 @@ const LayananJadwal = ({
             </select>
           </div>
 
+            {/* Hari Les */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
+              <CalendarDays className="h-4 w-4 text-cyan-600" />
+              Hari Les <span className="text-red-500">*</span>
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {DaysList.map((day,index) => (
+                <button
+                  key={`${day}-${index}`}
+                  type="button"
+                  id={`day-btn-${day}`}
+                  onClick={() => toggleDay( day.id,day.name)}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
+                    courseDays.some(d => d.id === day.id && d.name === day.name)
+                      ? 'bg-cyan-500 border-cyan-500 text-white shadow-sm'
+                      : 'bg-white border-marine-100 text-marine-700 hover:bg-marine-50'
+                  }`}
+                >
+                  {day.name}
+                </button>
+              ))}
+            </div>
+           
+            {courseDays.length > 0 && (
+              <p className="text-[10px] text-cyan-700 font-medium">
+                ✓ Dipilih: {courseDays.map(d => d.name).join(', ')}
+              </p>
+            )}
+
+            
+          </div>
+          
+
           {/* Tanggal Mulai */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
@@ -199,8 +302,8 @@ const LayananJadwal = ({
               id="input-start-date"
               type="date"
               min={today}
-              value={startDate}
-              onChange={e => setStartDate(e.target.value)}
+              value={startDate ? startDate.toISOString().split("T")[0] : ""}
+             onChange={e => setStartDate(new Date(e.target.value))}
               className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
             />
           </div>
@@ -259,13 +362,15 @@ const LayananJadwal = ({
             id="btn-step2-next"
             type="button"
             disabled={!isStep2Valid}
-            onClick={handleSubmitBooking}
+            onClick={() => courseDays.length === selectedPackage.sessions ? handleSubmitBooking() : handleCek()}
             className="flex items-center gap-1.5 py-3 px-6 text-xs md:text-sm font-semibold text-white bg-marine-800 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition duration-300"
           >
-            Lanjut Unduh Invoice 
+            Lanjut Invoice
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
+
+        
       </div>
     </>
   );
