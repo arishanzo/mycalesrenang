@@ -10,10 +10,10 @@ import Image from 'next/image';
 
 interface BuktiPembayaranProps {
 
-    paymentProof: string | null;
+    paymentProof: globalThis.File | null;
      handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     isStep4Valid: boolean;
-     setPaymentProof: (e: string | null) => void; 
+     setPaymentProof: (e: globalThis.File | null) => void; 
    handlePrevStep: () => void;
     handleNextStep: () => void;
    totalPrice: number;
@@ -117,7 +117,7 @@ const BuktiPembayaran = ( {  paymentProof, handleFileChange, isStep4Valid, handl
                       <Image 
                       width={64} 
                       height={64}
-                      src={paymentProof} 
+                      src={URL.createObjectURL(paymentProof)} 
                       alt="Bukti Pembayaran" 
                       className="w-full max-h-64 object-contain bg-marine-50" />
                       <button

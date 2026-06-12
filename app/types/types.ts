@@ -38,13 +38,13 @@ export interface BookingSubmission {
   phone: string;
   package_id: string;
   location_id: string;
-  course_day: [],
+  course_day: CourseDays[],
   course_time: string;
   start_date: Date;
   schedule_preference?: string;
   notes?: string;
   total_price: number;
-   paymentProof?: string; // base64 image or file URL
+   paymentProof?: File | string; // base64 image or file URL
   status: 'Menunggu Konfirmasi' | 'Terkonfirmasi' | 'Pembayaran Diterima';
  
 }

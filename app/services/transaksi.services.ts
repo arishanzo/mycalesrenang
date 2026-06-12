@@ -9,16 +9,20 @@ export const getAllBooking = async (): Promise<BookingSubmission[]> => {
 };
 
 
-export const createBooking = async (data: Partial<BookingSubmission>): Promise<BookingSubmission[]> => {
-    return await fetchAPI<BookingSubmission[]>('/transaksi/create', {
-        method: 'POST',
-        headers: {
-            ...authHeaders,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
+export const createBooking = async (
+  data: Partial<BookingSubmission> | FormData
+): Promise<BookingSubmission[]> => {
+  const isFormData = data instanceof FormData;
+
+  return await fetchAPI<BookingSubmission[]>("/transaksi/create", {
+    method: "POST",
+    headers: isFormData
+      ? authHeaders
+      : { ...authHeaders, "Content-Type": "application/json" },
+    body: isFormData ? data : JSON.stringify(data),
+  });
 };
+
 
 
 export const updateStatusBooking = async ( id: string, status: string) : Promise<BookingSubmission> => {

@@ -10,6 +10,9 @@ import BuktiPembayaran from './buktiPembayaran';
 import StepPemesanan from './stepsPemesanan';
 import { InvoiceStep } from './invoice';
 import { printDocument } from '@/app/utils/print';
+import { createBooking } from '@/app/services/transaksi.services';
+import Swal from 'sweetalert2';
+import { File } from 'buffer';
 
 
 
@@ -38,7 +41,8 @@ const BookingForm = () => {
 
 
   // Step 3 – Bukti Pembayaranh
-  const [paymentProof, setPaymentProof] = useState<string | null>(null);
+const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
+
 
 
   // Confirmed & history
@@ -71,9 +75,7 @@ const BookingForm = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setPaymentProof(reader.result as string);
-    reader.readAsDataURL(file);
+     setPaymentProof(file);
   };
 
  const handleSubmitBooking = (e?: React.FormEvent) => {
@@ -98,7 +100,7 @@ const BookingForm = () => {
       schedule_preference: `${courseTime} WIB · Mulai ${startDate}`,
       notes,
       total_price: totalPrice,
-      paymentProof: paymentProof ?? undefined,
+      paymentProof: String(paymentProof) ?? undefined,
       status: 'Menunggu Konfirmasi'
     };
 
@@ -121,12 +123,43 @@ const BookingForm = () => {
   const openWhatsApp = (booking: BookingSubmission) => {
     const loc = MYCA_LOCATIONS.find(l => l.id === booking.location_id)?.name || '';
     const pkg = MYCA_PACKAGES.find(p => p.id === booking.package_id)?.name || '';
-    const text = `Halo MYCA Semarang,%0A%0ASaya ingin konfirmasi pendaftaran.%0A%0A*KODE:* ${booking.booking_code}%0A*Murid:* ${booking.student_name}%0A*Paket:* ${pkg}%0A*Lokasi:* ${loc}%0A*Jadwal:* ${booking.schedule_preference ?? '-'}%0A*Total:* Rp ${booking.total_price.toLocaleString('id-ID')}%0A%0ATerima kasih!`;
-    window.open(`https://wa.me/6289675211854?text=${text}`, '_blank');
+    const selectedPackage = MYCA_PACKAGES.find(p => p.id === confirmedBooking?.package_id);
+    const pkgid = selectedPackage ? `${selectedPackage.category}-${selectedPackage.name}` : '';
+    
+  const text = `Halo Admin,
+
+Saya ingin konfirmasi pendaftaran.
+
+*KODE:* ${booking.booking_code}
+*Nama Lengkap:* ${booking.student_name}
+*Jenis Kelamin:* ${booking.gender}
+*Tanggal Lahir:* ${booking.birth_date}
+*Umur:* ${booking.age}
+*No Hp / WA:* ${booking.phone}
+*Nama Orang Tua:* ${booking.parent_name ?? '-'}
+*Progam Kelas:* ${pkgid || '-'}
+*Jenis Progam Kelas:* ${pkg}
+*Lokasi:* ${loc}
+*Jadwal:* ${booking.schedule_preference ?? '-'}
+*Total:* Rp ${booking.total_price.toLocaleString('id-ID')}
+*Tanggal Mulai:* ${booking?.start_date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+*Jam Les:* ${booking?.course_time}
+*Hari Les:* ${((booking?.course_day as { name: string }[]) || [])
+  .map(i => i.name)
+  .join(', ') || '-'}
+
+Terima kasih!`;
+
+window.open(
+  `https://wa.me/6289675211854?text=${encodeURIComponent(text)}`,
+  '_blank'
+);
+
   };
 
 
-  
+   console.log(confirmedBooking);
+   
   const handlePrint = () => {
     // Proactively unlock next steps to ensure sandbox frames don't leave users in an unclickable state
     setInvoicePrinted(true);
@@ -141,16 +174,52 @@ const BookingForm = () => {
     });
   };
 
-const handleFinishPayment = () => {
-    if (!confirmedBooking) return;
+  console.log(paymentProof)
+const handleFinishPayment = async () => {
+  if (!confirmedBooking) return;
 
-    const completedBooking: BookingSubmission = {
-      ...confirmedBooking,
-      paymentProof: paymentProof || 'bukti_transfer.jpg'
-    };
+  const completedBooking: BookingSubmission = {
+    ...confirmedBooking,
+    paymentProof: paymentProof || "bukti_transfer.jpg",
+  };
 
-    setConfirmedBooking(completedBooking);
+  const formData = new FormData();
+   Object.entries(completedBooking).forEach(([key, val]) => {
+      formData.append(key, val);
+    });
+
+
+  try {
+
+    const res = await createBooking(formData);
+
+    if (res) {
+      // misalnya tampilkan alert sukses
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "Transkasi Berhasil Dibuat Silahkan Chat Admin.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      setConfirmedBooking(completedBooking);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: "Pembayaran gagal, coba lagi.",
+      });
+    }
+  } catch (err) {
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text: "Terjadi kesalahan server.",
+    });
   }
+};
+
 
   return (
     <section id="booking-form" className="py-24 bg-white relative overflow-hidden">

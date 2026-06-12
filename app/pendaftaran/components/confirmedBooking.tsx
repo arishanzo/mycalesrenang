@@ -22,7 +22,7 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                 
                 {/* Visual success splash */}
                 <div className="text-center py-6">
-                  <div className="h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                  <div className="h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center max-w-7xl mx-auto mb-4 animate-bounce">
                     <CheckCircle className="h-10 w-10 text-emerald-600 fill-emerald-100" />
                   </div>
                   <h3 className="text-2xl font-display font-bold text-marine-900">
@@ -141,13 +141,24 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                         <p className="text-[10px] text-emerald-700 font-mono uppercase tracking-wider font-bold">Bukti Transfer Dilampirkan (LUNAS):</p>
                           
 
+                          {confirmedBooking?.paymentProof instanceof File ? (
                              <Image
                                                 width={64} 
                                                 height={64}
-                                                src={confirmedBooking.paymentProof} 
+                                               src={URL.createObjectURL(confirmedBooking.paymentProof)}
                                                 alt="Bukti Pembayaran" 
                                                 className="w-full py-4 max-h-64 object-contain bg-marine-50" />
-                       
+                             ) : (
+                                         <Image
+                                                width={64} 
+                                                height={64}
+                                               src={confirmedBooking?.paymentProof }
+                                                alt="Bukti Pembayaran" 
+                                                className="w-full py-4 max-h-64 object-contain bg-marine-50" />
+                                      )}
+
+
+                                                   
                                            </div>
                     )}
 
@@ -219,7 +230,7 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                  <div className="no-print mt-4 p-4 bg-cyan-50/70 border border-cyan-150 rounded-2xl flex gap-3 items-start text-xs text-cyan-800 leading-relaxed max-w-2xl mx-auto shadow-sm">
         <AlertCircle className="h-4.5 w-4.5 text-cyan-600 shrink-0 mt-0.5" />
         <div>
-          <span className="font-bold text-cyan-950 block mb-0.5">💡 Tips Cetak & Simpan PDF:</span>
+          <span className="font-bold text-cyan-950 block mb-0.5">💡 Tips Cetak & Simpan PDF Sebagai Bukti Pembayaran:</span>
           Jika tombol cetak tidak berespon pada tampilan pratinjau saat ini, silakan tekan tombol <strong>Open App in New Tab (ikon panah keluar di pojok kanan atas layar pratinjau browser)</strong> untuk membukanya di tab baru secara utuh, lalu tekan kembali tombol Cetak. Anda dapat memilih printer <strong>Save as PDF</strong> untuk mengunduhnya secara digital.
         </div>
       </div>
