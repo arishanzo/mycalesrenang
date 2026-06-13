@@ -143,36 +143,62 @@ export default function AdminDashboard() {
                 </Link>
               </div>
                 <div className="space-y-1.5">
-                          {jadwalMingguIni?.map((j) => (
-                        <div
-                          key={j.id}
-                          className="flex items-center justify-between rounded-xl px-4 py-3 
-                                    bg-white/70 backdrop-blur-md shadow-sm hover:shadow-md 
-                                    transition-all duration-200 border border-slate-200"
-                        >
-                      
-                          <div className="flex items-center gap-3">
-                            <span className="w-2 h-2 rounded-full shrink-0 bg-gradient-to-r from-cyan-500 to-blue-500" />
-                            <div>
+                     {jadwalMingguIni?.map((j) => (
+  <div
+    key={j.id}
+    className="rounded-xl bg-white/70 backdrop-blur-md shadow-sm hover:shadow-md 
+               transition-all duration-200 border border-slate-200 p-4 flex flex-col md:flex-row 
+               md:items-center md:justify-between gap-4"
+  >
+    {/* Kiri: Info utama */}
+    <div className="flex items-start md:items-center gap-3 flex-1">
+      <span className="w-2 h-2 rounded-full shrink-0 bg-gradient-to-r from-cyan-500 to-blue-500" />
+      <div className="space-y-2">
+        <span className="block text-slate-900 text-sm font-semibold">
+          Nama: {j.student_name}
+        </span>
 
-                              <span   className="text-slate-900 text-xs font-semibold leading-tight py-8 rounded-md px-2  text-center">Nama: {j.student_name}</span>
-                          <div className="grid md:grid-cols-3 grid-cols-2 gap-2 mb-2 py-2">
-                           
-                          </div>
+        {/* Hari Les */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+         
+            <span
+              className="text-[11px] font-medium px-2 py-1 rounded-md 
+                         bg-cyan-50 text-cyan-700 text-center"
+            >
+              {j.course_day}
+            </span>
+        
+        </div>
 
-                              <p className="text-slate-500 text-xs">{j.course_time} - {j.location_id}</p>
-                            </div>
-                          </div>
+        {/* Jam + Lokasi */}
+        <p className="text-slate-500 text-xs">
+          {j.course_time} · {j.location_id}
+        </p>
 
-                          {/* Kanan: Paket */}
-                          <span
-                            className="text-xs font-medium px-3 py-1 rounded-full 
-                                      bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm"
-                          >
-                            {j.package_id}
-                          </span>
-                        </div>
-                      ))}
+         {/* Tanggal Mulai */}
+        <p className="text-slate-600 text-xs font-medium">
+          Mulai: {new Date(j.start_date).toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </p>
+      </div>
+    </div>
+
+    {/* Kanan: Paket */}
+    <div className="flex-shrink-0">
+      <span
+        className="text-xs font-medium px-3 py-1 rounded-full 
+                   bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm"
+      >
+        {j.package_id}
+      </span>
+    </div>
+  </div>
+))}
+
 
                 </div>
               </div>
