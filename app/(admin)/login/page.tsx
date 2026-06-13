@@ -128,12 +128,12 @@ export default function AdminLogin() {
             </span>
           </h1>
           <p className="text-marine-300 text-sm leading-relaxed max-w-[340px]">
-            Kelola seluruh operasional MYCA — data siswa, transaksi pembayaran, jadwal instruktur, dan laporan dalam satu dashboard terintegrasi.
+            Kelola seluruh operasional MYCA — data siswa, transaksi pembayaran, dan jadwal instruktur dalam satu dashboard terintegrasi.
           </p>
 
           {/* Feature pills */}
           <div className="flex flex-wrap gap-2 mt-8">
-            {['Data Siswa', 'Transaksi', 'Jadwal', 'Laporan'].map((f) => (
+            {['Data Siswa', 'Transaksi', 'Jadwal'].map((f) => (
               <span key={f} className="text-xs text-white/70 border border-white/15 rounded-full px-3 py-1 bg-white/5 backdrop-blur-sm">
                 {f}
               </span>
@@ -141,19 +141,6 @@ export default function AdminLogin() {
           </div>
         </div>
 
-        {/* Bottom stat bar */}
-        <div className="relative z-10 mx-8 mb-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-4 grid grid-cols-3 divide-x divide-white/10">
-          {[
-            { label: 'Total Siswa', value: '248' },
-            { label: 'Instruktur', value: '12' },
-            { label: 'Program', value: '8' },
-          ].map((s) => (
-            <div key={s.label} className="text-center px-4 first:pl-0 last:pr-0">
-              <p className="text-white font-bold text-xl">{s.value}</p>
-              <p className="text-marine-400 text-[11px] mt-0.5">{s.label}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* ── RIGHT: Login form ── */}

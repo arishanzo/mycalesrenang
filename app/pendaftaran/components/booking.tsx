@@ -83,6 +83,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
     if (!isStep1Valid || !isStep2Valid) return;
 
     const randomCode = 'MYCA-' + Math.floor(1000 + Math.random() * 9000);
+
     const newBooking: BookingSubmission = {
       id: Math.random().toString(36).substr(2, 9),
       booking_code: randomCode,
@@ -100,7 +101,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
       schedule_preference: `${courseTime} WIB · Mulai ${startDate}`,
       notes,
       total_price: totalPrice,
-      paymentProof: String(paymentProof) ?? undefined,
+      paymentProof: paymentProof ?? undefined,
       status: 'Menunggu Konfirmasi'
     };
 

@@ -16,10 +16,10 @@ const BADGE: Record<string, string> = {
 };
 
 
-type Transaksi = {
-  id: string; name: string; program: string; nominal: number;
-  metode: string; status: string; tanggal: string; keterangan: string;
-};
+// type Transaksi = {
+//   id: string; name: string; program: string; nominal: number;
+//   metode: string; status: string; tanggal: string; keterangan: string;
+// };
 
 const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
 
@@ -237,7 +237,7 @@ export default function TransaksiPage() {
             width={300}
             height={200}
             className="rounded-lg shadow-md object-cover"
-            src={`/images/buktitf/${detail.paymentProof}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/api/transkasi/buktitf/${detail?.paymentProof}`}
             alt="Bukti Pembayaran"
           />
         </div>
