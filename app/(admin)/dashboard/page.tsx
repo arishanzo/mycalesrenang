@@ -15,6 +15,7 @@ export default function AdminDashboard() {
 
    const { booking }  = UseGetBooking();
 
+   console.log(booking)
 
    const today = new Date();
 

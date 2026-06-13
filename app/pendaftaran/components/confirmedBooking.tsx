@@ -1,7 +1,7 @@
 'use client';
 
 import { MYCA_PACKAGES,  MYCA_LOCATIONS } from "@/app/libs/data";
-import { BookingSubmission } from "@/app/types/types";
+import { BookingSubmission, CourseDays } from "@/app/types/types";
 import {  AlertCircle, CheckCircle, Phone, Printer } from "lucide-react";
 import Image from "next/image";
 
@@ -12,9 +12,10 @@ interface InvoiceStepProps {
   openWhatsApp: () => void;
   resetForm: () => void
   invoicePrinted: boolean;
+   courseDays: CourseDays[];
 }
 
-const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePrint, invoicePrinted } : InvoiceStepProps) => {
+const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsApp, handlePrint, invoicePrinted } : InvoiceStepProps) => {
     return (
 
         <>
@@ -96,12 +97,14 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                      <div>
                        <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Tanggal Mulai</p>
                        <p className="font-bold text-marine-900 mt-0.5">
-                           {confirmedBooking?.start_date.toLocaleDateString('id-ID', {
-                                   weekday: 'long',
-                                   year: 'numeric',
-                                   month: 'long',
-                                   day: 'numeric'
-                                   })}</p>
+                            {confirmedBooking?.start_date
+                              ? new Date(confirmedBooking.start_date).toLocaleDateString('id-ID', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })
+                              : '-'}</p>
                      </div>
            
                       <div>
@@ -115,7 +118,7 @@ const ConfirmedBooking = ({ confirmedBooking, resetForm, openWhatsApp, handlePri
                      <div>
                        <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Hari</p>
                        <p className="font-bold text-marine-800 mt-0.5 font-sans">
-                     {((confirmedBooking?.course_day as { name: string }[]) || []).map(i => i.name).join(', ') || '-'} 
+                  { courseDays.map(i => i.name).join(',') || '-'}
                        
                        </p>
                      </div>

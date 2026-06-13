@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { CheckCircle2 } from 'lucide-react';
 import { updateStatusBooking } from '@/app/services/transaksi.services';
 import Swal from 'sweetalert2';
+import { MYCA_PACKAGES } from '@/app/libs/data';
 
 const BADGE: Record<string, string> = {
   Lunas: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
@@ -141,7 +142,7 @@ export default function TransaksiPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-100">
-                  {['ID', 'Siswa', 'Paket',  'Nominal', 'Status',  'Program',  'Tanggal', 'Lihat Pembayaran', 'Aksi'].map((h) => (
+                  {['Kode Booking', 'Siswa', 'Paket',  'Nominal', 'Status',  'Program',  'Tanggal Mulai', 'Lihat Pembayaran', 'Aksi'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -150,7 +151,7 @@ export default function TransaksiPage() {
                 {filtered.map((t) => (
                   <tr key={t.id} className="hover:bg-marine-50/40 transition-colors">
                     <td className="px-3 py-2.5">
-                      <span className="font-mono text-[10px] text-marine-500 bg-marine-50 px-1.5 py-0.5 rounded">{t.id}</span>
+                      <span className="font-mono text-[10px] text-marine-500 bg-marine-50 px-1.5 py-0.5 rounded">{t.booking_code}</span>
                     </td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
@@ -167,7 +168,7 @@ export default function TransaksiPage() {
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${BADGE[t.status]}`}>{t.status}</span>
                     </td>
                        <td className="px-3 py-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full`}>{t.package_id}</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full`}>{MYCA_PACKAGES.find(p => p.id === t?.package_id)?.name}</span>
                     </td>
                    
                       <td className="px-3 py-2.5 text-marine-400 whitespace-nowrap">{new Date(t.start_date).toLocaleDateString('id-ID')}</td>
@@ -237,8 +238,9 @@ export default function TransaksiPage() {
             width={300}
             height={200}
             className="rounded-lg shadow-md object-cover"
-            src={`${process.env.NEXT_PUBLIC_API_URL}/api/transkasi/buktitf/${detail?.paymentProof}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/transkasi/buktitf/${detail?.paymentProof}`}
             alt="Bukti Pembayaran"
+            unoptimized
           />
         </div>
 

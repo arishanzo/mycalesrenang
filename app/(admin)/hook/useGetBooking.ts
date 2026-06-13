@@ -19,7 +19,7 @@ export const UseGetBooking = () => {
 
         if (isMounted) {
           // pastikan ambil array
-          setBooking(Array.isArray(result) ? result : result || []);
+          setBooking( result?.data || []);
         }
       } catch (error: any) {
         if (isMounted) {

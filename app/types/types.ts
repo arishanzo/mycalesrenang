@@ -38,9 +38,9 @@ export interface BookingSubmission {
   phone: string;
   package_id: string;
   location_id: string;
-  course_day: CourseDays[],
+  course_day: string,
   course_time: string;
-  start_date: Date;
+  start_date: string;
   schedule_preference?: string;
   notes?: string;
   total_price: number;

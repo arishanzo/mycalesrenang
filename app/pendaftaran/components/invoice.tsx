@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookingSubmission } from '@/app/types/types';
+import { BookingSubmission, CourseDays } from '@/app/types/types';
 import { MYCA_PACKAGES, MYCA_LOCATIONS } from '@/app/libs/data'
 import { 
   FileText, 
@@ -14,12 +14,14 @@ interface InvoiceStepProps {
   setPrintError: (msg: string) => void;
   setCurrentStep: (step: number) => void;
   handlePrint: () => void;
+  courseDays: CourseDays[];
 }
 
 export const InvoiceStep: React.FC<InvoiceStepProps> = ({
   confirmedBooking,
   printError,
   setCurrentStep,
+   courseDays
 }) => {
   return (
     <div id="step-4-content" className="space-y-8 animate-reveal font-sans">
@@ -106,12 +108,14 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
           <div>
             <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Tanggal Mulai</p>
             <p className="font-bold text-marine-900 mt-0.5">
-                {confirmedBooking?.start_date.toLocaleDateString('id-ID', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                        })}</p>
+               {confirmedBooking?.start_date
+                              ? new Date(confirmedBooking.start_date).toLocaleDateString('id-ID', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })
+                              : '-'}</p>
           </div>
 
            <div>
@@ -125,7 +129,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
            <div>
                        <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Hari</p>
                        <p className="font-bold text-marine-800 mt-0.5 font-sans">
-                       {((confirmedBooking?.course_day as { name: string }[]) || []).map(i => i.name).join(', ') || '-'} </p>
+                       {  courseDays.map(i => i.name).join(',') || '-'} </p>
 </div>
           <div>
             <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Catatan</p>

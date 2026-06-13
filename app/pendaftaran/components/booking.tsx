@@ -34,7 +34,7 @@ const BookingForm = () => {
   const [locationId, setLocationId] = useState('mijen-lakers');
   const [courseTime, setCourseTime] = useState('');
   const [courseDays, setCourseDays] = useState<CourseDays[]>([]);
-  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState('');
   const [notes, setNotes] = useState('');
   
   const [customLocation, setCustomLocation] = useState('');
@@ -58,7 +58,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
   const totalPrice = selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
-  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== new Date();
+  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '';
   const isStep3Valid = confirmedBooking !== null;
   const isStep4Valid = paymentProof !== null;
 
@@ -95,16 +95,16 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
       phone,
       package_id: packageId,
       location_id: customLocation ? customLocation : locationId,
-      course_day: courseDays as unknown as [],
+      course_day: courseDays.map(i => i.name).join(','),
       course_time: courseTime,
-      start_date: startDate ?? new Date() ,
+      start_date:   startDate ?? new Date(),
       schedule_preference: `${courseTime} WIB · Mulai ${startDate}`,
       notes,
       total_price: totalPrice,
       paymentProof: paymentProof ?? undefined,
       status: 'Menunggu Konfirmasi'
     };
-
+    
     const updatedHistory = [newBooking, ...bookingHistory];
     setBookingHistory(updatedHistory);
     localStorage.setItem('myca_bookings', JSON.stringify(updatedHistory));
@@ -114,10 +114,11 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
     setPrintError('');
     setCurrentStep(3);
   };
+  
 
   const resetForm = () => {
     setStudentName(''); setParentName(''); setAge(''); setPhone(''); setGender(''); setBirthDate('');
-     setCourseTime(''); setStartDate( new Date('')); setNotes('');
+     setCourseTime(''); setStartDate(''); setNotes('');
     setPaymentProof(null); setConfirmedBooking(null); setCurrentStep(1);
   };
 
@@ -143,11 +144,9 @@ Saya ingin konfirmasi pendaftaran.
 *Lokasi:* ${loc}
 *Jadwal:* ${booking.schedule_preference ?? '-'}
 *Total:* Rp ${booking.total_price.toLocaleString('id-ID')}
-*Tanggal Mulai:* ${booking?.start_date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+*Tanggal Mulai:* ${booking?.start_date ? new Date(booking.start_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
 *Jam Les:* ${booking?.course_time}
-*Hari Les:* ${((booking?.course_day as { name: string }[]) || [])
-  .map(i => i.name)
-  .join(', ') || '-'}
+*Hari Les:* ${(courseDays.map(i => i.name).join(',')) || '-'}
 
 Terima kasih!`;
 
@@ -159,7 +158,7 @@ window.open(
   };
 
 
-   console.log(confirmedBooking);
+   console.log(courseDays.map(i => i.name).join(','));
    
   const handlePrint = () => {
     // Proactively unlock next steps to ensure sandbox frames don't leave users in an unclickable state
@@ -175,7 +174,6 @@ window.open(
     });
   };
 
-  console.log(paymentProof)
 const handleFinishPayment = async () => {
   if (!confirmedBooking) return;
 
@@ -205,6 +203,8 @@ const handleFinishPayment = async () => {
       });
 
       setConfirmedBooking(completedBooking);
+      
+       handleNextStep();
     } else {
       Swal.fire({
         icon: "error",
@@ -333,6 +333,8 @@ const handleFinishPayment = async () => {
                 setPrintError={setPrintError}
                 setCurrentStep={setCurrentStep}
                 handlePrint={handlePrint}
+                courseDays={courseDays}
+                
               />
             )}
 
@@ -346,7 +348,7 @@ const handleFinishPayment = async () => {
                 openWhatsApp={ () => openWhatsApp(confirmedBooking) }
                 handlePrint={handlePrint}
                 invoicePrinted={invoicePrinted}
-
+   courseDays={courseDays}
               />
              
             )}

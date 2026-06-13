@@ -157,7 +157,6 @@ const BuktiPembayaran = ( {  paymentProof, handleFileChange, isStep4Valid, handl
                     type="submit"
                     disabled={!isStep4Valid}
                     onClick={() => {
-                      handleNextStep();
                       handleFinishPayment();
                     }}
                     className="flex items-center gap-2 py-3.5 px-8 text-sm font-bold text-white bg-cyan-600 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow-lg shadow-cyan-200/50 transition-all duration-300"

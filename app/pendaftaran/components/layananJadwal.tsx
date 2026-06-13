@@ -37,8 +37,8 @@ interface LayananJadwalProps {
   setLocationId: (id: string) => void;
   courseTime: string;
   setCourseTime: (time: string) => void;
-  startDate: Date;
-  setStartDate: (date: Date) => void;
+  startDate: string;
+  setStartDate: (date: string) => void;
   notes: string;
   setNotes: (value: string) => void;
   selectedPackage: {
@@ -98,8 +98,8 @@ const LayananJadwal = ({
   // min date = today
   const today = new Date().toISOString().split('T')[0];
 
-  const endDate = new Date(startDate);
-endDate.setDate(startDate.getDate() + 1);
+//   const endDate = new Date(startDate);
+// endDate.setDate(startDate.getDate() + 1);
 
   //  Hari
   // const DAYS = Array.from(
@@ -148,7 +148,6 @@ endDate.setDate(startDate.getDate() + 1);
     return;
   }
 
-  console.log(courseDays.length)
 
   return (
     <>
@@ -221,7 +220,7 @@ endDate.setDate(startDate.getDate() + 1);
                 className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
               >
                 {MYCA_LOCATIONS.map(loc => (
-                  <option key={loc.id} value={loc.id}>{loc.name}</option>
+                  <option key={loc.id} value={loc.name}>{loc.name}</option>
                 ))}
                 <option value="custom">Tulis sendiri...</option>
               </select>
@@ -302,8 +301,8 @@ endDate.setDate(startDate.getDate() + 1);
               id="input-start-date"
               type="date"
               min={today}
-              value={startDate ? startDate.toISOString().split("T")[0] : ""}
-             onChange={e => setStartDate(new Date(e.target.value))}
+              value={startDate}
+             onChange={e => setStartDate(e.target.value)}
               className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
             />
           </div>
