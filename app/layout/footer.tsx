@@ -51,7 +51,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                 <span className="font-display font-bold tracking-wider text-2xl text-white">
                   MYCA
                 </span>
-                <span className="text-[10px] font-mono tracking-widest text-cyan-400 -mt-1 uppercase font-bold">
+                <span className="text-[10px] font-[Baloo_2] tracking-widest text-cyan-400 -mt-1 uppercase font-bold">
                  MYCA Les Renang
                 </span>
               </div>
@@ -62,7 +62,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             </p>
 
             <p className="text-sm font-display italic font-semibold text-cyan-400 mt-2">
-              "Berenang itu seru!"
+              Berenang itu seru!
             </p>
 
             {/* Social channels */}

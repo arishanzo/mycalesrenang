@@ -1,12 +1,60 @@
 'use client';
 
-import { MYCA_PACKAGES } from "@/app/libs/data";
+import { UseGetBooking } from "@/app/(admin)/hook/useGetBooking";
+import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { BookingSubmission } from "@/app/types/types";
 import { BadgeCheck, History, Hourglass } from "lucide-react";
 
-const HistoryModal = ({ bookings, onClose, onSelectBooking }: { bookings: BookingSubmission[]; onClose: () => void; onSelectBooking: (booking: BookingSubmission) => void }) => {
+const HistoryModal = ({  onClose, onSelectBooking }: { onClose: () => void; onSelectBooking: (booking: BookingSubmission) => void }) => {
 
 
+const getBooking = localStorage.getItem('bookings');
+const bookings = getBooking ? JSON.parse(getBooking) : [];
+
+
+const { booking } = UseGetBooking();
+
+// ambil id dari localStorage (misalnya hanya simpan satu object)
+const targetId = bookings.id; 
+
+// cari object di array booking
+const filter = booking?.filter((i) => i.id === targetId);
+
+
+
+  const openWhatsApp = (booking: BookingSubmission) => {
+    const loc = MYCA_LOCATIONS.find(l => l.id === booking.location_id)?.name || '';
+    const pkg = MYCA_PACKAGES.find(p => p.id === booking.package_id)?.name || '';
+    const selectedPackage = MYCA_PACKAGES.find(p => p.id === booking?.package_id);
+    const pkgid = selectedPackage ? `${selectedPackage.category}-${selectedPackage.name}` : '';
+    
+  const text = `Halo Admin,
+
+Saya ingin Perpanjang dengan data sebelumnya.
+
+*KODE:* ${booking.booking_code}
+*Nama Lengkap:* ${booking.student_name}
+*Jenis Kelamin:* ${booking.gender}
+*Tanggal Lahir:* ${booking.birth_date ?  new Date(booking.birth_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
+*Umur:* ${booking.age}
+*No Hp / WA:* ${booking.phone}
+*Nama Orang Tua:* ${booking.parent_name ?? '-'}
+*Progam Kelas:* ${pkgid || '-'}
+*Jenis Progam Kelas:* ${pkg}
+*Lokasi:* ${loc}
+*Jadwal:* ${booking.schedule_preference ?? '-'}
+*Total:* Rp ${booking.total_price.toLocaleString('id-ID')}
+*Tanggal Mulai Sebelumnya:* ${booking?.start_date ? new Date(booking.start_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
+*Jam Les:* ${booking?.course_time}
+*Hari Les:* ${Array.isArray(booking?.course_day) ? booking.course_day.join(', ') : booking?.course_day ?? '-'}
+
+Terima kasih!`;
+window.open(
+  `https://wa.me/6289675211854?text=${encodeURIComponent(text)}`,
+  '_blank'
+);
+
+  };
     return (
 
         <>
@@ -32,7 +80,7 @@ const HistoryModal = ({ bookings, onClose, onSelectBooking }: { bookings: Bookin
               </div>
             ) : (
               <div className="space-y-4">
-                {bookings.map(book => (
+                {filter.map((book: BookingSubmission) => (
                   <div key={book.id} className="p-4 border border-marine-150 rounded-2xl hover:border-cyan-500/60 bg-marine-50/30">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold font-mono tracking-wider text-cyan-600">{book.booking_code}</span>
@@ -52,14 +100,14 @@ const HistoryModal = ({ bookings, onClose, onSelectBooking }: { bookings: Bookin
                           ? <BadgeCheck className="h-3 w-3" />
                           : <Hourglass className="h-3 w-3" />
                         }
-                        {book.status}
+                        {booking?.find(i => i.id === book.id)?.status}
                       </span>
                       <button
                         id={`btn-open-ticket-${book.id}`}
-                        onClick={() => onSelectBooking(book)}
+                        onClick={() => openWhatsApp(book)}
                         className="text-[10px] bg-marine-800 text-white font-semibold py-1.5 px-3 rounded-lg hover:bg-cyan-500 transition-colors cursor-pointer"
                       >
-                        Lihat Detail
+                        Perpanjang
                       </button>
                     </div>
                   </div>

@@ -47,8 +47,9 @@ export default function JadwalPage() {
 
   
 
+  
 
-  const filtered = activeHari ? (booking ?? []).filter((i) => i.status === 'Terkonfirmasi')  : booking;
+  const filtered = activeHari ? (booking ?? []).filter((i) => i.status === 'Terkonfirmasi' )  : booking;
 
   const activeWeek = weekDates.find((w) => w.nama === activeHari);
 

@@ -107,7 +107,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
     
     const updatedHistory = [newBooking, ...bookingHistory];
     setBookingHistory(updatedHistory);
-    localStorage.setItem('myca_bookings', JSON.stringify(updatedHistory));
+    localStorage.setItem('bookings', JSON.stringify(newBooking));
     setConfirmedBooking(newBooking);
 
      setInvoicePrinted(false);
@@ -135,7 +135,7 @@ Saya ingin konfirmasi pendaftaran.
 *KODE:* ${booking.booking_code}
 *Nama Lengkap:* ${booking.student_name}
 *Jenis Kelamin:* ${booking.gender}
-*Tanggal Lahir:* ${booking.birth_date}
+*Tanggal Lahir:* ${booking.birth_date ?  new Date(booking.birth_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
 *Umur:* ${booking.age}
 *No Hp / WA:* ${booking.phone}
 *Nama Orang Tua:* ${booking.parent_name ?? '-'}
@@ -158,7 +158,6 @@ window.open(
   };
 
 
-   console.log(courseDays.map(i => i.name).join(','));
    
   const handlePrint = () => {
     // Proactively unlock next steps to ensure sandbox frames don't leave users in an unclickable state
@@ -204,7 +203,6 @@ const handleFinishPayment = async () => {
 
       setConfirmedBooking(completedBooking);
       
-       handleNextStep();
     } else {
       Swal.fire({
         icon: "error",
@@ -251,7 +249,7 @@ const handleFinishPayment = async () => {
             className="flex items-center gap-1.5 text-xs text-marine-800 hover:text-cyan-600 transition-colors border border-marine-200 py-2 px-4 rounded-xl cursor-pointer bg-marine-50/50 hover:bg-white"
           >
             <History className="h-4 w-4" />
-            <span>History ({bookingHistory.length})</span>
+            <span>History </span>
           </button>
         </div>
 
@@ -360,11 +358,10 @@ const handleFinishPayment = async () => {
       {/* History Modal */}
       {showHistoryModal && (
         <HistoryModal
-          bookings={bookingHistory}
           onClose={() => setShowHistoryModal(false)}
           onSelectBooking={(booking) => {
             setConfirmedBooking(booking);
-            setCurrentStep(4);
+            setCurrentStep(5);
             setShowHistoryModal(false);
           }}
         />

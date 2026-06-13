@@ -209,7 +209,7 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
                     ))}
                   </div>
                   <p className="text-xs font-semibold text-marine-950 mt-0.5">Kids & Adults Program</p>
-                  <p className="text-[10px] text-marine-600 font-mono">Semarang</p>
+                  <p className="text-[10px] text-marine-600 font-[Baloo_2]">Semarang</p>
                 </div>
               </div>
             </div>

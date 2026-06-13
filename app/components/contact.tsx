@@ -97,7 +97,7 @@ const Contact = () => {
 
         {/* Section Heading */}
         <div ref={headingRef} className="text-center max-w-2xl mx-auto mb-16">
-          <span className="inline-flex items-center text-xs font-mono font-bold tracking-widest text-cyan-600 uppercase bg-cyan-100/60 border border-cyan-200 px-4 py-1.5 rounded-full mb-3">
+          <span className="inline-flex items-center text-xs font-[Baloo_2] font-bold tracking-widest text-cyan-600 uppercase bg-cyan-100/60 border border-cyan-200 px-4 py-1.5 rounded-full mb-3">
             HUBUNGI KAMI
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-marine-900 tracking-tight">
@@ -124,7 +124,7 @@ const Contact = () => {
                     {item.icon}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs text-marine-400 font-mono font-semibold tracking-wider uppercase mb-0.5">
+                    <p className="text-xs text-marine-400 font-[Baloo_2] font-semibold tracking-wider uppercase mb-0.5">
                       {item.label}
                     </p>
                     {item.href ? (
@@ -147,7 +147,7 @@ const Contact = () => {
 
             {/* Social Media */}
             <div className="premium-card-glass rounded-2xl p-6">
-              <p className="text-xs font-mono font-bold text-marine-400 uppercase tracking-wider mb-4">
+              <p className="text-xs font-[Baloo_2] font-bold text-marine-400 uppercase tracking-wider mb-4">
                 Ikuti Kami di Media Sosial
               </p>
               <div className="flex flex-col mx-auto">
@@ -171,7 +171,7 @@ const Contact = () => {
 
             {/* Quick Assurance */}
             <div className="premium-dark-card rounded-2xl p-6 text-white">
-              <p className="text-xs font-mono text-cyan-400 tracking-widest uppercase font-semibold mb-4">
+              <p className="text-xs font-[Baloo_2] text-cyan-400 tracking-widest uppercase font-semibold mb-4">
                 Kenapa Pilih MYCA Les Renang?
               </p>
               {[

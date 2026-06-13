@@ -69,7 +69,7 @@ export default function About() {
         
         {/* Section Heading with SEO Keywords */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-flex items-center text-xs font-mono font-bold tracking-widest text-cyan-600 uppercase bg-cyan-100/60 border border-cyan-200 px-4 py-1.5 rounded-full mb-3">
+          <span className="inline-flex items-center text-xs font-[Baloo_2] font-bold tracking-widest text-cyan-600 uppercase bg-cyan-100/60 border border-cyan-200 px-4 py-1.5 rounded-full mb-3">
             TENTANG MYCA Les Renang
           </span>
           <p className="font-display text-3xl sm:text-4xl font-bold text-marine-900 tracking-tight">
@@ -126,7 +126,7 @@ export default function About() {
 
             <p className="text-base text-marine-800 font-light leading-relaxed">
               Kami berkomitmen membuang jauh-jauh rasa cemas di kolam. Metode pengajaran kami mendikte bahwa 
-              <span className="font-semibold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full ml-1 font-sans">"berenang itu seru"</span>, dirangkai melalui aktivitas interaktif yang bertahap dan menyenangkan.
+              <span className="font-semibold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full ml-1 font-sans">berenang itu seru</span>, dirangkai melalui aktivitas interaktif yang bertahap dan menyenangkan.
             </p>
 
             {/* Program Subtitles checklist */}
@@ -151,8 +151,8 @@ export default function About() {
 
             <div className="border-t border-marine-100 pt-6 mt-2">
               <blockquote className="border-l-4 border-cyan-500 pl-4 text-sm italic text-marine-600 leading-relaxed">
-                "Kami percaya bahwa menguasai keahlian berenang bukan cuma tentang kecepatan kayuhan, melainkan kecintaan beraktivitas di dalam air dalam kondisi aman, tenang, dan bahagia."
-                <span className="block text-xs font-semibold text-marine-900 not-italic mt-2 font-mono">— Miss Yenny, Founder MYCA Les Renang </span>
+                Kami percaya bahwa menguasai keahlian berenang bukan cuma tentang kecepatan kayuhan, melainkan kecintaan beraktivitas di dalam air dalam kondisi aman, tenang, dan bahagia.
+                <span className="block text-xs font-semibold text-marine-900 not-italic mt-2 font-[Baloo_2]">— Miss Yenny, Founder MYCA Les Renang </span>
               </blockquote>
             </div>
 

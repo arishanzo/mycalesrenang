@@ -136,7 +136,7 @@ export default function Header({ onNavigate, activeSection }: HeaderProps) {
               <span className="font-display font-bold tracking-wider text-xl sm:text-2xl text-marine-900 leading-none">
                 MYCA
               </span>
-              <span className="text-[9px] font-mono tracking-widest text-marine-600 mt-0.5 uppercase font-bold">
+              <span className="text-[9px] font-[Baloo_2] tracking-widest text-marine-600 mt-0.5 uppercase font-bold">
                 Les Renang
               </span>
             </div>

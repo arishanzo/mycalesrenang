@@ -31,7 +31,7 @@ export default function Layanan({ onSelectPackage }: LayananProps) {
 
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="inline-flex items-center text-xs font-mono font-bold tracking-widest text-cyan-600 uppercase bg-cyan-50 border border-cyan-200 px-4 py-1.5 rounded-full mb-4">
+          <span className="inline-flex items-center text-xs font-[Baloo_2] font-bold tracking-widest text-cyan-600 uppercase bg-cyan-50 border border-cyan-200 px-4 py-1.5 rounded-full mb-4">
             Program Les Renang
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-marine-900 leading-tight mb-4">
@@ -61,7 +61,7 @@ export default function Layanan({ onSelectPackage }: LayananProps) {
                   {item.icon}
                 </div>
                 <div>
-                  <span className={`inline-block text-[10px] font-mono font-bold tracking-wider uppercase border px-2.5 py-1 rounded-md mb-1.5 ${item.badgeColor}`}>
+                  <span className={`inline-block text-[10px] font-[Baloo_2] font-bold tracking-wider uppercase border px-2.5 py-1 rounded-md mb-1.5 ${item.badgeColor}`}>
                     {item.badge}
                   </span>
                   <h3 className="font-display text-xl font-bold text-marine-900 leading-snug">
