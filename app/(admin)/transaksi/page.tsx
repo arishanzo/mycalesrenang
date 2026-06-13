@@ -142,7 +142,7 @@ export default function TransaksiPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-100">
-                  {['Kode Booking', 'Siswa', 'Paket',  'Nominal', 'Status',  'Program',  'Tanggal Mulai', 'Lihat Pembayaran', 'Aksi'].map((h) => (
+                  {['Kode Booking', 'Siswa', 'Paket',  'Nominal', 'Status',  'Program', 'Category',  'Tanggal Mulai', 'Lihat Pembayaran', 'Aksi'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -169,6 +169,10 @@ export default function TransaksiPage() {
                     </td>
                        <td className="px-3 py-2.5">
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full`}>{MYCA_PACKAGES.find(p => p.id === t?.package_id)?.name}</span>
+                    </td>
+
+                       <td className="px-3 py-2.5">
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full`}>{MYCA_PACKAGES.find(p => p.id === t?.package_id)?.category}</span>
                     </td>
                    
                       <td className="px-3 py-2.5 text-marine-400 whitespace-nowrap">{new Date(t.start_date).toLocaleDateString('id-ID')}</td>
