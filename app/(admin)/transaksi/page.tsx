@@ -123,11 +123,11 @@ export default function TransaksiPage() {
           <div className="flex gap-2 shrink-0">
             <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Lunas', 'Pending', 'Gagal'].map((o) => <option key={o}>{o}</option>)}
+              {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
             </select>
             <select value={filterMetode} onChange={(e) => setFilterMetode(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Transfer', 'QRIS', 'Cash'].map((o) => <option key={o}>{o}</option>)}
+              {['Semua', 'privat', 'semiprivat', 'grup'].map((o) => <option key={o}>{o}</option>)}
             </select>
           </div>
        

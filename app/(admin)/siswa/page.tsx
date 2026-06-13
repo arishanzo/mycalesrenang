@@ -83,7 +83,7 @@ export default function SiswaPage() {
           <div className="flex gap-2 shrink-0">
             <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Aktif', 'Pending', 'Nonaktif'].map((o) => <option key={o}>{o}</option>)}
+              {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
             </select>
             <select value={filterProgram} onChange={(e) => setFilterProgram(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
@@ -141,7 +141,7 @@ export default function SiswaPage() {
                     </td>
                     
 
-                    <td className="px-3 py-2.5 text-marine-600">{s.parent_name}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{s.parent_name === 'undefined' ? '-' : s.parent_name}</td>
                     
                     <td className="px-3 py-2.5 text-marine-600">{s.age}</td>
                     
