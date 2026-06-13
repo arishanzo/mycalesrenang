@@ -15,8 +15,6 @@ export default function AdminDashboard() {
 
    const { booking }  = UseGetBooking();
 
-   console.log(booking)
-
    const today = new Date();
 
     const startOfWeek = new Date(today);
@@ -25,7 +23,7 @@ export default function AdminDashboard() {
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6)
 
- 
+     
       const siswaAktif = booking?.filter((i) => i.status === 'Terkonfirmasi');
       const siswaBaru = booking?.filter((i) => i.status === 'Menunggu Konfirmasi');
 
