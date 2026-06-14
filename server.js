@@ -1,6 +1,7 @@
-const { createServer } = require('http')
-const { parse } = require('url')
-const next = require('next')
+import { createServer } from 'http'
+import next from 'next'
+import { parse } from 'url'
+
 
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = 'localhost'
@@ -9,8 +10,8 @@ const port = process.env.port || 8080
 const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()
 
-app.prepare().then(() =&gt; {
-  createServer(async (req, res) =&gt; {
+app.prepare().then(() => {
+  createServer(async (req, res) => {
     try {
       // Be sure to pass `true` as the second argument to `url.parse`.
       // This tells it to parse the query portion of the URL.
@@ -29,8 +30,8 @@ app.prepare().then(() =&gt; {
       res.statusCode = 500
       res.end('internal server error')
     }
-  }).listen(port, (err) =&gt; {
+  }).listen(port, (err) => {
     if (err) throw err
-    console.log(`&gt; Ready on http://${hostname}:${port}`)
+    console.log(`> Ready on http://${hostname}:${port}`)
   })
 })

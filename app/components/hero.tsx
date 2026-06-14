@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ArrowRight, Waves, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import { ArrowRight, Waves, ShieldCheck,Star } from 'lucide-react';
+import Image from 'next/image';
 
 interface HeroProps {
-  onJoinClick: () => void;
   onExploreClick: () => void;
 }
 
-export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
+export default function Hero({onExploreClick }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
@@ -137,14 +137,14 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
               ref={btnGroupRef}
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mt-4"
             >
-              <button
+              <a
                 id="hero-join-now"
-                onClick={onJoinClick}
+                href='/pendaftaran'
                 className="flex items-center justify-center gap-2 px-8 py-4 text-white bg-marine-800 hover:bg-cyan-500 rounded-2xl shadow-lg hover:shadow-cyan-200/50 transition-all duration-300 font-semibold group cursor-pointer"
               >
                 Booking Jadwal Sekarang
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1.5 transition-transform" />
-              </button>
+              </a>
               
               <button
                 id="hero-see-services"
@@ -189,8 +189,10 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
               {/* Overlay Glass effect */}
               <div className="absolute inset-0 bg-gradient-to-t from-marine-950/70 via-transparent to-transparent opacity-60 pointer-events-none" />
 
-              <img
+              <Image
                 id="hero-img-asset"
+                height={320}
+                width={420}
                 src="/images/hero_swimming_pool_1780638038914.png"
                 alt="MYCA Les Renang Premium Swimming Center Pool Semarang"
                 className="w-full h-[320px] sm:h-[420px] object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -209,7 +211,7 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
                     ))}
                   </div>
                   <p className="text-xs font-semibold text-marine-950 mt-0.5">Kids & Adults Program</p>
-                  <p className="text-[10px] text-marine-600 font-[Baloo_2]">Semarang</p>
+                  <p className="text-[10px] text-marine-600 font-baloo">Semarang</p>
                 </div>
               </div>
             </div>

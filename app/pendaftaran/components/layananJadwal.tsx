@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag } from "lucide-react";
-import { BookingSubmission, CourseDays } from '@/app/types/types';
+import {  CourseDays } from '@/app/types/types';
 import Swal from 'sweetalert2';
 
 const CATEGORIES = [
