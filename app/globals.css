@@ -3,11 +3,13 @@
 
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Playfair Display", serif;
+   --font-sans: "Baloo 2", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Baloo 2", cursive, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-baloo: var(--font-baloo);
+
   
+  --font-baloo: "Baloo 2", cursive;
+
   /* Oceanic & Premium color palette */
   --color-marine-950: #031525;
   --color-marine-900: #072640;

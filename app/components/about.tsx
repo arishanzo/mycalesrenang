@@ -115,7 +115,7 @@ export default function About() {
           {/* Copy Block (Right) */}
           <div ref={rightColRef} className="lg:col-span-7 flex flex-col gap-6">
             
-            <h3 className="text-2xl sm:text-3xl font-bold text-marine-900 leading-tight">
+            <h3 className="text-2xl sm:text-3xl  font-poppins font-bold text-marine-900 leading-tight">
               Belajar Renang Tanpa Panik, Tuntas Sesuai Bakat & Kecepatan Anda
             </h3>
 
