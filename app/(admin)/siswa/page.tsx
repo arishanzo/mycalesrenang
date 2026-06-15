@@ -90,6 +90,8 @@ export default function SiswaPage() {
               {['Semua', 'Privat', 'Semi Privat', 'Grup'].map((o) => <option key={o}>{o}</option>)}
             </select>
           </div>
+
+         
          
         </div>
 
