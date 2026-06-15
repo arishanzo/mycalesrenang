@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         port: '5000', // sesuaikan dengan port API kamu
-        pathname: '/api/api/transkasi/buktitf/**',
+        pathname: '/api/transkasi/buktitf/**',
       },
     ],
   },

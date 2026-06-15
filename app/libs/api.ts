@@ -10,7 +10,7 @@ export async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.lesrenangmyca.com/api';
   const res = await fetch(`${apiUrl}${endpoint}`, {
     ...options,
     cache: options?.cache || "no-store",
