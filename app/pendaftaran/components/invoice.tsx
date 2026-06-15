@@ -8,6 +8,15 @@ import {
   ChevronRight 
 } from 'lucide-react';
 
+ const rules = [
+    "Keterlambatan dari pihak murid tidak ada tambahan waktu. Apabila ada keterlambatan dari pihak coach akan diberikan tambahan waktu.",
+    "Pembayaran les renang dilakukan di depan sesuai dengan pilihan paket. Paket Les Renang berlaku dalam 1 bulan. Pembayaran yang sudah lunas tidak dapat dikembalikan.",
+    "Penggantian hari apabila tidak masuk/ijin/sakit berlaku dalam 1 bulan. Apabila tidak ada komunikasi penggantian hari dianggap masuk les renang.",
+    "Apabila coach berhalangan hadir akan diberikan penggantian hari. Apabila ada tanggal merah tidak ada penggantian hari (bisa tetap renang/tidak, apabila tidak, tidak ada penggantian hari).",
+    "Dalam grup ber 2/3 apabila ada salah satu murid yang bisa masuk dan tidak masuk akan dianggap jadwal berjalan.",
+    "Diharapkan untuk orang tua/wali murid turut memperhatikan/mengawasi anak-anak.",
+  ];
+
 interface InvoiceStepProps {
   confirmedBooking: BookingSubmission;
   printError: string;
@@ -206,6 +215,26 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
               </span>
             </div>
           </div>
+
+<div className="border border-blue-300 rounded-lg p-6 shadow-sm bg-white">
+  <h2 className="text-2xl font-bold text-blue-700 mb-2">
+    Peraturan di Komunitas
+  </h2>
+  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+    Les Renang Myca
+  </h3>
+
+  <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
+    {rules.map((rule, index) => (
+      <li key={index}>{rule}</li>
+    ))}
+  </ol>
+
+  <div className="mt-6 text-center text-blue-600 font-semibold">
+    See you at the pool!
+  </div>
+</div>
+
 
          
         </div>
