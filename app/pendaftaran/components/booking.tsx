@@ -202,7 +202,6 @@ const handleFinishPayment = async () => {
       });
 
       setConfirmedBooking(completedBooking);
-      handleNextStep();
       
     } else {
       Swal.fire({
