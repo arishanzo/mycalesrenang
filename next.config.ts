@@ -1,8 +1,20 @@
 import type { NextConfig } from "next";
 
+
 const nextConfig: NextConfig = {
   images: {
-    domains: ['localhost', 'lesrenangmyca.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5000', // sesuaikan dengan port API kamu
+        pathname: '/api/api/transkasi/buktitf/**',
+      },
+    ],
   },
 };
 
