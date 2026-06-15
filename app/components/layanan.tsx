@@ -75,13 +75,13 @@ export default function Layanan({ onSelectPackage }: LayananProps) {
                 {item.description}
               </p>
 
-              <button
-                onClick={() => handleCTA(item.id)}
+              <a
+               href={'/pendaftaran'}
                 className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-semibold bg-marine-900 hover:bg-cyan-500 text-white transition-all duration-300 group cursor-pointer"
               >
                 Daftar Program Ini
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </a>
             </article>
           ))}
         </div>
