@@ -137,14 +137,14 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
               ref={btnGroupRef}
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mt-4"
             >
-              <button
+              <a
                 id="hero-join-now"
-                onClick={onJoinClick}
+                href={'/pendaftaran'}
                 className="flex items-center justify-center gap-2 px-8 py-4 text-white bg-marine-800 hover:bg-cyan-500 rounded-2xl shadow-lg hover:shadow-cyan-200/50 transition-all duration-300 font-semibold group cursor-pointer"
               >
                 Booking Jadwal Sekarang
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1.5 transition-transform" />
-              </button>
+              </a>
               
               <button
                 id="hero-see-services"
