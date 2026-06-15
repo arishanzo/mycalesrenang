@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag } from "lucide-react";
-import { BookingSubmission, CourseDays } from '@/app/types/types';
+import {  CourseDays } from '@/app/types/types';
 import Swal from 'sweetalert2';
 
 const CATEGORIES = [
@@ -127,26 +127,27 @@ const LayananJadwal = ({
 
   
 
- const toggleDay = (id: number , day: string) => {
+const toggleDay = (id: number, day: string) => {
+  const data = { id, name: day };
 
-  const data = { id: id, name: day}
-    setCourseDays(
-      courseDays.some(d => d.id === data.id) ? courseDays.filter(d => d.id !== data.id) : courseDays.length < selectedPackage.sessions ? [...courseDays, data] : courseDays
-    );
-  };
-
-  const handleCek = () => {
+  setCourseDays(
+    courseDays.some(d => d.id === id)
+      ? courseDays.filter(d => d.id !== id) // hapus kalau sudah ada
+      : [...courseDays, data]               // tambah kalau belum ada
+  );
+};
+  // const handleCek = () => {
      
-      if (courseDays.length < selectedPackage.sessions) {
-    Swal.fire({
-      icon: "warning",
-      title: `Hari Les Belum Dipilih`,
-      text: `Maksimal ${selectedPackage.sessions} x Pertemuan / Hari`,
-      confirmButtonColor: "#06b6d4"
-    });
-  }
-    return;
-  }
+  //     if (courseDays.length < selectedPackage.sessions) {
+  //   Swal.fire({
+  //     icon: "warning",
+  //     title: `Hari Les Belum Dipilih`,
+  //     text: `Maksimal ${selectedPackage.sessions} x Pertemuan / Hari`,
+  //     confirmButtonColor: "#06b6d4"
+  //   });
+  // }
+  //   return;
+  // }
 
 
   return (
@@ -361,7 +362,7 @@ const LayananJadwal = ({
             id="btn-step2-next"
             type="button"
             disabled={!isStep2Valid}
-            onClick={() => courseDays.length === selectedPackage.sessions ? handleSubmitBooking() : handleCek()}
+            onClick={() =>  handleSubmitBooking()}
             className="flex items-center gap-1.5 py-3 px-6 text-xs md:text-sm font-semibold text-white bg-marine-800 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition duration-300"
           >
             Lanjut Invoice
