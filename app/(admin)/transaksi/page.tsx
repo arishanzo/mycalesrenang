@@ -247,7 +247,7 @@ export default function TransaksiPage() {
             width={300}
             height={200}
             className="rounded-lg shadow-md object-cover"
-            src={`${process.env.NEXT_PUBLIC_API_URL}/transkasi/buktitf/${detail?.paymentProof}`}
+            src={`https://api.lesrenangmyca.com/api/transkasi/buktitf/${detail?.paymentProof}`}
             alt="Bukti Pembayaran"
             unoptimized
           />
