@@ -6,6 +6,16 @@ import {  AlertCircle, CheckCircle, Phone, Printer } from "lucide-react";
 import Image from "next/image";
 
 
+
+ const rules = [
+    "Keterlambatan dari pihak murid tidak ada tambahan waktu. Apabila ada keterlambatan dari pihak coach akan diberikan tambahan waktu.",
+    "Pembayaran les renang dilakukan di depan sesuai dengan pilihan paket. Paket Les Renang berlaku dalam 1 bulan. Pembayaran yang sudah lunas tidak dapat dikembalikan.",
+    "Penggantian hari apabila tidak masuk/ijin/sakit berlaku dalam 1 bulan. Apabila tidak ada komunikasi penggantian hari dianggap masuk les renang.",
+    "Apabila coach berhalangan hadir akan diberikan penggantian hari. Apabila ada tanggal merah tidak ada penggantian hari (bisa tetap renang/tidak, apabila tidak, tidak ada penggantian hari).",
+    "Dalam grup ber 2/3 apabila ada salah satu murid yang bisa masuk dan tidak masuk akan dianggap jadwal berjalan.",
+    "Diharapkan untuk orang tua/wali murid turut memperhatikan/mengawasi anak-anak.",
+  ];
+
 interface InvoiceStepProps {
   confirmedBooking: BookingSubmission;
   handlePrint: () => void;
@@ -134,7 +144,7 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
                      <div>
                        <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Lokasi Kolam Latihan</p>
                        <p className="font-bold text-marine-800 mt-0.5 font-sans">
-                         {MYCA_LOCATIONS.find(l => l.id === confirmedBooking?.location_id)?.name}
+                        {MYCA_LOCATIONS.find(l => l.id === confirmedBooking?.location_id)?.name || confirmedBooking.location_id }
                        </p>
                      </div>
                    </div>
@@ -177,7 +187,7 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
                   {/* Financial Estimations Block inside ticket */}
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-6 gap-3">
                     <div>
-                      <p className="text-xs text-marine-600">Total Biaya Sesi & Asuransi Latihan:</p>
+                      <p className="text-xs text-marine-600">Total Biaya Sesi Latihan:</p>
                       <p className="text-xs text-marine-500 italic mt-0.5">Tipe: Sesi Lunas Sesuai Kedatangan</p>
                     </div>
                     <div className="text-left sm:text-right">
@@ -187,7 +197,31 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
                       <p className="text-[9px] text-cyan-600 font-mono">Dukungan Garansi Cepat Bisa</p>
                     </div>
                   </div>
- </div>
+
+
+
+
+<div className="border border-blue-300 rounded-lg p-6 shadow-sm bg-white mt-8">
+  <h2 className="text-2xl font-bold text-blue-700 mb-2">
+    Peraturan di Komunitas
+  </h2>
+  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+    Les Renang Myca
+  </h3>
+
+  <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
+    {rules.map((rule, index) => (
+      <li key={index}>{rule}</li>
+    ))}
+  </ol>
+
+  <div className="mt-6 text-center text-blue-600 font-semibold">
+    See you at the pool!
+  </div>
+</div>
+
+                  
+               </div>
                 </div>
 
                 {/* Confirm on whatsapp and local commands */}
@@ -217,7 +251,7 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
               : 'bg-slate-100 text-slate-400 border border-slate-200 hover:bg-slate-200/50 cursor-pointer '
           } `}                  >
                     <Phone className="h-4 w-4 shrink-0" />
-                    Kirim Pesan Konfirmasi ke Pelatih (WA)
+                    Kirim Pesan Konfirmasi (WA)
                   </button>
 
                   <button
