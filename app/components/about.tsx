@@ -9,16 +9,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 const images = [
   {
-    src: "/images/gambar3.jpeg",
+    src: "/images/gambar5.jpeg",
     alt: "Instruktur Renang MYCA Les Renang Semarang Mengajar Privat"
   },
   {
-    src: "/images/gambar1.jpeg",
+    src: "/images/gambar6.jpeg",
     alt: "Slide 2"
   },
   {
-    src: "/images/gambar2.jpeg",
+    src: "/images/gambar7.jpeg",
     alt: "Slide 3"
+  },
+   {
+    src: "/images/gambar8.jpeg",
+    alt: "Slide 4"
+  },
+   {
+    src: "/images/gambar9.jpeg",
+    alt: "Slide 5"
+  },
+   {
+    src: "/images/gambar10.jpeg",
+    alt: "Slide 6"
   }
 ];
 
