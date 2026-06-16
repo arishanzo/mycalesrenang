@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag } from "lucide-react";
 import {  CourseDays } from '@/app/types/types';
-import Swal from 'sweetalert2';
 
 const CATEGORIES = [
   { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
@@ -98,22 +97,10 @@ const LayananJadwal = ({
   // min date = today
   const today = new Date().toISOString().split('T')[0];
 
-//   const endDate = new Date(startDate);
-// endDate.setDate(startDate.getDate() + 1);
 
-  //  Hari
-  // const DAYS = Array.from(
-  //   { length: selectedPackage.sessions },
-  //   (_, i) => {
-  //     const date = new Date(endDate);
-  //     date.setDate(date.getDate() + i);
-
-  //     return date.toLocaleDateString('id-ID', {
-  //       weekday: 'long',
-  //     });
-  //   }
-  // );
  
+  const maxSessions = 0;
+
   const DaysList = [ 
     { id: 1,name: 'senin'},
     { id: 2,name: 'selasa'},
@@ -121,34 +108,24 @@ const LayananJadwal = ({
     { id: 4,name: 'kamis'},
     { id: 5,name: 'jumat'},
     { id: 6,name: 'sabtu'},
-    { id: 7,name: 'minggu'},
-    { id: 8,name: 'senin'},]
+    { id: 7,name: 'minggu'}]
     ;
 
-  
+  const toggleDay = (id: number, day: string) => {
+    if (!courseDays) return;
 
-const toggleDay = (id: number, day: string) => {
-  const data = { id, name: day };
+    const data: CourseDays = { id, name: day };
 
-  setCourseDays(
-    courseDays.some(d => d.id === id)
-      ? courseDays.filter(d => d.id !== id) // hapus kalau sudah ada
-      : [...courseDays, data]               // tambah kalau belum ada
-  );
-};
-  // const handleCek = () => {
-     
-  //     if (courseDays.length < selectedPackage.sessions) {
-  //   Swal.fire({
-  //     icon: "warning",
-  //     title: `Hari Les Belum Dipilih`,
-  //     text: `Maksimal ${selectedPackage.sessions} x Pertemuan / Hari`,
-  //     confirmButtonColor: "#06b6d4"
-  //   });
-  // }
-  //   return;
-  // }
+    if (!courseDays.some(d => d.id === id) && courseDays.length > maxSessions) {
+      return; // stop kalau sudah mencapai batas
+    }
 
+    setCourseDays(
+      courseDays.some(d => d.id === id)
+        ? courseDays.filter(d => d.id !== id) // hapus kalau sudah ada
+        : [...courseDays, data]               // tambah kalau belum ada
+    );
+  };
 
   return (
     <>
