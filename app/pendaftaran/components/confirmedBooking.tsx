@@ -77,11 +77,15 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
 
               {/* Core Information Details */}
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 py-6 border-b border-marine-150 text-sm">
-                     <div>
-                       <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Atas Nama Calon Murid</p>
-                       <p className="font-bold text-marine-900 mt-0.5">{confirmedBooking?.student_name}</p>
-                     </div>
-           
+                           <div>
+                          <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Nama Lengkap Murid</p>
+                          <p className="font-bold text-marine-900 mt-0.5">{confirmedBooking?.student_name}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Nama Panggilan Murid</p>
+                          <p className="font-bold text-marine-900 mt-0.5">{confirmedBooking?.nama_panggilan}</p>
+                        </div>
+                        
                      {confirmedBooking?.parent_name && (
                        <div>
                          <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Orang Tua / Wali</p>
