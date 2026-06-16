@@ -191,7 +191,7 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
 
               <img
                 id="hero-img-asset"
-                src="/images/hero_swimming_pool_1780638038914.png"
+                src="/images/gambar4.jpg"
                 alt="MYCA Les Renang Premium Swimming Center Pool Semarang"
                 className="w-full h-[320px] sm:h-[420px] object-cover transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
