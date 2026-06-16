@@ -1,7 +1,7 @@
 
 import { FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { SwimmingPackage, SemarangLocation, SwimTestimonial,  } from '../types/types';
-import { User, Users, Waves, BookOpen, CheckCircle, ArrowRight, Award, Smile, Anchor,  Phone, Mail, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
+import { User, Users, Waves, BookOpen, Award, Smile, Anchor,  Phone, Mail,Clock, Layers, Trophy,} from 'lucide-react';
 
 
 
@@ -36,19 +36,19 @@ export const SOCIAL_LINKS = [
   {
     icon: <FaInstagram className="h-5 w-5" />,
     label: 'Instagram',
-    href: 'https://instagram.com/mycaaquatic',
+    href: 'https://www.instagram.com/lesrenang.smg/',
     color: 'hover:bg-pink-500 hover:border-pink-500',
   },
   {
     icon: <FaTiktok className="h-5 w-5" />,
     label: 'Tiktok',
-    href: 'https://youtube.com/@mycaaquatic',
+    href: 'https://www.tiktok.com/@mycalesrenang.smg',
     color: 'hover:bg-red-500 hover:border-red-500',
   },
    {
     icon: <FaFacebook className="h-5 w-5" />,
     label: 'Facebook',
-    href: 'https://youtube.com/@mycaaquatic',
+    href: 'https://www.facebook.com/lesrenang.smg',
     color: 'hover:bg-red-500 hover:border-red-500',
   },
 ];
@@ -209,22 +209,33 @@ export const MYCA_SEOS_FAQS = [
 ];
 
 export const coreValues = [
-    {
-      icon: <Smile className="h-6 w-6 text-cyan-600" />,
-      title: 'Berenang itu Seru!',
-      desc: 'Kami percaya bahwa pengajaran terbaik dimulai dari kegembiraan. Tidak ada metode teror atau pemaksaan anak ke dalam air.'
-    },
-    {
-      icon: <Anchor className="h-6 w-6 text-cyan-600" />,
-      title: 'Metode Water Safety',
-      desc: 'Murid diajarkan cara mengapung darurat (survival floating) dan keselamatan diri di air sebelum melatih gaya berenang lanjutan.'
-    },
-    {
-      icon: <Award className="h-6 w-6 text-cyan-600" />,
-      title: 'Instruktur Tersertifikasi',
-      desc: 'Seluruh tim pelatih MYCA dilatih langsung di bawah bimbingan Miss Yenny dan bersertifikat penyelamatan air (lifeguard).'
-    }
-  ];
+  {
+    icon: <Smile className="h-6 w-6 text-cyan-600" />,
+    title: 'Berenang itu Seru!',
+    desc: 'Kami percaya bahwa pengajaran terbaik dimulai dari kegembiraan. Tidak ada metode teror atau pemaksaan anak ke dalam air.'
+  },
+  {
+    icon: <Anchor className="h-6 w-6 text-cyan-600" />,
+    title: 'Metode Water Safety',
+    desc: 'Murid diajarkan cara mengapung darurat (survival floating) dan keselamatan diri di air sebelum melatih gaya berenang lanjutan.'
+  },
+  {
+    icon: <Award className="h-6 w-6 text-cyan-600" />,
+    title: 'Instruktur / Pelatih Berpengalaman',
+    desc: 'Seluruh tim pelatih MYCA dilatih langsung di bawah bimbingan Miss Yenny dan bersertifikat penyelamatan air (lifeguard).'
+  },
+  {
+    icon: <Layers className="h-6 w-6 text-cyan-600" />,
+    title: 'Level Skill Berenang',
+    desc: 'Program kami memiliki tingkatan skill yang jelas, dari pemula hingga mahir, sehingga murid dapat melihat progres nyata dalam perjalanan belajarnya.'
+  },
+  {
+    icon: <Trophy className="h-6 w-6 text-cyan-600" />,
+    title: 'Swimming Fun Tahunan',
+    desc: 'Setiap tahun diadakan lomba renang menyenangkan untuk menambah kepercayaan diri, keberanian, dan semangat kompetisi sehat bagi murid.'
+  }
+];
+
 
 
 
