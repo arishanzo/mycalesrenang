@@ -23,6 +23,7 @@ const BookingForm = () => {
 
   // Step 1 – Biodata
   const [studentName, setStudentName] = useState('');
+   const [namaPanggilan, setNamaPanggilan] = useState('');
   const [parentName, setParentName] = useState('');
   const [gender, setGender] = useState('');
   const [birthDate, setBirthDate] = useState('');
@@ -88,6 +89,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
       id: Math.random().toString(36).substr(2, 9),
       booking_code: randomCode,
       student_name: studentName,
+      nama_panggilan: namaPanggilan,
       parent_name: Number(age) < 15 ? parentName : undefined,
       gender,
       birth_date: birthDate,
@@ -134,6 +136,7 @@ Saya ingin konfirmasi pendaftaran.
 
 *KODE:* ${booking.booking_code}
 *Nama Lengkap:* ${booking.student_name}
+*Nama Lengkap:* ${booking.nama_panggilan}
 *Jenis Kelamin:* ${booking.gender}
 *Tanggal Lahir:* ${booking.birth_date ?  new Date(booking.birth_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
 *Umur:* ${booking.age}
@@ -270,6 +273,8 @@ const handleFinishPayment = async () => {
               <BiodataSiswa
                 setStudentName={setStudentName}
                 studentName={studentName}
+                namaPanggilan={namaPanggilan}
+                setNamaPanggilan={setNamaPanggilan}
                 gender={gender}
                 setGender={setGender}
                 birthDate={birthDate}
