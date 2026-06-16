@@ -65,8 +65,8 @@ export default function Layanan() {
                 {item.description}
               </p>
 
-              <a
-                href='/pendaftaran'
+              <button
+                onClick={() => handleCTA(item.id)}
                 className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-semibold bg-marine-900 hover:bg-cyan-500 text-white transition-all duration-300 group cursor-pointer"
               >
                 Daftar Program Ini
