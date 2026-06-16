@@ -6,7 +6,7 @@ import React from "react";
     { num: 2, label: 'Layanan' },
      { num: 3, label: 'Invoice' },
     { num: 4, label: 'Bukti Bayar' },
-    { num: 5, label: 'Status' },
+    { num: 5, label: 'Selesai' },
   ];
 
 const StepPemesanan = ({ currentStep }: { currentStep: number }) => {
