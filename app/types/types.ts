@@ -31,6 +31,7 @@ export interface BookingSubmission {
   id: string;
   booking_code: string;
   student_name: string;
+  nama_panggilan: string;
   parent_name?: string; // If student is child
   gender: string;
   birth_date: string;
