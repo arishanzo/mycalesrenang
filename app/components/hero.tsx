@@ -122,7 +122,7 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
             {/* Micro Badges for SEO/Credibility */}
             <div className="flex flex-wrap gap-3 mt-1">
               <span className="hero-badge-item inline-flex items-center gap-1.5 text-xs bg-white text-marine-800 border border-marine-200 py-1 px-3 rounded-lg shadow-sm">
-                <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Kolam Air Hangat (Indoor)
+                <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Tempat Kolam Bekerjasama Dengan Kami
               </span>
               <span className="hero-badge-item inline-flex items-center gap-1.5 text-xs bg-white text-marine-800 border border-marine-200 py-1 px-3 rounded-lg shadow-sm">
                 <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Sistem Air Bebas Klorin
