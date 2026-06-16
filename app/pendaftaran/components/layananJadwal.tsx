@@ -241,12 +241,15 @@ const LayananJadwal = ({
               <CalendarDays className="h-4 w-4 text-cyan-600" />
               Hari Les <span className="text-red-500">*</span>
             </label>
+             <p className="text-[10px] text-cyan-700 font-medium">
+                Jika Mau Rubah Hari Silahkan Klik Hari Kembali.
+              </p>
             <div className="flex flex-wrap gap-2">
               {DaysList.map((day,index) => (
                 <button
                   key={`${day}-${index}`}
                   type="button"
-                  id={`day-btn-${day}`}
+                  id={`input-start-day`}
                   onClick={() => toggleDay( day.id,day.name)}
                   className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
                     courseDays.some(d => d.id === day.id && d.name === day.name)
