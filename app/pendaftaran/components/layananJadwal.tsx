@@ -18,12 +18,17 @@ const TYPE_LABEL: Record<string, string> = {
   oncecourse: 'Once Course',
 };
 
-const TIME_SLOTS = [
-  '06:00', '06:30', '07:00', '07:30', '08:00', '08:30',
-  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-  '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
-  '17:00', '17:30', '18:00',
-];
+const TIME_SLOTS = []
+
+for (let hour = 6; hour <= 18; hour++) {
+  for (let minute = 0; minute < 60; minute++) {
+    if (hour === 18 && minute > 0) break
+
+    TIME_SLOTS.push(
+      `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+    )
+  }
+}
 
 interface LayananJadwalProps {
   
