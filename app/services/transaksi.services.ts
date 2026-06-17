@@ -37,4 +37,21 @@ export const updatePerpanjangan = async (
     },
     body: data instanceof FormData ? data : JSON.stringify(data),
   });
+  
 };
+
+
+
+
+
+export const updateStatusBooking = async ( id: string, status: string) : Promise<BookingSubmission> => {
+    
+    return await fetchAPI<BookingSubmission>(`/transaksi/${id}/status`, {
+        method: "PUT",
+        headers: {
+       ...authHeaders,
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({status}),
+    });
+  };
