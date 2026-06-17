@@ -18,7 +18,7 @@ const TYPE_LABEL: Record<string, string> = {
   oncecourse: 'Once Course',
 };
 
-const TIME_SLOTS = []
+const TIME_SLOTS: string[] = [];
 
 for (let hour = 6; hour <= 18; hour++) {
   for (let minute = 0; minute < 60; minute++) {
@@ -29,6 +29,9 @@ for (let hour = 6; hour <= 18; hour++) {
     )
   }
 }
+
+console.log(TIME_SLOTS)
+
 
 interface LayananJadwalProps {
   
@@ -98,6 +101,14 @@ const LayananJadwal = ({
   };
 
   const catLabel = CATEGORIES.find(c => c.id === category)?.label ?? '';
+
+  // dropdown & search state for time picker
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchTime, setSearchTime] = useState<string>('');
+
+  const filteredTimeSlots = TIME_SLOTS.filter(t =>
+    t.includes(searchTime.trim())
+  );
 
   // min date = today
   const today = new Date().toISOString().split('T')[0];
@@ -221,24 +232,85 @@ const LayananJadwal = ({
             </div>
 
            
-          {/* Jam Les */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
-              <Clock className="h-4 w-4 text-cyan-600" />
-              Jam Les <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="select-course-time"
-              value={courseTime}
-              onChange={e => setCourseTime(e.target.value)}
-              className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+         {/* Jam Les */}
+<div className="flex flex-col gap-2 relative">
+  <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
+    <Clock className="h-4 w-4 text-cyan-600" />
+    Jam Les <span className="text-red-500">*</span>
+  </label>
+
+  {/* Trigger */}
+  <button
+    type="button"
+    onClick={() => setIsOpen(!isOpen)}
+    className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 text-left flex items-center justify-between"
+  >
+    <span>
+      {courseTime ? `${courseTime} WIB` : "-- Pilih Jam --"}
+    </span>
+
+    <svg
+      className={`w-4 h-4 transition-transform ${
+        isOpen ? "rotate-180" : ""
+      }`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M19 9l-7 7-7-7"
+      />
+    </svg>
+  </button>
+
+  {/* Dropdown */}
+  {isOpen && (
+    <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-marine-100 rounded-xl shadow-lg overflow-hidden">
+      {/* Search */}
+      <div className="p-2 border-b">
+        <input
+          type="text"
+          placeholder="Cari jam..."
+          value={searchTime}
+          onChange={(e) => setSearchTime(e.target.value)}
+          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-cyan-500"
+          autoFocus
+        />
+      </div>
+
+      {/* Options */}
+      <div className="max-h-60 overflow-y-auto">
+        {filteredTimeSlots.length > 0 ? (
+          filteredTimeSlots.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => {
+                setCourseTime(t);
+                setSearchTime("");
+                setIsOpen(false);
+              }}
+              className={`w-full text-left px-4 py-3 text-sm hover:bg-cyan-50 transition-colors ${
+                courseTime === t
+                  ? "bg-cyan-100 text-cyan-700 font-medium"
+                  : ""
+              }`}
             >
-              <option value="">-- Pilih Jam --</option>
-              {TIME_SLOTS.map(t => (
-                <option key={t} value={t}>{t} WIB</option>
-              ))}
-            </select>
+              {t} WIB
+            </button>
+          ))
+        ) : (
+          <div className="px-4 py-3 text-sm text-gray-500">
+            Jam tidak ditemukan
           </div>
+        )}
+      </div>
+    </div>
+  )}
+</div>
 
             {/* Hari Les */}
           <div className="flex flex-col gap-2">
