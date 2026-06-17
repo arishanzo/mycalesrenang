@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ArrowRight, Waves, ShieldCheck,Star } from 'lucide-react';
-import Image from 'next/image';
+import { ArrowRight, Waves, ShieldCheck, Sparkles, Star } from 'lucide-react';
 
 interface HeroProps {
+  onJoinClick: () => void;
   onExploreClick: () => void;
 }
 
-export default function Hero({onExploreClick }: HeroProps) {
+export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
@@ -122,7 +122,7 @@ export default function Hero({onExploreClick }: HeroProps) {
             {/* Micro Badges for SEO/Credibility */}
             <div className="flex flex-wrap gap-3 mt-1">
               <span className="hero-badge-item inline-flex items-center gap-1.5 text-xs bg-white text-marine-800 border border-marine-200 py-1 px-3 rounded-lg shadow-sm">
-                <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Kolam Air Hangat (Indoor)
+                <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Tempat Kolam Bekerjasama Dengan Kami
               </span>
               <span className="hero-badge-item inline-flex items-center gap-1.5 text-xs bg-white text-marine-800 border border-marine-200 py-1 px-3 rounded-lg shadow-sm">
                 <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Sistem Air Bebas Klorin
@@ -139,7 +139,7 @@ export default function Hero({onExploreClick }: HeroProps) {
             >
               <a
                 id="hero-join-now"
-                href='/pendaftaran'
+                href={'/pendaftaran'}
                 className="flex items-center justify-center gap-2 px-8 py-4 text-white bg-marine-800 hover:bg-cyan-500 rounded-2xl shadow-lg hover:shadow-cyan-200/50 transition-all duration-300 font-semibold group cursor-pointer"
               >
                 Booking Jadwal Sekarang
@@ -189,11 +189,9 @@ export default function Hero({onExploreClick }: HeroProps) {
               {/* Overlay Glass effect */}
               <div className="absolute inset-0 bg-gradient-to-t from-marine-950/70 via-transparent to-transparent opacity-60 pointer-events-none" />
 
-              <Image
+              <img
                 id="hero-img-asset"
-                height={320}
-                width={420}
-                src="/images/hero_swimming_pool_1780638038914.png"
+                src="/images/gambar4.jpeg"
                 alt="MYCA Les Renang Premium Swimming Center Pool Semarang"
                 className="w-full h-[320px] sm:h-[420px] object-cover transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
@@ -211,7 +209,7 @@ export default function Hero({onExploreClick }: HeroProps) {
                     ))}
                   </div>
                   <p className="text-xs font-semibold text-marine-950 mt-0.5">Kids & Adults Program</p>
-                  <p className="text-[10px] text-marine-600 font-baloo">Semarang</p>
+                  <p className="text-[10px] text-marine-600 font-[Baloo_2]">Semarang</p>
                 </div>
               </div>
             </div>

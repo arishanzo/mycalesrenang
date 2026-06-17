@@ -1,7 +1,7 @@
 
 import { FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { SwimmingPackage, SemarangLocation, SwimTestimonial,  } from '../types/types';
-import { User, Users, Waves, BookOpen, Award, Smile, Anchor,  Phone, Mail,Clock,} from 'lucide-react';
+import { User, Users, Waves, BookOpen, Award, Smile, Anchor,  Phone, Mail,Clock, Layers, Trophy,} from 'lucide-react';
 
 
 
@@ -209,22 +209,33 @@ export const MYCA_SEOS_FAQS = [
 ];
 
 export const coreValues = [
-    {
-      icon: <Smile className="h-6 w-6 text-cyan-600" />,
-      title: 'Berenang itu Seru!',
-      desc: 'Kami percaya bahwa pengajaran terbaik dimulai dari kegembiraan. Tidak ada metode teror atau pemaksaan anak ke dalam air.'
-    },
-    {
-      icon: <Anchor className="h-6 w-6 text-cyan-600" />,
-      title: 'Metode Water Safety',
-      desc: 'Murid diajarkan cara mengapung darurat (survival floating) dan keselamatan diri di air sebelum melatih gaya berenang lanjutan.'
-    },
-    {
-      icon: <Award className="h-6 w-6 text-cyan-600" />,
-      title: 'Instruktur Tersertifikasi',
-      desc: 'Seluruh tim pelatih MYCA dilatih langsung di bawah bimbingan Miss Yenny dan bersertifikat penyelamatan air (lifeguard).'
-    }
-  ];
+  {
+    icon: <Smile className="h-6 w-6 text-cyan-600" />,
+    title: 'Berenang itu Seru!',
+    desc: 'Kami percaya bahwa pengajaran terbaik dimulai dari kegembiraan. Tidak ada metode teror atau pemaksaan anak ke dalam air.'
+  },
+  {
+    icon: <Anchor className="h-6 w-6 text-cyan-600" />,
+    title: 'Metode Water Safety',
+    desc: 'Murid diajarkan cara mengapung darurat (survival floating) dan keselamatan diri di air sebelum melatih gaya berenang lanjutan.'
+  },
+  {
+    icon: <Award className="h-6 w-6 text-cyan-600" />,
+    title: 'Instruktur / Pelatih Berpengalaman',
+    desc: 'Seluruh tim pelatih MYCA dilatih langsung di bawah bimbingan Miss Yenny dan bersertifikat penyelamatan air (lifeguard).'
+  },
+  {
+    icon: <Layers className="h-6 w-6 text-cyan-600" />,
+    title: 'Level Skill Berenang',
+    desc: 'Program kami memiliki tingkatan skill yang jelas, dari pemula hingga mahir, sehingga murid dapat melihat progres nyata dalam perjalanan belajarnya.'
+  },
+  {
+    icon: <Trophy className="h-6 w-6 text-cyan-600" />,
+    title: 'Swimming Fun Tahunan',
+    desc: 'Setiap tahun diadakan lomba renang menyenangkan untuk menambah kepercayaan diri, keberanian, dan semangat kompetisi sehat bagi murid.'
+  }
+];
+
 
 
 

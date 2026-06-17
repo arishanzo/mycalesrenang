@@ -25,15 +25,16 @@ export const createBooking = async (
 
 
 
-export const updateStatusBooking = async ( id: string, status: string) : Promise<BookingSubmission> => {
-    
-    return await fetchAPI<BookingSubmission>(`/transaksi/${id}/status`, {
-        method: "PUT",
-        headers: {
-       ...authHeaders,
-        "Content-Type": "application/json",
-        },
-        body: JSON.stringify({status}),
-    });
-
-}
+export const updatePerpanjangan = async (
+  id: string,
+  data: Partial<BookingSubmission> | FormData
+): Promise<BookingSubmission> => {
+  return await fetchAPI<BookingSubmission>(`/transaksi/${id}/perpanjangan`, {
+    method: "PUT",
+    headers: {
+      ...authHeaders,
+      // ❌ jangan set Content-Type, biarkan browser otomatis set multipart/form-data
+    },
+    body: data instanceof FormData ? data : JSON.stringify(data),
+  });
+};

@@ -1,16 +1,45 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Award, CheckCircle2 } from 'lucide-react';
+import { Award, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { coreValues } from '../libs/data';
 import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const images = [
+  {
+    src: "/images/gambar5.jpeg",
+    alt: "Instruktur Renang MYCA Les Renang Semarang Mengajar Privat"
+  },
+  {
+    src: "/images/gambar6.jpeg",
+    alt: "Slide 2"
+  },
+  {
+    src: "/images/gambar7.jpeg",
+    alt: "Slide 3"
+  },
+   {
+    src: "/images/gambar8.jpeg",
+    alt: "Slide 4"
+  },
+   {
+    src: "/images/gambar9.jpeg",
+    alt: "Slide 5"
+  },
+   {
+    src: "/images/gambar10.jpeg",
+    alt: "Slide 6"
+  }
+];
+
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
+
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -57,6 +86,17 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
+
+   // Auto slide setiap 5 detik
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextSlide = () => setCurrent((prev) => (prev + 1) % images.length);
+  const prevSlide = () => setCurrent((prev) => (prev - 1 + images.length) % images.length);
   
 
   return (
@@ -86,18 +126,32 @@ export default function About() {
               {/* Golden beach/sand background accent */}
               <div className="absolute -top-4 -left-4 w-72 h-72 bg-cyan-200/40 rounded-full blur-3xl -z-10" />
               <div className="absolute -bottom-6 -right-6 w-1/2 h-1/2 bg-marine-200/40 rounded-3xl -z-10" />
+  <div className="relative w-full max-w-lg mx-auto">
+      <div className="rounded-3xl overflow-hidden shadow-xl border-4 border-white transform hover:rotate-1 transition-transform duration-500">
+        <Image
+          width={400}
+          height={400}
+          src={images[current].src}
+          alt={images[current].alt}
+          className="w-full h-[400px] object-cover"
+          referrerPolicy="no-referrer"
+        />
+      </div>
 
-              <div className="rounded-3xl overflow-hidden shadow-xl border-4 border-white transform hover:rotate-1 transition-transform duration-500">
-                <Image
-                width={400}
-                height={400}
-                  id="about-img-coach"
-                  src="/images/private_coach_1780638055912.png"
-                  alt="Instruktur Renang MYCA Les Renang Semarang Mengajar Privat"
-                  className="w-full h-[400px] object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
+      {/* Tombol panah */}
+      <button
+        onClick={prevSlide}
+        className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 hover:bg-white text-marine-900 rounded-full p-2 shadow"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 hover:bg-white text-marine-900 rounded-full p-2 shadow"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+    </div>
 
               {/* Float Badge */}
               <div className="absolute -bottom-4 left-6 p-4 bg-marine-850 bg-gradient-to-r from-marine-950 to-marine-900 text-white rounded-2xl shadow-xl flex items-center gap-3">

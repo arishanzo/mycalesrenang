@@ -156,6 +156,28 @@ const BiodataSiswa = ({
             />
           </div>
 
+           {/* No. WhatsApp */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider">
+              No. WhatsApp Aktif <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <input
+                id="input-student-whatsapp"
+                type="tel"
+                required
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                placeholder="Contoh: 08123456789"
+                className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 pl-11 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+              />
+              <Phone className="absolute left-4 top-3.5 h-4 w-4 text-marine-400" />
+            </div>
+            <p className="text-[10px] text-marine-500">
+              * Nomor ini akan digunakan pelatih MYCA untuk koordinasi jadwal latihan.
+            </p>
+          </div>
+
           {/* Nama Orang Tua (kondisional) */}
           {age !== '' && age < 15 && (
             <div className="flex flex-col gap-2 sm:col-span-2 bg-cyan-50/50 p-4 rounded-2xl border border-cyan-100">
@@ -177,27 +199,7 @@ const BiodataSiswa = ({
             </div>
           )}
 
-          {/* No. WhatsApp */}
-          <div className="flex flex-col gap-2 sm:col-span-2">
-            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider">
-              No. WhatsApp Aktif <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <input
-                id="input-student-whatsapp"
-                type="tel"
-                required
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                placeholder="Contoh: 08123456789"
-                className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 pl-11 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
-              />
-              <Phone className="absolute left-4 top-3.5 h-4 w-4 text-marine-400" />
-            </div>
-            <p className="text-[10px] text-marine-500">
-              * Nomor ini akan digunakan pelatih MYCA untuk koordinasi jadwal latihan.
-            </p>
-          </div>
+         
         </div>
 
         <div className="flex justify-end pt-6 border-t border-marine-50">

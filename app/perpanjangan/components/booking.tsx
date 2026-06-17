@@ -10,7 +10,7 @@ import BuktiPembayaran from './buktiPembayaran';
 import StepPemesanan from './stepsPemesanan';
 import { InvoiceStep } from './invoice';
 import { printDocument } from '@/app/utils/print';
-import { createBooking } from '@/app/services/transaksi.services';
+import { createBooking, updatePerpanjangan } from '@/app/services/transaksi.services';
 import Swal from 'sweetalert2';
 import { File } from 'buffer';
 
@@ -22,6 +22,7 @@ const BookingForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
 
   // Step 1 – Biodata
+  const [idBooking, setIdBooking] = useState('');
   const [studentName, setStudentName] = useState('');
    const [namaPanggilan, setNamaPanggilan] = useState('');
   const [parentName, setParentName] = useState('');
@@ -86,13 +87,13 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
     const randomCode = 'MYCA-' + Math.floor(1000 + Math.random() * 9000);
 
     const newBooking: BookingSubmission = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: idBooking,
       booking_code: randomCode,
       student_name: studentName,
-      nama_panggilan: namaPanggilan,
+      nama_panggilan: namaPanggilan ? namaPanggilan : '-',
       parent_name: Number(age) < 15 ? parentName : undefined,
       gender,
-      birth_date: birthDate,
+      birth_date: new Date(birthDate).toISOString().slice(0, 10),
       age: Number(age),
       phone,
       package_id: packageId,
@@ -100,11 +101,11 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
       course_day: courseDays.map(i => i.name).join(','),
       course_time: courseTime,
       start_date:   startDate ?? new Date(),
-      schedule_preference: `${courseTime} WIB · Mulai ${startDate}`,
+      schedule_preference: `${courseTime} WIB · Mulai ${ new Date(startDate).toISOString().slice(0, 10)}`,
       notes,
       total_price: totalPrice,
       paymentProof: paymentProof ?? undefined,
-      status: 'Menunggu Konfirmasi'
+      status: 'Perpanjangan - Menunggu Konfirmasi'
     };
     
     const updatedHistory = [newBooking, ...bookingHistory];
@@ -132,11 +133,11 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
     
   const text = `Halo Admin,
 
-Saya ingin konfirmasi pendaftaran.
+Saya ingin konfirmasi Perpanjangan pendaftaran.
 
 *KODE:* ${booking.booking_code}
 *Nama Lengkap:* ${booking.student_name}
-*Nama Lengkap:* ${booking.nama_panggilan}
+*Nama Panggilan:* ${booking.nama_panggilan}
 *Jenis Kelamin:* ${booking.gender}
 *Tanggal Lahir:* ${booking.birth_date ?  new Date(booking.birth_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
 *Umur:* ${booking.age}
@@ -176,6 +177,7 @@ window.open(
     });
   };
 
+
 const handleFinishPayment = async () => {
   if (!confirmedBooking) return;
 
@@ -189,10 +191,9 @@ const handleFinishPayment = async () => {
       formData.append(key, val);
     });
 
-
   try {
 
-    const res = await createBooking(formData);
+    const res = await updatePerpanjangan(idBooking , formData);
 
     if (res) {
       // misalnya tampilkan alert sukses
@@ -233,13 +234,13 @@ const handleFinishPayment = async () => {
         {/* Heading */}
         <div className="text-center mb-12">
           <span className="inline-flex items-center text-xs font-mono font-bold tracking-widest text-cyan-600 uppercase bg-cyan-100/60 border border-cyan-200 px-4 py-1.5 rounded-full mb-3">
-            REGISTRASI LES ONLINE
+            Perpanjangan
           </span>
           <h2 className="font-display md:text-4xl text-4xl sm:text-4xl font-bold text-marine-900 mt-3 tracking-tight">
-            Formulir Pendaftaran Murid Baru
+            Formulir Perpanjangan Murid Baru
           </h2>
           <p className="text-sm text-marine-600 mt-2 font-light max-w-lg mx-auto">
-            Isi biodata, pilih layanan &amp; jadwal, upload bukti pembayaran, lalu pantau status pendaftaran Anda.
+           Cari Nama Lengkap Anda lalu, pilih layanan &amp; jadwal, upload bukti pembayaran, lalu pantau status pendaftaran Anda.
           </p>
           <div className="h-1 bg-gradient-to-r from-marine-600 to-cyan-400 mx-auto mt-4 w-20 rounded-full" />
         </div>
@@ -271,6 +272,7 @@ const handleFinishPayment = async () => {
             {/* ── STEP 1: BIODATA SISWA ── */}
             {currentStep === 1 && (
               <BiodataSiswa
+                setId={setIdBooking}
                 setStudentName={setStudentName}
                 studentName={studentName}
                 namaPanggilan={namaPanggilan}

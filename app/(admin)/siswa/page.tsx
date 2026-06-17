@@ -121,7 +121,7 @@ export default function SiswaPage() {
                       checked={selected.length === filtered?.length && filtered.length > 0}
                       onChange={(e) => setSelected(e.target.checked ? filtered?.map((s) => s.id) : [])} />
                   </th>
-                  {['Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
+                  {['Nama Lengkap Siswa' ,'Nama Panggilan Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -142,6 +142,8 @@ export default function SiswaPage() {
                       </div>
                     </td>
                     
+                     <td className="px-3 py-2.5 text-marine-600">{s.nama_panggilan === 'undefined' ? '-' : s.nama_panggilan}</td>
+                   
 
                     <td className="px-3 py-2.5 text-marine-600">{s.parent_name === 'undefined' ? '-' : s.parent_name}</td>
                     

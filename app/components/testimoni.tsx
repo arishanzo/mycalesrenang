@@ -43,7 +43,7 @@ export default function Testimonials() {
         
         {/* Testimonials Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-flex items-center text-xs font-baloo font-bold tracking-widest text-cyan-400 uppercase bg-marine-900/60 border border-marine-800 px-4 py-1.5 rounded-full mb-3">
+          <span className="inline-flex items-center text-xs font-[Baloo_2] font-bold tracking-widest text-cyan-400 uppercase bg-marine-900/60 border border-marine-800 px-4 py-1.5 rounded-full mb-3">
             KATA MEREKA
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 tracking-tight">
@@ -75,7 +75,7 @@ export default function Testimonials() {
                   {[...Array(test.rating)].map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-amber-500 stroke-amber-500" />
                   ))}
-                  <span className="text-xs font-baloo text-marine-300 ml-1">5.0 / 5.0</span>
+                  <span className="text-xs font-[Baloo_2] text-marine-300 ml-1">5.0 / 5.0</span>
                 </div>
 
                 <p className="text-xs sm:text-sm text-marine-200 font-light leading-relaxed mb-6 italic text-left">

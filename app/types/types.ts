@@ -46,7 +46,7 @@ export interface BookingSubmission {
   notes?: string;
   total_price: number;
    paymentProof?: File | string; // base64 image or file URL
-  status: 'Menunggu Konfirmasi' | 'Terkonfirmasi' | 'Pembayaran Diterima';
+  status: 'Perpanjangan - Menunggu Konfirmasi' | 'Menunggu Konfirmasi' | 'Terkonfirmasi' | 'Pembayaran Diterima';
  
 }
 

@@ -1,12 +1,22 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { User, Users, Waves, BookOpen, CheckCircle, ArrowRight } from 'lucide-react';
 import { LAYANAN_LIST } from '../libs/data';
 
+interface LayananProps {
+  onSelectPackage: (packageId: string) => void;
+}
 
-export default function Layanan() {
- 
+export default function Layanan({ onSelectPackage }: LayananProps) {
+  const handleCTA = (id: string) => {
+    onSelectPackage(id);
+    const el = document.getElementById('booking-form');
+    if (el) {
+      const offsetPosition = el.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+  };
 
   return (
     <section
@@ -21,7 +31,7 @@ export default function Layanan() {
 
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="inline-flex items-center text-xs font-baloo font-bold tracking-widest text-cyan-600 uppercase bg-cyan-50 border border-cyan-200 px-4 py-1.5 rounded-full mb-4">
+          <span className="inline-flex items-center text-xs font-[Baloo_2] font-bold tracking-widest text-cyan-600 uppercase bg-cyan-50 border border-cyan-200 px-4 py-1.5 rounded-full mb-4">
             Program Les Renang
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-marine-900 leading-tight mb-4">
@@ -51,7 +61,7 @@ export default function Layanan() {
                   {item.icon}
                 </div>
                 <div>
-                  <span className={`inline-block text-[10px] font-baloo font-bold tracking-wider uppercase border px-2.5 py-1 rounded-md mb-1.5 ${item.badgeColor}`}>
+                  <span className={`inline-block text-[10px] font-[Baloo_2] font-bold tracking-wider uppercase border px-2.5 py-1 rounded-md mb-1.5 ${item.badgeColor}`}>
                     {item.badge}
                   </span>
                   <h3 className="font-display text-xl font-bold text-marine-900 leading-snug">
@@ -65,7 +75,8 @@ export default function Layanan() {
                 {item.description}
               </p>
 
-              <a href={'/pendaftaran'}
+              <a
+               href={'/pendaftaran'}
                 className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-semibold bg-marine-900 hover:bg-cyan-500 text-white transition-all duration-300 group cursor-pointer"
               >
                 Daftar Program Ini
@@ -77,7 +88,7 @@ export default function Layanan() {
 
         {/* Bottom note */}
         <p className="text-center text-xs text-marine-500 mt-12 max-w-xl mx-auto">
-          Semua program tersedia di MYCA (Miss Yenny Center of Aquatic), . Instruktur bersertifikat ·  inklusif · Konsultasi gratis sebelum mendaftar.
+          Semua program tersedia di MYCA (Miss Yenny Center of Aquatic), . Instruktur bersertifikat · Asuransi keselamatan inklusif · Konsultasi gratis sebelum mendaftar.
         </p>
 
       </div>

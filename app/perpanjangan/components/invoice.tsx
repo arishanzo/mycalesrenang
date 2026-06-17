@@ -41,7 +41,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
           <FileText className="h-7 w-7 text-amber-600" />
         </div>
         <h3 className="text-2xl font-display font-bold text-marine-900">
-          Invoice Pendaftaran Diterbitkan!
+          Invoice Perpanjangan Diterbitkan!
         </h3>
         <p className="text-xs text-marine-600 mt-1 max-w-md mx-auto">
           Silakan screnshoot atau simpan Invoice resmi di bawah ini sebelum melakukan transfer bank, kemudian klik tombol unggah bukti di bagian bawah.
@@ -69,7 +69,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
 
           {/* Invoice Meta right */}
           <div className="md:col-span-4 text-left md:text-right font-sans">
-            <p className="text-[10px] text-marine-500 uppercase font-mono tracking-wider font-semibold">NOMOR INVOICE</p>
+            <p className="text-[10px] text-marine-500 uppercase font-mono tracking-wider font-semibold">NOMOR INVOICE Perpanjangan</p>
             <p className="text-lg font-bold font-mono text-marine-900 tracking-wider mt-0.5">
               INV/MYCA/{confirmedBooking?.booking_code.split('-')[1]}
             </p>
@@ -88,7 +88,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
         {/* Core Information Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 py-6 border-b border-marine-150 text-sm">
           <div>
-            <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Nama Lengkap Murid</p>
+            <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Atas Nama Lengkap Murid</p>
             <p className="font-bold text-marine-900 mt-0.5">{confirmedBooking?.student_name}</p>
           </div>
           <div>
@@ -176,7 +176,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
         </div>
 
         {/* Bank Transfer Details with Copy Options */}
-        <div className="pt-6 font-sans">
+        <div className="py-6 font-sans">
           <h4 className="text-xs font-bold font-display text-marine-900 uppercase tracking-widest mb-3 flex items-center gap-1.5">
             <CreditCard className="h-4 w-4 text-cyan-600" />
             METODE PEMBAYARAN TRANSFER BANK
@@ -220,28 +220,28 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
             </div>
           </div>
 
-<div className="border border-blue-300 rounded-lg p-6 shadow-sm bg-white">
-  <h2 className="text-2xl font-bold text-blue-700 mb-2">
-    Peraturan di Komunitas
-  </h2>
-  <h3 className="text-lg font-semibold text-gray-700 mb-4">
-    Les Renang Myca
-  </h3>
-
-  <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
-    {rules.map((rule, index) => (
-      <li key={index}>{rule}</li>
-    ))}
-  </ol>
-
-  <div className="mt-6 text-center text-blue-600 font-semibold">
-    See you at the pool!
-  </div>
-</div>
-
 
          
         </div>
+
+            <div className="border border-blue-300 rounded-lg p-6 P shadow-sm bg-white">
+            <h2 className="text-2xl font-bold text-blue-700 mb-2">
+              Peraturan di Komunitas
+            </h2>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              Les Renang Myca
+            </h3>
+
+            <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
+              {rules.map((rule, index) => (
+                <li key={index}>{rule}</li>
+              ))}
+            </ol>
+
+            <div className="mt-6 text-center text-blue-600 font-semibold">
+              See you at the pool!
+            </div>
+          </div>
 
       </div>
 
@@ -261,20 +261,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
 
       {/* Print Invoice trigger and flow advancements */}
       <div className="flex flex-col sm:flex-row gap-4 items-stretch justify-center pt-2">
-        {/* <button
-          id="btn-print-invoice"
-          type="button"
-          onClick={handlePrint}
-          className={`flex items-center justify-center gap-1.5 py-3 px-5 border-2 rounded-xl transition-all text-sm font-semibold cursor-pointer ${
-            !invoicePrinted 
-              ? 'border-amber-400 bg-amber-50 hover:bg-amber-100 text-amber-900 animate-pulse shadow-md shadow-amber-200/50' 
-              : 'border-marine-250 bg-marine-50 hover:bg-marine-100 text-marine-800'
-          }`}
-        >
-          <Printer className="h-4 w-4" />
-          Cetak / Simpan PDF Invoice {invoicePrinted && '✓'}
-        </button> */}
-
+   
         <button
           id="btn-goto-upload"
           type="button"
@@ -298,15 +285,6 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
           Revisi Pendaftaran
         </button>
       </div>
-
-      {/* Print Invoice helper banner for iframe compatibility */}
-      {/* <div className="no-print mt-4 p-4 bg-cyan-50/70 border border-cyan-150 rounded-2xl flex gap-3 items-start text-xs text-cyan-800 leading-relaxed max-w-2xl mx-auto shadow-sm">
-        <AlertCircle className="h-4.5 w-4.5 text-cyan-600 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-bold text-cyan-950 block mb-0.5">💡 Tips Cetak & Simpan PDF:</span>
-          Jika tombol cetak tidak berespon pada tampilan pratinjau saat ini, silakan tekan tombol <strong>Open App in New Tab (ikon panah keluar di pojok kanan atas layar pratinjau browser)</strong> untuk membukanya di tab baru secara utuh, lalu tekan kembali tombol Cetak. Anda dapat memilih printer <strong>Save as PDF</strong> untuk mengunduhnya secara digital.
-        </div>
-      </div> */}
 
     </div>
   );
