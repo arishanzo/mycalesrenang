@@ -10,7 +10,7 @@ import BuktiPembayaran from './buktiPembayaran';
 import StepPemesanan from './stepsPemesanan';
 import { InvoiceStep } from './invoice';
 import { printDocument } from '@/app/utils/print';
-import { createBooking, updatePerpanjangan } from '@/app/services/transaksi.services';
+import {  updatePerpanjangan } from '@/app/services/transaksi.services';
 import Swal from 'sweetalert2';
 import { File } from 'buffer';
 

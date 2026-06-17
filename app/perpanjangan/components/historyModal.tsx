@@ -102,13 +102,13 @@ window.open(
                         }
                         {booking?.find(i => i.id === book.id)?.status}
                       </span>
-                      <button
+                      <a
                         id={`btn-open-ticket-${book.id}`}
-                        onClick={() => openWhatsApp(book)}
+                        href={'/perpanjangan'}
                         className="text-[10px] bg-marine-800 text-white font-semibold py-1.5 px-3 rounded-lg hover:bg-cyan-500 transition-colors cursor-pointer"
                       >
                         Perpanjang
-                      </button>
+                      </a>
                     </div>
                   </div>
                 ))}
