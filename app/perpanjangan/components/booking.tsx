@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState} from 'react';
 import { MYCA_PACKAGES, MYCA_LOCATIONS } from '../../libs/data';
 import { BookingSubmission, CourseDays } from '../../types/types';
-import { CheckCircle, History,} from 'lucide-react';
-import HistoryModal from './historyModal';
 import ConfirmedBooking from './confirmedBooking';
 import LayananJadwal from './layananJadwal';
 import BiodataSiswa from './biodataSiswa';
@@ -12,7 +10,6 @@ import { InvoiceStep } from './invoice';
 import { printDocument } from '@/app/utils/print';
 import {  updatePerpanjangan } from '@/app/services/transaksi.services';
 import Swal from 'sweetalert2';
-import { File } from 'buffer';
 
 
 
@@ -245,17 +242,6 @@ const handleFinishPayment = async () => {
           <div className="h-1 bg-gradient-to-r from-marine-600 to-cyan-400 mx-auto mt-4 w-20 rounded-full" />
         </div>
 
-        {/* History button */}
-        <div className="flex justify-end mb-6">
-          <button
-            id="btn-view-booking-history"
-            onClick={() => setShowHistoryModal(true)}
-            className="flex items-center gap-1.5 text-xs text-marine-800 hover:text-cyan-600 transition-colors border border-marine-200 py-2 px-4 rounded-xl cursor-pointer bg-marine-50/50 hover:bg-white"
-          >
-            <History className="h-4 w-4" />
-            <span>History </span>
-          </button>
-        </div>
 
         {/* Step Progress */}
         <div className="flex items-center justify-between mb-8 max-w-2xl mx-auto px-2">
@@ -362,17 +348,7 @@ const handleFinishPayment = async () => {
         </div>
       </div>
 
-      {/* History Modal */}
-      {showHistoryModal && (
-        <HistoryModal
-          onClose={() => setShowHistoryModal(false)}
-          onSelectBooking={(booking) => {
-            setConfirmedBooking(booking);
-            setCurrentStep(5);
-            setShowHistoryModal(false);
-          }}
-        />
-      )}
+     
     </section>
   );
 }
