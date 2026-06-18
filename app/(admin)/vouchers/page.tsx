@@ -3,10 +3,13 @@
 import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
 import { UseGetBooking } from '../hook/useGetBooking';
-import { Eye } from 'lucide-react';
+import { Edit, Eye, Trash } from 'lucide-react';
 import VoucherEditModal from './components/editModal';
 import { VouchersData } from '@/app/types/types';
 import VoucherAddModal from './components/addModal';
+import { UseGetVoucher } from '../hook/useGetVouchers';
+import Swal from 'sweetalert2';
+import { deleteVoucher } from '@/app/services/vourchers.services';
 
 const BADGE: Record<string, string> = {
  'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
@@ -30,28 +33,71 @@ export default function VouchersPage() {
       const [selectedVoucher, setSelectedVoucher] = useState<VouchersData | null>(null);
 
 
-     const { booking }  = UseGetBooking();
+     const { voucher }  = UseGetVoucher();
 
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterProgram, setFilterProgram] = useState('Semua');
   const [selected, setSelected] = useState<(number | string)[]>([]);
 
-  const filtered = booking?.filter((s) => {
-    const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = filterStatus === 'Semua' || s.status === filterStatus;
-    const matchProgram = filterProgram === 'Semua' || String(s.package_id) === filterProgram;
-    return matchSearch && matchStatus && matchProgram;
+  const filtered = voucher?.filter((s) => {
+    const matchSearch = s.code.toLowerCase().includes(search.toLowerCase()) || s.discount_type.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
   }) ?? [];
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
 
   const stats = [
-    { label: 'Total Voucher', value: booking?.length, color: '#296da4' },
-    { label: 'Aktif', value: booking?.filter((s) => s.status === 'Terkonfirmasi').length, color: '#059669' },
-    { label: 'Nonaktif', value: booking?.filter((s) => s.status === 'Pembayaran Diterima').length, color: '#dc2626' },
+    { label: 'Total Voucher', value: voucher?.length, color: '#296da4' },
+    { label: 'Aktif', value: voucher?.filter((s) => s.is_active === true).length, color: '#059669' },
+    { label: 'Nonaktif', value: voucher?.filter((s) => s.is_active === false).length, color: '#dc2626' },
   ];
+
+  const handleEdit = (e: VouchersData) => {
+
+    setSelectedVoucher(e)
+    setShowEditModal(true)
+  }
+
+
+  ;
+
+const handleHapus = async (id: string) => {
+  Swal.fire({
+    title: "Yakin hapus?",
+    text: "Data voucher ini akan dihapus permanen.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Ya, hapus!",
+    cancelButtonText: "Batal",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await deleteVoucher(id); // panggil API delete
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Voucher berhasil dihapus.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } catch {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Terjadi kesalahan saat menghapus voucher.",
+        });
+      } finally{
+         setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+      }
+    }
+  });
+};
 
   return (
     <AdminShell title="booking Voucher" subtitle="Kelola semua booking Voucher terdaftar">
@@ -123,74 +169,60 @@ export default function VouchersPage() {
             <p className="text-marine-500 text-[11px] font-semibold uppercase tracking-wider">
               {filtered?.length} Voucher ditemukan
             </p>
-            {selected.length > 0 && (
-              <button onClick={() => { (booking || []).filter((s) => !selected.includes(s.id)); setSelected([]); }}
-                className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                  <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                </svg>
-                Hapus {selected.length} dipilih
-              </button>
-            )}
+
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-100">
-                  <th className="px-4 py-2.5 w-8">
-                    <input type="checkbox" className="rounded"
-                      checked={selected.length === filtered?.length && filtered.length > 0}
-                      onChange={(e) => setSelected(e.target.checked ? filtered?.map((s) => s.id) : [])} />
-                  </th>
-                  {['Nama Lengkap Voucher' ,'Nama Panggilan Voucher', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
+                
+                  {[ 'No', 'Nama Lengkap Voucher' ,'Tipe Diskon', 'Nilai Diskon', 'Tanggal Mulai', 'Tanggal Berakhir', 'Action'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filtered.map((s) => (
+                {filtered.map((s, i) =>  { 
+                    const no = i + 1;
+                    return (
                   <tr key={s.id} className={`hover:bg-marine-50/40 transition-colors ${selected.includes(s.id) ? 'bg-marine-50/60' : ''}`}>
-                    <td className="px-4 py-2.5">
-                      <input type="checkbox" className="rounded" checked={selected.includes(s.id)} onChange={() => toggleSelect(s.id)} />
-                    </td>
+                       <td className="px-3 py-2.5 text-marine-600">{no}</td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
-                          style={{ background: 'linear-gradient(135deg,#1a5182,#3b8bc4)' }}>
-                          {s.student_name.charAt(0)}
-                        </div>
-                        <span className="text-marine-900 font-semibold whitespace-nowrap">{s.student_name}</span>
+                        <span className="text-marine-900 font-semibold whitespace-nowrap">{s.code}</span>
                       </div>
                     </td>
                     
-                     <td className="px-3 py-2.5 text-marine-600">{s.nama_panggilan === 'undefined' ? '-' : s.nama_panggilan}</td>
+                     <td className="px-3 py-2.5 text-marine-600">{s.discount_type}</td>
                    
 
-                    <td className="px-3 py-2.5 text-marine-600">{s.parent_name === 'undefined' ? '-' : s.parent_name}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{s.discount_type === 'percentage' ? `${Number(s.discount_value)}%` : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", }).format(s.discount_value)}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{s.age}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{new Date(s.start_date).toLocaleDateString('id-ID')}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{ new Date(s.start_date).toLocaleDateString('id-ID')}</td>
-                       <td className="px-3 py-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${PROGRAM_COLOR[s.package_id]}`}>{s.package_id}</span>
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <p className="text-marine-700">{s.gender}</p>
-                    </td>
-                    
-                    <td className="px-3 py-2.5 text-marine-600">{s.phone}</td>
-                    <td className="px-3 py-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${BADGE[s.status]}`}>{s.status}</span>
-                    </td>
+                    <td className="px-3 py-2.5 text-marine-600">{ new Date(s.end_date).toLocaleDateString('id-ID')}</td>
+                  
                    
-                    <td className="px-3 py-2.5">
-                      <a href='/transaksi' className=" rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors">
-                       <Eye />
-                      </a>
-                    </td>
+                   <td className="px-3 py-2.5">
+                        <div className="flex items-center gap-2">
+                            <button
+                            onClick={() => handleEdit(s)}
+                            className="rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors"
+                            >
+                            <Edit />
+                            </button>
+
+                            <button
+                            onClick={() => handleHapus(s.id)}
+                            className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition-colors"
+                            >
+                            <Trash />
+                            </button>
+                        </div>
+                        </td>
+
                   </tr>
-                ))}
+                )})}
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={8} className="text-center py-10 text-marine-300 text-xs">

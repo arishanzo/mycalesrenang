@@ -116,22 +116,21 @@ export default function SiswaPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-100">
-                  <th className="px-4 py-2.5 w-8">
-                    <input type="checkbox" className="rounded"
-                      checked={selected.length === filtered?.length && filtered.length > 0}
-                      onChange={(e) => setSelected(e.target.checked ? filtered?.map((s) => s.id) : [])} />
-                  </th>
-                  {['Nama Lengkap Siswa' ,'Nama Panggilan Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
+                 
+                  {['No', 'Nama Lengkap Siswa' ,'Nama Panggilan Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filtered.map((s) => (
+                {filtered.map((s, i) => 
+                
+                  { 
+                    const no = i + 1;
+                    return (
                   <tr key={s.id} className={`hover:bg-marine-50/40 transition-colors ${selected.includes(s.id) ? 'bg-marine-50/60' : ''}`}>
-                    <td className="px-4 py-2.5">
-                      <input type="checkbox" className="rounded" checked={selected.includes(s.id)} onChange={() => toggleSelect(s.id)} />
-                    </td>
+                   
+                       <td className="px-3 py-2.5 text-marine-600">{no}</td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
@@ -168,7 +167,8 @@ export default function SiswaPage() {
                       </a>
                     </td>
                   </tr>
-                ))}
+                )})}
+
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={8} className="text-center py-10 text-marine-300 text-xs">

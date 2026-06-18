@@ -32,7 +32,7 @@ export interface VouchersData{
   id: string;
   code: string;
   discount_type:'percentage' | 'fixed';
-  discount_value: string;
+  discount_value: number;
   start_date: string;
   end_date: string;
   is_active: boolean;

@@ -11,9 +11,35 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
   voucher: VouchersData | null;
   isOpen: boolean;
 }) {
-  const [form, setForm] = useState<VouchersData>(voucher ?? ({} as VouchersData));
-
  
+
+     const [form, setForm] = useState<VouchersData>({
+    id: "",
+    code: "",
+    discount_type: "percentage",
+    discount_value: Number(''),
+    start_date: "",
+    end_date: "",
+    is_active: true,
+  });
+
+
+
+  useEffect(() => {
+  if (voucher) {
+    setForm({
+      id: voucher.id ?? "",
+      code: voucher.code ?? "",
+      discount_type: voucher.discount_type ?? "percentage",
+      discount_value: Number(voucher?.discount_value ?? 0),
+      start_date:  new Date(voucher.start_date).toISOString().split("T")[0] ?? "",
+      end_date:  new Date(voucher.end_date).toISOString().split("T")[0] ?? "",
+      is_active: voucher.is_active ?? true,
+    });
+  }
+}, [voucher]);
+
+  
   const handleChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
 
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,9 +49,11 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
 
     const id = voucher?.id ?? form.id;
 
+
      try {
-        
+
         const res = await update(id, form);
+         console.log("RES:", res);
     
        if(res){
         Swal.fire({
@@ -96,7 +124,7 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
           Tipe Diskon
         </label>
         <select
-          name="discountType"
+          name="discount_type"
           value={form.discount_type}
           onChange={handleChange}
           className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
@@ -112,7 +140,7 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
         </label>
         <input
           type="number"
-          name="discountValue"
+          name="discount_value"
           value={form.discount_value}
           onChange={handleChange}
           placeholder="Masukkan nilai diskon"
@@ -127,8 +155,8 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
           </label>
           <input
             type="date"
-            name="startDate"
-            value={form.start_date}
+            name="start_date"
+            value={form.start_date ? new Date(form.start_date).toISOString().slice(0, 10) : ""}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
           />
@@ -140,8 +168,8 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
           </label>
           <input
             type="date"
-            name="endDate"
-            value={form.end_date}
+            name="end_date"
+            value={form.end_date ? new Date(form.end_date).toISOString().slice(0, 10) : ""}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
           />

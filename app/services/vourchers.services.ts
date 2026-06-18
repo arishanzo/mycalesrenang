@@ -27,17 +27,16 @@ export const createVouchers= async (
 
 export const update = async (
   id: string,
-  data: Partial<VouchersData> | FormData
+  data: Partial<VouchersData>
 ): Promise<VouchersData> => {
   return await fetchAPI<VouchersData>(`/vouchers/${id}/update`, {
     method: "PUT",
     headers: {
       ...authHeaders,
-      // ❌ jangan set Content-Type, biarkan browser otomatis set multipart/form-data
+      "Content-Type": "application/json",
     },
-    body: data instanceof FormData ? data : JSON.stringify(data),
+    body: JSON.stringify(data),
   });
-  
 };
 
 

@@ -5,8 +5,8 @@ import { AdminShell } from '../components/AdminShell';
 import { UseGetBooking } from '../hook/useGetBooking';
 import { BookingSubmission } from '@/app/types/types';
 import Image from 'next/image';
-import { CheckCircle2 } from 'lucide-react';
-import { updateStatusBooking } from '@/app/services/transaksi.services';
+import { CheckCircle2, Eye, Trash } from 'lucide-react';
+import { deleteTransaksi, updateStatusBooking } from '@/app/services/transaksi.services';
 import Swal from 'sweetalert2';
 import { MYCA_PACKAGES } from '@/app/libs/data';
 
@@ -84,6 +84,43 @@ export default function TransaksiPage() {
       }, 4500);
     setLoading(false);
   }
+};
+
+
+const handleHapus = async (id: string) => {
+  Swal.fire({
+    title: "Yakin hapus?",
+    text: "Data Transaksi ini akan dihapus permanen.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Ya, hapus!",
+    cancelButtonText: "Batal",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await deleteTransaksi(id); // panggil API delete
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Transaksi Berhasil dihapus.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } catch {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Terjadi kesalahan saat menghapus",
+        });
+      } finally{
+         setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+      }
+    }
+  });
 };
 
 
@@ -184,17 +221,19 @@ export default function TransaksiPage() {
 
                    
                    
-                    <td className="px-3 py-2.5">
-                      <button onClick={() => setDetail(t)}
-                        className="p-1.5 rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
-                          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-                        </svg>
-                      </button>
-                    </td>
+                     <td className="px-3 py-2.5">
+                        <div className="flex items-center gap-2">
+                            <button
+                            onClick={() => setDetail(t)}
+                            className="rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors"
+                            >
+                            <Eye />
+                            </button>
+                        </div>
+                        </td>
 
                     <td className="px-3 py-2.5">
+                        <div className="flex items-center gap-2">
               <button
                 onClick={() => handleKonfirmasi(t)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg 
@@ -205,6 +244,14 @@ export default function TransaksiPage() {
                 <CheckCircle2 className='w-4 h-4' />
                 <span> { loading ? 'Prosess...' : ' Konfirmasi' }</span>
               </button>
+
+                <button
+                            onClick={() => handleHapus(t.id)}
+                            className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition-colors"
+                            >
+                            <Trash />
+                            </button>
+                            </div>
             </td>
 
                   </tr>

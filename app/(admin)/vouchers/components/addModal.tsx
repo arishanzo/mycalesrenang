@@ -6,18 +6,23 @@ import Swal from "sweetalert2";
 
 export default function VoucherAddModal({ onClose , isOpen} : { onClose: () => void; isOpen: boolean }) {
 
-  const [form, setForm] = useState<VouchersData>({
-    id: "",
+  const [form, setForm] = useState<VouchersData>(() => ({
+    id: Math.random().toString(36).slice(2, 11),
     code: "",
     discount_type: "percentage",
-    discount_value: "",
+    discount_value: 0,
     start_date: "",
     end_date: "",
     is_active: true,
-  });
+  }));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target as HTMLInputElement;
+    if (name === "discount_value") {
+      setForm({ ...form, [name]: Number(value) });
+      return;
+    }
+    setForm({ ...form, [name]: value });
   };
 
 const handleSubmit = async () => {
@@ -41,9 +46,10 @@ const handleSubmit = async () => {
     });
   } finally {
     onClose();
-    setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+     setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+  
   }
 };
 
@@ -94,7 +100,7 @@ const handleSubmit = async () => {
           Tipe Diskon
         </label>
         <select
-          name="discountType"
+          name="discount_type"
           value={form.discount_type}
           onChange={handleChange}
           className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
@@ -110,9 +116,9 @@ const handleSubmit = async () => {
         </label>
         <input
           type="number"
-          name="discountValue"
+          name="discount_value"
           placeholder="Masukkan nilai diskon"
-          value={form.discount_value}
+          value={ Number(form.discount_value)}
           onChange={handleChange}
           className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
         />
@@ -125,7 +131,7 @@ const handleSubmit = async () => {
           </label>
           <input
             type="date"
-            name="startDate"
+            name="start_date"
             value={form.start_date}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
@@ -138,7 +144,7 @@ const handleSubmit = async () => {
           </label>
           <input
             type="date"
-            name="endDate"
+            name="end_date"
             value={form.end_date}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"

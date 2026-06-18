@@ -42,6 +42,15 @@ export const updatePerpanjangan = async (
 
 
 
+export const deleteTransaksi = async (id: string): Promise<void> => {
+  return await fetchAPI<void>(`/transaksi/${id}`, {
+    method: "DELETE",
+    headers: {
+      ...authHeaders,
+    },
+  });
+};
+
 
 
 export const updateStatusBooking = async ( id: string, status: string) : Promise<BookingSubmission> => {
