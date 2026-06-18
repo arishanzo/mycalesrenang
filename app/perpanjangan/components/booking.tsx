@@ -46,7 +46,6 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
 
   // Confirmed & history
   const [confirmedBooking, setConfirmedBooking] = useState<BookingSubmission | null>(null);
-  const [bookingHistory, setBookingHistory] = useState<BookingSubmission[]>([]);
   
   const [invoicePrinted, setInvoicePrinted] = useState(false);
   const [printError, setPrintError] = useState('');
@@ -104,8 +103,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
       status: 'Perpanjangan - Menunggu Konfirmasi'
     };
     
-    const updatedHistory = [newBooking, ...bookingHistory];
-    setBookingHistory(updatedHistory);
+  
     localStorage.setItem('bookings', JSON.stringify(newBooking));
     setConfirmedBooking(newBooking);
 
