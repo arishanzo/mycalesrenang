@@ -18,7 +18,7 @@ const PROGRAM_COLOR: Record<string, string> = {
 };
 
 
-export default function SiswaPage() {
+export default function VouchersPage() {
 
 
      const { booking }  = UseGetBooking();
