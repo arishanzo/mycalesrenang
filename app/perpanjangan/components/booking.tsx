@@ -47,7 +47,6 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
   // Confirmed & history
   const [confirmedBooking, setConfirmedBooking] = useState<BookingSubmission | null>(null);
   const [bookingHistory, setBookingHistory] = useState<BookingSubmission[]>([]);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
   
   const [invoicePrinted, setInvoicePrinted] = useState(false);
   const [printError, setPrintError] = useState('');
