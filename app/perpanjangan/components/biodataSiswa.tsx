@@ -1,6 +1,6 @@
 import { UseGetBooking } from "@/app/(admin)/hook/useGetBooking";
 import { BookingSubmission } from "@/app/types/types";
-import { ChevronRight, Phone, Search, User } from "lucide-react";
+import { ChevronRight, Search, User } from "lucide-react";
 import { useState } from "react";
 
 interface BiodataProps {

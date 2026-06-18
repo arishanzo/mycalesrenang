@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
 import { UseGetBooking } from '../hook/useGetBooking';
 import { Eye } from 'lucide-react';
+import VoucherEditModal from './components/editModal';
+import { VouchersData } from '@/app/types/types';
+import VoucherAddModal from './components/addModal';
 
 const BADGE: Record<string, string> = {
  'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
@@ -19,6 +22,12 @@ const PROGRAM_COLOR: Record<string, string> = {
 
 
 export default function VouchersPage() {
+
+
+      const [showEditModal, setShowEditModal] = useState(false);
+        const [showAddModal, setShowAddModal] = useState(false);
+
+      const [selectedVoucher, setSelectedVoucher] = useState<VouchersData | null>(null);
 
 
      const { booking }  = UseGetBooking();
@@ -39,18 +48,17 @@ export default function VouchersPage() {
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
 
   const stats = [
-    { label: 'Total Siswa', value: booking?.length, color: '#296da4' },
+    { label: 'Total Voucher', value: booking?.length, color: '#296da4' },
     { label: 'Aktif', value: booking?.filter((s) => s.status === 'Terkonfirmasi').length, color: '#059669' },
-    { label: 'Pending', value: booking?.filter((s) => s.status === 'Menunggu Konfirmasi').length, color: '#d97706' },
     { label: 'Nonaktif', value: booking?.filter((s) => s.status === 'Pembayaran Diterima').length, color: '#dc2626' },
   ];
 
   return (
-    <AdminShell title="booking Siswa" subtitle="Kelola semua booking siswa terdaftar">
+    <AdminShell title="booking Voucher" subtitle="Kelola semua booking Voucher terdaftar">
       <div className="space-y-3">
 
         {/* Stat strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {stats.map((s) => (
             <div key={s.label} className="bg-white rounded-xl border border-slate-200 px-4 py-3 flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
@@ -73,7 +81,7 @@ export default function VouchersPage() {
             </span>
             <input
               type="text"
-              placeholder="Cari nama atau Phone siswa..."
+              placeholder="Cari  Voucher..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 outline-none focus:border-marine-400 focus:bg-white transition-all text-marine-900 placeholder:text-marine-300"
@@ -81,14 +89,28 @@ export default function VouchersPage() {
           </div>
           {/* Filters */}
           <div className="flex gap-2 shrink-0">
-            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
-              className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
-            </select>
+         
+
             <select value={filterProgram} onChange={(e) => setFilterProgram(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
               {['Semua', 'Privat', 'Semi Privat', 'Grup'].map((o) => <option key={o}>{o}</option>)}
             </select>
+
+               <button
+                onClick={() => setShowAddModal(true)} 
+                className="flex items-center gap-1.5 px-3 py-2 
+                            text-xs font-semibold rounded-lg 
+                            bg-gradient-to-r from-marine-500 to-marine-600 
+                            text-white shadow-sm hover:shadow-md 
+                            transition-all duration-200 cursor-pointer"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    width="14" height="14" fill="currentColor" 
+                    viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5V7h2.5a.5.5 0 0 1 0 1H8.5v2.5a.5.5 0 0 1-1 0V8H5a.5.5 0 0 1 0-1h2.5V4.5A.5.5 0 0 1 8 4z"/>
+                </svg>
+                <span>Tambah Data</span>
+                </button>
           </div>
 
          
@@ -99,7 +121,7 @@ export default function VouchersPage() {
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50">
             <p className="text-marine-500 text-[11px] font-semibold uppercase tracking-wider">
-              {filtered?.length} Siswa ditemukan
+              {filtered?.length} Voucher ditemukan
             </p>
             {selected.length > 0 && (
               <button onClick={() => { (booking || []).filter((s) => !selected.includes(s.id)); setSelected([]); }}
@@ -121,7 +143,7 @@ export default function VouchersPage() {
                       checked={selected.length === filtered?.length && filtered.length > 0}
                       onChange={(e) => setSelected(e.target.checked ? filtered?.map((s) => s.id) : [])} />
                   </th>
-                  {['Nama Lengkap Siswa' ,'Nama Panggilan Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
+                  {['Nama Lengkap Voucher' ,'Nama Panggilan Voucher', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -172,7 +194,7 @@ export default function VouchersPage() {
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={8} className="text-center py-10 text-marine-300 text-xs">
-                      Tidak ada data siswa ditemukan.
+                      Tidak ada data Voucher ditemukan.
                     </td>
                   </tr>
                 )}
@@ -181,6 +203,17 @@ export default function VouchersPage() {
           </div>
         </div>
       </div>
+
+        <VoucherEditModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        voucher={selectedVoucher}
+      />
+
+      <VoucherAddModal
+      isOpen={showAddModal}
+      onClose={() => setShowAddModal(false)}
+      />
 
     </AdminShell>
   );

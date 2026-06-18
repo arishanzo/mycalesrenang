@@ -10,7 +10,7 @@ export async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const apiUrl =  'https://api.lesrenangmyca.com/api';
+  const apiUrl = 'http://localhost:5000/api';
   const res = await fetch(`${apiUrl}${endpoint}`, {
     ...options,
     cache: options?.cache || "no-store",
@@ -43,9 +43,6 @@ export async function fetchAPI<T>(
 }
 
 
-// NOTE: Auth di backend pakai httpOnly cookie `token`.
-// Jadi untuk request authenticated cukup gunakan `credentials: "include"`
-// dan jangan bikin Authorization header secara manual.
 export function getAuthHeaders(): Record<string, string> {
   return {};
 }

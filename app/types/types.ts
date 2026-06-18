@@ -27,6 +27,17 @@ export interface SwimTestimonial {
   rating: number;
 }
 
+
+export interface VouchersData{
+  id: string;
+  code: string;
+  discount_type:'percentage' | 'fixed';
+  discount_value: string;
+  start_date: string;
+  end_date: string;
+  is_active: boolean;
+}
+
 export interface BookingSubmission {
   id: string;
   booking_code: string;
