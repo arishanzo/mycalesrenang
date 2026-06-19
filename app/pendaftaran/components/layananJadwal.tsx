@@ -10,7 +10,11 @@ import { UseGetVoucher } from '@/app/(admin)/hook/useGetVouchers';
     { id: 1,name: 'Senin'},
     { id: 2,name: 'Selasa'},
     { id: 3,name: 'Rabu'},
-    { id: 4,name: 'Kamis'}];
+    { id: 4,name: 'Kamis'},
+    { id: 4,name: 'Jumat'},
+    { id: 4,name: 'Sabtu'},
+    { id: 4,name: 'Minggu'}
+  ];
 
 
 const CATEGORIES = [
