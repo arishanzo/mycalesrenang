@@ -50,9 +50,10 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
   const [invoicePrinted, setInvoicePrinted] = useState(false);
   const [printError, setPrintError] = useState('');
 
+  const [discount, setDiscount] = useState(0);
 
   const selectedPackage = MYCA_PACKAGES.find(p => p.id === packageId) || MYCA_PACKAGES[0];
-  const totalPrice = selectedPackage.pricePerPerson;
+  const totalPrice = discount > 0 ? discount : selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
   const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '';
@@ -278,6 +279,8 @@ const handleFinishPayment = async () => {
             {/* ── STEP 2: LAYANAN & JADWAL ── */}
             {currentStep === 2 && (
              <LayananJadwal
+              setDiscount={setDiscount}
+              discount={discount}
               packageId={packageId}
               setPackageId={setPackageId}
               locationId={locationId}

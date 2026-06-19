@@ -49,6 +49,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
   // Confirmed & history
   const [confirmedBooking, setConfirmedBooking] = useState<BookingSubmission | null>(null);
   const [bookingHistory, setBookingHistory] = useState<BookingSubmission[]>([]);
+  const [discount, setDiscount] = useState(0);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   
   const [invoicePrinted, setInvoicePrinted] = useState(false);
@@ -56,19 +57,19 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
 
 
   const selectedPackage = MYCA_PACKAGES.find(p => p.id === packageId) || MYCA_PACKAGES[0];
-  const totalPrice = selectedPackage.pricePerPerson;
+  const totalPrice = discount > 0 ? discount : selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
-  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '';
+  const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '' && courseDays.length > 0;
   const isStep3Valid = confirmedBooking !== null;
   const isStep4Valid = paymentProof !== null;
 
   const handleNextStep = () => {
-    if (currentStep === 1 && !isStep1Valid) return;
-    if (currentStep === 2 && !isStep2Valid) return;
+     setCurrentStep(prev => prev + 1);
+    if (currentStep === 1) return;
+    if (currentStep === 2) return;
     if (currentStep === 3 && !isStep3Valid) return;
     if (currentStep === 4 && !isStep4Valid) return;
-    setCurrentStep(prev => prev + 1);
   };
 
   const handlePrevStep = () => setCurrentStep(prev => Math.max(1, prev - 1));
@@ -293,6 +294,8 @@ const handleFinishPayment = async () => {
             {/* ── STEP 2: LAYANAN & JADWAL ── */}
             {currentStep === 2 && (
              <LayananJadwal
+               setDiscount={setDiscount}
+              discount={discount}
               packageId={packageId}
               setPackageId={setPackageId}
               locationId={locationId}

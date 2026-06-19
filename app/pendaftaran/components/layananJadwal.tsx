@@ -1,8 +1,17 @@
 'use client';
 import { useState } from 'react';
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
-import { CalendarDays, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag } from "lucide-react";
-import {  CourseDays } from '@/app/types/types';
+import { CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag, X, XCircle } from "lucide-react";
+import {  CourseDays, VouchersData } from '@/app/types/types';
+import { UseGetVoucher } from '@/app/(admin)/hook/useGetVouchers';
+
+
+ const DaysList = [ 
+    { id: 1,name: 'Senin'},
+    { id: 2,name: 'Selasa'},
+    { id: 3,name: 'Rabu'},
+    { id: 4,name: 'Kamis'}];
+
 
 const CATEGORIES = [
   { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
@@ -30,11 +39,10 @@ for (let hour = 6; hour <= 18; hour++) {
   }
 }
 
-console.log(TIME_SLOTS)
-
 
 interface LayananJadwalProps {
-  
+    setDiscount : (discount: number) => void;
+  discount: number;
     handleSubmitBooking: (e?: React.FormEvent) => void;
   packageId: string | number;
   setPackageId: (id: string) => void;
@@ -82,24 +90,16 @@ const LayananJadwal = ({
   setCourseDays,
   customLocation,
   setCustomLocation,
+    setDiscount,
+    discount,
   
 }: LayananJadwalProps) => {
   const [category, setCategory] = useState<string>('asisten');
 
+  const { voucher } = UseGetVoucher();
+  const [searchVoucher, setSearchVocuher] = useState('');
+
   const filteredPackages = MYCA_PACKAGES.filter(p => p.category === category);
-
-  const handleCategoryChange = (cat: string) => {
-    setCategory(cat);
-    const first = MYCA_PACKAGES.find(p => p.category === cat);
-    if (first) setPackageId(first.id);
-    setCourseDays([]);
-  };
-
-  const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPackageId(e.target.value);
-    setCourseDays([]);
-  };
-
   const catLabel = CATEGORIES.find(c => c.id === category)?.label ?? '';
 
   // dropdown & search state for time picker
@@ -112,20 +112,20 @@ const LayananJadwal = ({
 
   // min date = today
   const today = new Date().toISOString().split('T')[0];
+  const maxSessions = selectedPackage.frequency === '1x seminggu' ? 0 : 1;
 
+    
+  const handleCategoryChange = (cat: string) => {
+    setCategory(cat);
+    const first = MYCA_PACKAGES.find(p => p.category === cat);
+    if (first) setPackageId(first.id);
+    setCourseDays([]);
+  };
 
- 
-  const maxSessions = 0;
-
-  const DaysList = [ 
-    { id: 1,name: 'senin'},
-    { id: 2,name: 'selasa'},
-    { id: 3,name: 'rabu'},
-    { id: 4,name: 'kamis'},
-    { id: 5,name: 'jumat'},
-    { id: 6,name: 'sabtu'},
-    { id: 7,name: 'minggu'}]
-    ;
+  const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPackageId(e.target.value);
+    setCourseDays([]);
+  };
 
   const toggleDay = (id: number, day: string) => {
     if (!courseDays) return;
@@ -142,6 +142,43 @@ const LayananJadwal = ({
         : [...courseDays, data]               // tambah kalau belum ada
     );
   };
+
+const [aktif, setAktif] = useState(false);
+const [tidakAktif, setTidakAktif] = useState(false);
+const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
+
+  const handleSearch = () => {
+
+    if (voucher.length === 0) return;
+ const now = new Date();
+
+ const filter = voucher.find((i) => {
+      const endDate = new Date(i.end_date);
+      return i.code === searchVoucher && endDate >= now;
+    });
+    
+    setVoucherDiskon(filter);
+
+
+    if (filter) {
+      const basePrice = selectedPackage.pricePerPerson;
+
+      const discountVoucher = filter.discount_type === 'percentage'
+        ? Math.round(basePrice * (filter.discount_value / 100))
+        : filter.discount_value;
+  
+      const finalPrice = Math.max(basePrice - discountVoucher, 0);
+     
+      setDiscount(finalPrice);
+      setAktif(true);
+      
+    setTidakAktif(false);
+
+    } else {
+    setAktif(false);
+    setTidakAktif(true);
+     }
+  }
 
   return (
     <>
@@ -180,7 +217,6 @@ const LayananJadwal = ({
               Paket <span className="text-red-500">*</span>
             </label>
             <select
-              id="select-package"
               value={packageId as string}
               onChange={(handlePackageChange)}
               className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
@@ -380,6 +416,84 @@ const LayananJadwal = ({
             />
           </div>
 
+          
+         {/* Cari Voucher */}
+        <div className="mt-5 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-cyan-400/30">
+        <p className="text-xs uppercase tracking-widest text-cyan-700 font-mono">
+          Cari Voucher
+        </p>
+
+        <p className="text-lg font-bold text-slate-800 mt-1">
+          Temukan Promo Terbaik
+        </p>
+
+        <p className="text-xs text-slate-600 mb-4">
+          Cari dan gunakan voucher diskon yang tersedia
+        </p>
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+            type="text"
+            value={searchVoucher}
+            onChange={(e) => setSearchVocuher(e.target.value)}
+            placeholder="Cari voucher atau promo..."
+            className="w-full pl-10 pr-4 py-3 rounded-lg bg-white/20 border border-cyan-400/30 text-slate-800 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+
+            <button type="button" onClick={handleSearch} className="whitespace-nowrap bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-3 rounded-lg shadow hover:scale-105 transition-transform">
+              Klaim Voucher
+            </button>
+          </div>
+        </div>
+
+            
+            {aktif && (
+  <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-md px-4 py-3 animate-fadeIn">
+    <div className="flex items-center gap-3">
+      <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+      <div>
+        <p className="text-sm font-semibold text-emerald-300">
+          Voucher berhasil diklaim sebesar {voucherDiskon ? (voucherDiskon.discount_type === 'percentage' ? `${Number(voucherDiskon.discount_value)}%` : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(voucherDiskon.discount_value)) : ''}
+        </p>
+        <p className="text-xs text-emerald-200/80">
+          Diskon telah diterapkan ke transaksi Anda.
+        </p>
+      </div>
+    </div>
+
+    <button
+      className="rounded-lg p-1 text-emerald-300 hover:bg-white/10 transition"
+      onClick={() => setAktif(false)}
+    >
+      <X size={16} />
+    </button>
+  </div>
+)}
+
+{tidakAktif &&
+  (
+  <div className="mt-4 flex items-center justify-between rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md px-4 py-3 animate-fadeIn">
+    <div className="flex items-center gap-3">
+      <XCircle className="h-5 w-5 text-red-400" />
+      <div>
+        <p className="text-sm font-semibold text-red-300">
+          Voucher tidak valid
+        </p>
+        <p className="text-xs text-red-200/80">
+          Voucher tidak ditemukan atau sudah kadaluarsa.
+        </p>
+      </div>
+    </div>
+
+    <button
+      className="rounded-lg p-1 text-red-300 hover:bg-white/10 transition"
+      onClick={() => setTidakAktif(false)}
+    >
+      <X size={16} />
+    </button>
+  </div>
+)}
+
           {/* Estimasi Biaya */}
           <div className="bg-marine-900 text-white rounded-2xl p-5 relative overflow-hidden">
             <div className="absolute top-[-50%] right-[-10%] w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl" />
@@ -397,11 +511,23 @@ const LayananJadwal = ({
                 )}
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold font-display">
-                  Rp {selectedPackage.pricePerPerson.toLocaleString('id-ID')}
-                </p>
-                <p className="text-[10px] text-marine-400">per orang</p>
-              </div>
+
+              {/* Harga sebelum diskon */}
+              {discount > 0 && (
+                      <p className="text-sm text-marine-400 line-through">
+                Rp {selectedPackage.pricePerPerson.toLocaleString('id-ID')}
+              </p>
+              )}
+           
+
+              {/* Harga setelah diskon */}
+              <p className="text-2xl font-bold font-display text-cyan-400">
+                Rp { discount ? discount.toLocaleString('id-ID') : selectedPackage.pricePerPerson.toLocaleString('id-ID')}
+              </p>
+
+              <p className="text-[10px] text-marine-400">per orang</p>
+            </div>
+
             </div>
           </div>
         </div>
@@ -419,7 +545,7 @@ const LayananJadwal = ({
             id="btn-step2-next"
             type="button"
             disabled={!isStep2Valid}
-            onClick={() =>  handleSubmitBooking()}
+            onClick={() =>  handleSubmitBooking() }
             className="flex items-center gap-1.5 py-3 px-6 text-xs md:text-sm font-semibold text-white bg-marine-800 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition duration-300"
           >
             Lanjut Invoice

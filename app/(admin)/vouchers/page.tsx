@@ -35,6 +35,8 @@ export default function VouchersPage() {
 
      const { voucher }  = UseGetVoucher();
 
+  
+
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterProgram, setFilterProgram] = useState('Semua');
@@ -45,15 +47,20 @@ export default function VouchersPage() {
     return matchSearch;
   }) ?? [];
 
+
+
+
   const toggleSelect = (id: string) =>
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
 
+  const now = new Date();
+
   const stats = [
     { label: 'Total Voucher', value: voucher?.length, color: '#296da4' },
-    { label: 'Aktif', value: voucher?.filter((s) => s.is_active === true).length, color: '#059669' },
+    { label: 'Aktif', value: voucher?.filter((s) => new Date(s.end_date) > now).length, color: '#059669' },
     { label: 'Nonaktif', value: voucher?.filter((s) => s.is_active === false).length, color: '#dc2626' },
   ];
-
+    
   const handleEdit = (e: VouchersData) => {
 
     setSelectedVoucher(e)
@@ -198,9 +205,9 @@ const handleHapus = async (id: string) => {
 
                     <td className="px-3 py-2.5 text-marine-600">{s.discount_type === 'percentage' ? `${Number(s.discount_value)}%` : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", }).format(s.discount_value)}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{new Date(s.start_date).toLocaleDateString('id-ID')}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{new Date(s.start_date).toISOString().slice(0, 10)}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{ new Date(s.end_date).toLocaleDateString('id-ID')}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{new Date(s.end_date).toISOString().slice(0, 10)}</td>
                   
                    
                    <td className="px-3 py-2.5">
