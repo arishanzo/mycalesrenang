@@ -129,7 +129,7 @@ export default function Header({ onNavigate, activeSection }: HeaderProps) {
                               alt={'logo'}
                               width={60}
                               height={60}
-                              src={'/images/logo.png'}
+                              src={'/logo.png'}
                              />
          
             <div className="flex flex-col text-left">
