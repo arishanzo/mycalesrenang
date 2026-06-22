@@ -14,9 +14,9 @@ const geistSans = Geist({
 
 
 export const metadata: Metadata = {
-  title: "MYCA Center of Aquatic",
-  description: " les renang Semarang yang menyediakan pilihan program les privat, semi privat, dan grup. ",
-  icons: './images/logo.png'
+  title: "MYCA Center of Aquatic || Les Renang Semarang",
+  description: "les renang Semarang yang menyediakan pilihan program les privat, semi privat, dan grup. ",
+  icons: './logo.png'
 };
 
 export default function RootLayout({
