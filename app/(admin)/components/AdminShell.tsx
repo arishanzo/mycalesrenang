@@ -48,7 +48,7 @@ const router = useRouter();
       >
         <div className="flex items-center gap-2.5 px-4 py-4 border-b border-white/10 shrink-0">
           <div className="w-8 h-8 rounded-lg overflow-hidden ring-1 ring-white/20 shrink-0">
-            <Image src="./logo.png" alt="MYCA" width={32} height={32} className="object-cover" />
+            <Image src={'/logo.png'} alt="MYCA" width={32} height={32} className="object-cover" />
           </div>
           <div className="min-w-0">
             <p className="text-white font-bold text-sm leading-none">MYCA Admin</p>

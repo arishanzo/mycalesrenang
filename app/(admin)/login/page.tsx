@@ -104,7 +104,7 @@ export default function AdminLogin() {
         {/* Top logo bar */}
         <div className="relative z-10 flex items-center gap-3 px-10 pt-8">
           <div className="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-white/20 shrink-0">
-            <Image src="/images/logo.png" alt="MYCA" width={40} height={40} className="object-cover" />
+            <Image src={'/logo.png'} alt="MYCA" width={40} height={40} className="object-cover" />
           </div>
           <div>
             <p className="text-white font-bold text-base leading-none">MYCA</p>
