@@ -1,6 +1,7 @@
 // VoucherEditModal.tsx
 import { update } from "@/app/services/vourchers.services";
 import { VouchersData } from "@/app/types/types";
+import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
@@ -23,17 +24,19 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
     is_active: true,
   });
 
-
+  
 
   useEffect(() => {
   if (voucher) {
+
+    
     setForm({
       id: voucher.id ?? "",
       code: voucher.code ?? "",
       discount_type: voucher.discount_type ?? "percentage",
       discount_value: Number(voucher?.discount_value ?? 0),
-      start_date:  new Date(voucher.start_date).toISOString().split("T")[0] ?? "",
-      end_date:  new Date(voucher.end_date).toISOString().split("T")[0] ?? "",
+      start_date: format(new Date(voucher.start_date), "yyyy-MM-dd") ?? "",
+      end_date:  format(new Date(voucher.end_date), "yyyy-MM-dd") ?? "",
       is_active: voucher.is_active ?? true,
     });
   }
@@ -156,7 +159,7 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
           <input
             type="date"
             name="start_date"
-            value={form.start_date ? new Date(form.start_date).toISOString().slice(0, 10) : ""}
+            value={form.start_date}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
           />
@@ -169,7 +172,7 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
           <input
             type="date"
             name="end_date"
-            value={form.end_date ? new Date(form.end_date).toISOString().slice(0, 10) : ""}
+            value={form.end_date}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-marine-500 focus:outline-none focus:ring-2 focus:ring-marine-100"
           />

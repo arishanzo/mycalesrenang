@@ -451,22 +451,26 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
         </div>
 
             
-            {aktif && (
-  <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-md px-4 py-3 animate-fadeIn">
+{aktif && (
+  <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-500 bg-emerald-50 px-4 py-3 animate-fadeIn">
     <div className="flex items-center gap-3">
-      <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+      <CheckCircle2 className="h-5 w-5 text-emerald-600" />
       <div>
-        <p className="text-sm font-semibold text-emerald-300">
-          Voucher berhasil diklaim sebesar {voucherDiskon ? (voucherDiskon.discount_type === 'percentage' ? `${Number(voucherDiskon.discount_value)}%` : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(voucherDiskon.discount_value)) : ''}
+        <p className="text-sm font-bold text-emerald-700 drop-shadow-sm">
+          Voucher berhasil diklaim sebesar {voucherDiskon ? (
+            voucherDiskon.discount_type === 'percentage'
+              ? `${Number(voucherDiskon.discount_value)}%`
+              : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" })
+                  .format(voucherDiskon.discount_value)
+          ) : ''}
         </p>
-        <p className="text-xs text-emerald-200/80">
+        <p className="text-xs text-emerald-600">
           Diskon telah diterapkan ke transaksi Anda.
         </p>
       </div>
     </div>
-
     <button
-      className="rounded-lg p-1 text-emerald-300 hover:bg-white/10 transition"
+      className="rounded-lg p-1 text-emerald-600 hover:bg-emerald-100 transition"
       onClick={() => setAktif(false)}
     >
       <X size={16} />
@@ -474,23 +478,23 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
   </div>
 )}
 
-{tidakAktif &&
-  (
-  <div className="mt-4 flex items-center justify-between rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md px-4 py-3 animate-fadeIn">
+
+{tidakAktif && (
+  <div className="mt-4 flex items-center justify-between rounded-xl border border-red-500 bg-red-50 px-4 py-3 animate-fadeIn">
     <div className="flex items-center gap-3">
-      <XCircle className="h-5 w-5 text-red-400" />
+      <XCircle className="h-5 w-5 text-red-600" />
       <div>
-        <p className="text-sm font-semibold text-red-300">
+        <p className="text-sm font-bold text-red-700 drop-shadow-sm">
           Voucher tidak valid
         </p>
-        <p className="text-xs text-red-200/80">
+        <p className="text-xs text-red-600">
           Voucher tidak ditemukan atau sudah kadaluarsa.
         </p>
       </div>
     </div>
 
     <button
-      className="rounded-lg p-1 text-red-300 hover:bg-white/10 transition"
+      className="rounded-lg p-1 text-red-600 hover:bg-red-100 transition"
       onClick={() => setTidakAktif(false)}
     >
       <X size={16} />

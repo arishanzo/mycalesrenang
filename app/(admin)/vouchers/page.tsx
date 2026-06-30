@@ -10,6 +10,7 @@ import VoucherAddModal from './components/addModal';
 import { UseGetVoucher } from '../hook/useGetVouchers';
 import Swal from 'sweetalert2';
 import { deleteVoucher } from '@/app/services/vourchers.services';
+import { format } from 'date-fns';
 
 const BADGE: Record<string, string> = {
  'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
@@ -58,7 +59,7 @@ export default function VouchersPage() {
   const stats = [
     { label: 'Total Voucher', value: voucher?.length, color: '#296da4' },
     { label: 'Aktif', value: voucher?.filter((s) => new Date(s.end_date) > now).length, color: '#059669' },
-    { label: 'Nonaktif', value: voucher?.filter((s) => s.is_active === false).length, color: '#dc2626' },
+    { label: 'Nonaktif', value: voucher?.filter((s) => new Date(s.end_date) < now).length, color: '#dc2626' },
   ];
     
   const handleEdit = (e: VouchersData) => {
@@ -205,9 +206,9 @@ const handleHapus = async (id: string) => {
 
                     <td className="px-3 py-2.5 text-marine-600">{s.discount_type === 'percentage' ? `${Number(s.discount_value)}%` : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", }).format(s.discount_value)}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{new Date(s.start_date).toISOString().slice(0, 10)}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{format(new Date(s.start_date), "dd MM yyyy")}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{new Date(s.end_date).toISOString().slice(0, 10)}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{format(new Date(s.end_date), "dd MMMM yyyy")}</td>
                   
                    
                    <td className="px-3 py-2.5">
