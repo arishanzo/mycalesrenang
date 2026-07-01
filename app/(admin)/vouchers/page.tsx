@@ -12,17 +12,6 @@ import Swal from 'sweetalert2';
 import { deleteVoucher } from '@/app/services/vourchers.services';
 import { format } from 'date-fns';
 
-const BADGE: Record<string, string> = {
- 'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-  'Menunggu Konfirmasi': 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-  'Pembayaran Diterima': 'bg-red-50 text-red-600 ring-1 ring-red-200',
-};
-
-const PROGRAM_COLOR: Record<string, string> = {
-  Privat: 'bg-marine-100 text-marine-700',
-  'Semi Privat': 'bg-blue-50 text-blue-700',
-  Grup: 'bg-cyan-50 text-cyan-700',
-};
 
 
 export default function VouchersPage() {

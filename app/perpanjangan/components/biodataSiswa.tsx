@@ -52,9 +52,12 @@ const handleSearchStudent = async (keyword: string) => {
     return;
   }
 
-const filter = booking?.filter(i =>
-  i.student_name.toLowerCase().includes(keyword.toLowerCase())
-);
+const filter = booking
+  ?.filter(i =>
+    i.student_name.toLowerCase().includes(keyword.toLowerCase())
+  ).filter((item, index, self) =>
+    index === self.findIndex(t => t.student_name.toLowerCase() === item.student_name.toLowerCase())
+  );
 
 if (filter.length > 0) {
   setSearchResults(filter);

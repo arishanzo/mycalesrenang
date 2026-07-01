@@ -5,16 +5,21 @@ import { AdminShell } from '../components/AdminShell';
 import { UseGetBooking } from '../hook/useGetBooking';
 import { Eye } from 'lucide-react';
 
+import { MYCA_PACKAGES } from '@/app/libs/data';
+
 const BADGE: Record<string, string> = {
  'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
   'Menunggu Konfirmasi': 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
   'Pembayaran Diterima': 'bg-red-50 text-red-600 ring-1 ring-red-200',
+   "Perpanjangan - Terkonfirmasi":
+    "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200",
 };
 
 const PROGRAM_COLOR: Record<string, string> = {
-  Privat: 'bg-marine-100 text-marine-700',
-  'Semi Privat': 'bg-blue-50 text-blue-700',
-  Grup: 'bg-cyan-50 text-cyan-700',
+  privat: 'bg-marine-100 text-marine-700',
+  semiprivat: 'bg-blue-50 text-blue-700',
+  grup: 'bg-cyan-50 text-cyan-700',
+
 };
 
 
@@ -31,12 +36,12 @@ export default function SiswaPage() {
   const filtered = booking?.filter((s) => {
     const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'Semua' || s.status === filterStatus;
-    const matchProgram = filterProgram === 'Semua' || String(s.package_id) === filterProgram;
+    const matchProgram = filterProgram === 'Semua' || MYCA_PACKAGES.find(p => p.id === s?.package_id)?.type === filterProgram;
     return matchSearch && matchStatus && matchProgram;
-  }) ?? [];
+  }).filter((item, index, self) =>
+    index === self.findIndex(t => t.student_name.toLowerCase() === item.student_name.toLowerCase())
+  ) ?? [];
 
-  const toggleSelect = (id: string) =>
-    setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
 
   const stats = [
     { label: 'Total Siswa', value: booking?.length, color: '#296da4' },
@@ -87,7 +92,8 @@ export default function SiswaPage() {
             </select>
             <select value={filterProgram} onChange={(e) => setFilterProgram(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Privat', 'Semi Privat', 'Grup'].map((o) => <option key={o}>{o}</option>)}
+               {['Semua', 'privat', 'semiprivat', 'grup'].map((o) => <option key={o}>{o}</option>)}
+
             </select>
           </div>
 

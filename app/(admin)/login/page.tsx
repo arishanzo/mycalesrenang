@@ -34,9 +34,12 @@ export default function AdminLogin() {
     }
 
     setChecking(false);
-  } catch (error: any) {
-    if (error.status === 401) {
-      // session habis atau belum login
+  } catch (error: unknown) {
+    const status = typeof error === 'object' && error !== null && 'status' in error
+        ? (error as { status?: number }).status
+        : undefined;
+
+    if (status === 401) {
       setChecking(false);
       return;
     }
@@ -60,8 +63,8 @@ export default function AdminLogin() {
       if (res?.token) {
         router.push("/dashboard");
       }
-    } catch (err: any) {
-      setError( err.message|| 'Terjadi kesalahan saat menghubungkan ke server.');
+    } catch {
+      setError('Terjadi kesalahan saat menghubungkan ke server.');
       setLoading(false);
     }
   };

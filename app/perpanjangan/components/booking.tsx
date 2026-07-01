@@ -83,7 +83,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
     const randomCode = 'MYCA-' + Math.floor(1000 + Math.random() * 9000);
 
     const newBooking: BookingSubmission = {
-      id: idBooking,
+      id: Math.random().toString(36).substr(2, 9),
       booking_code: randomCode,
       student_name: studentName,
       nama_panggilan: namaPanggilan ? namaPanggilan : '-',

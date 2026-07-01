@@ -33,7 +33,6 @@ export const updatePerpanjangan = async (
     method: "PUT",
     headers: {
       ...authHeaders,
-      // ❌ jangan set Content-Type, biarkan browser otomatis set multipart/form-data
     },
     body: data instanceof FormData ? data : JSON.stringify(data),
   });
@@ -54,7 +53,7 @@ export const deleteTransaksi = async (id: string): Promise<void> => {
 
 
 export const updateStatusBooking = async ( id: string, status: string) : Promise<BookingSubmission> => {
-    
+        
     return await fetchAPI<BookingSubmission>(`/transaksi/${id}/status`, {
         method: "PUT",
         headers: {

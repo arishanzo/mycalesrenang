@@ -1,9 +1,9 @@
 
 
-// type SessionResponse = {
-//   loggedIn: boolean;
-//   user?: {email: string };
-// };
+type SessionResponse = {
+  loggedIn: boolean;
+  user?: {email: string };
+};
 
 
 export async function fetchAPI<T>(

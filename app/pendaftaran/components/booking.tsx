@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { MYCA_PACKAGES, MYCA_LOCATIONS } from '../../libs/data';
 import { BookingSubmission, CourseDays } from '../../types/types';
-import { CheckCircle, History,} from 'lucide-react';
+import { History,} from 'lucide-react';
 import HistoryModal from './historyModal';
 import ConfirmedBooking from './confirmedBooking';
 import LayananJadwal from './layananJadwal';
@@ -12,8 +12,6 @@ import { InvoiceStep } from './invoice';
 import { printDocument } from '@/app/utils/print';
 import { createBooking } from '@/app/services/transaksi.services';
 import Swal from 'sweetalert2';
-import { File } from 'buffer';
-
 
 
 

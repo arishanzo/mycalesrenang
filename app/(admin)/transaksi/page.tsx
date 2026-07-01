@@ -11,16 +11,24 @@ import Swal from 'sweetalert2';
 import { MYCA_PACKAGES } from '@/app/libs/data';
 
 const BADGE: Record<string, string> = {
-  Lunas: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-  Pending: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-  Gagal: 'bg-red-50 text-red-600 ring-1 ring-red-200',
+  "Terkonfirmasi":
+    "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
+  "Menunggu Konfirmasi":
+    "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+  "Pembayaran Diterima":
+    "bg-red-50 text-red-600 ring-1 ring-red-200",
 };
 
 
-// type Transaksi = {
-//   id: string; name: string; program: string; nominal: number;
-//   metode: string; status: string; tanggal: string; keterangan: string;
-// };
+const PROGRAM_COLOR: Record<string, string> = {
+  privat: 'bg-marine-100 text-marine-700',
+  semiprivat: 'bg-blue-50 text-blue-700',
+  grup: 'bg-cyan-50 text-cyan-700',
+
+};
+
+
+
 
 const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
 
@@ -36,12 +44,15 @@ export default function TransaksiPage() {
   const filtered = booking?.filter((s) => {
     const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'Semua' || s.status === filterStatus;
-    const matchProgram = filterMetode === 'Semua' || String(s.package_id) === filterMetode;
+    const matchProgram = filterMetode === 'Semua' ||   MYCA_PACKAGES.find(p => p.id === s?.package_id)?.type === filterMetode;
     return matchSearch && matchStatus && matchProgram;
   }) ?? [];
 
   const totalLunas = booking?.filter((t) => t.status ===  'Terkonfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
-  const totalPending = booking?.filter((t) => t.status ===  'Menunggu Konfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
+  const Pending = booking?.filter((t) => t.status ===  'Menunggu Konfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
+  const Perpanjangan = booking?.filter((t) => t.status ===  'Perpanjangan - Menunggu Konfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
+   
+  const totalPending = Pending + Perpanjangan;
 
   const stats = [
     { label: 'Total Transaksi', value: `${booking?.length}`, sub: 'semua waktu', color: '#296da4' },
@@ -213,7 +224,7 @@ const handleHapus = async (id: string) => {
                     </td>
 
                     <td className="px-3 py-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full`}>{MYCA_PACKAGES.find(p => p.id === t?.package_id)?.type}</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full  ${PROGRAM_COLOR[MYCA_PACKAGES.find(p => p.id === t?.package_id)?.type ?? '']}`}>{MYCA_PACKAGES.find(p => p.id === t?.package_id)?.type || ''}</span>
                     </td>
                    
                    
