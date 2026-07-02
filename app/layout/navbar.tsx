@@ -176,7 +176,7 @@ export default function Header({ onNavigate, activeSection }: HeaderProps) {
           >
             <a
               id="cta-whatsapp-nav"
-              href="https://wa.me/089675211854?text=Halo%20MYCA Les Renang%20,%20saya%20ingin%20tanya%20mengenai%20les%20renang."
+              href="https://Wa.me/6289675211854?text=Halo%20MYCA Les Renang%20,%20saya%20ingin%20tanya%20mengenai%20les%20renang."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs font-semibold text-marine-800 hover:text-cyan-600 transition-colors border border-marine-200 px-3 py-1.5 rounded-full"

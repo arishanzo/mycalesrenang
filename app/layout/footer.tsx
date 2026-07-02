@@ -68,7 +68,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             {/* Social channels */}
             <div className="flex items-center gap-3 mt-4">
                   <a
-                href="https://wa.me/089675211854"
+                href="https://Wa.me/6289675211854?text=Halo%20MYCA Les Renang%20,%20saya%20ingin%20tanya%20mengenai%20les%20renang."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-lg bg-marine-900 hover:bg-cyan-500 hover:text-white transition-all shadow"
