@@ -9,12 +9,6 @@ import { MYCA_PACKAGES } from '@/app/libs/data';
 const HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
 
-const PROGRAM_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
-  'Privat':      { bg: 'bg-indigo-50',  text: 'text-indigo-700', dot: '#4f46e5' },
-  'Semi Privat': { bg: 'bg-cyan-50',    text: 'text-cyan-700',   dot: '#0891b2' },
-  'Grup':        { bg: 'bg-emerald-50', text: 'text-emerald-700',dot: '#059669' },
-};
-
 
 // Hitung tanggal Senin minggu ini lalu map tiap hari
 function getWeekDates() {
@@ -31,7 +25,8 @@ function getWeekDates() {
       nama,
       tanggal: d.getDate(),
       bulan: d.toLocaleDateString('id-ID', { month: 'short' }),
-      isToday: d.toDateString() === today.toDateString(),
+     isToday: d.getDate() === today.getDate() && d.getMonth() === today.getMonth() &&
+  d.getFullYear() === today.getFullYear(),
       full: d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
     };
   });
@@ -44,7 +39,31 @@ export default function JadwalPage() {
   const [activeHari, setActiveHari] = useState<string | null>('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const filtered = activeHari ? (booking ?? []).filter((i) => i.status === 'Terkonfirmasi' )  : booking;
+  const [filterStartDate, setFilterStartDate] = useState(''); // format: yyyy-mm-dd
+  const [filterEndDate, setFilterEndDate] = useState(''); // format: yyyy-mm-dd
+
+  const toDateAtLocalStart = (dateStr: string) => {
+    if (!dateStr) return null;
+    const [y, m, d] = dateStr.split('-').map(Number);
+    if (!y || !m || !d) return null;
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+  };
+
+  const filtered = (activeHari ? (booking ?? []).filter((i) => i.status === 'Terkonfirmasi') : (booking ?? [])).filter((i) => {
+    const tStart = new Date(i.start_date);
+    const startBoundary = toDateAtLocalStart(filterStartDate);
+    const endBoundary = toDateAtLocalStart(filterEndDate);
+
+    const matchStartDate = !startBoundary || (isFinite(tStart.getTime()) && tStart >= startBoundary);
+
+    const matchEndDate =
+      !endBoundary ||
+      (isFinite(tStart.getTime()) &&
+        tStart <= new Date(endBoundary.getFullYear(), endBoundary.getMonth(), endBoundary.getDate(), 23, 59, 59, 999));
+
+    return matchStartDate && matchEndDate;
+  });
+
 
   const activeWeek = weekDates.find((w) => w.nama === activeHari);
 
@@ -78,19 +97,22 @@ export default function JadwalPage() {
           <p className="text-marine-400 text-[11px] font-semibold uppercase tracking-widest mb-3">Minggu Ini</p>
           <div className="grid grid-cols-7 gap-1.5">
             {weekDates.map((w) => {
+
               const hasSesi = booking?.some((j) => new Date(j.start_date).toLocaleDateString('id-ID', {weekday: 'long', day: 'numeric',
-  month: 'long',
-  year: 'numeric',}) === w.full);
+              month: 'long',
+              year: 'numeric',}) === w.full);
+
               const isActive = activeHari === w.nama;
+
               return (
                 <button
                   key={w.nama}
                   onClick={() => setActiveHari(w.nama === activeHari ? null : w.nama)}
                   className={`flex flex-col items-center py-2.5 px-1 rounded-xl transition-all duration-200 ${
                     isActive
-                      ? 'text-white shadow-lg shadow-marine-200'
-                      : w.isToday
-                      ? 'bg-marine-50 text-marine-700 ring-1 ring-marine-200'
+                      ? 'text-white shadow-lg shadow-marine-200' 
+                      : w.nama === new Date().toLocaleDateString('id-ID', { weekday: 'long' })
+                      ? ' text-marine-700 ring-1 ring-marine-200'
                       : 'hover:bg-slate-50 text-marine-500'
                   }`}
                   style={isActive ? { background: 'linear-gradient(135deg,#0b2d4e,#296da4)' } : {}}
@@ -110,18 +132,51 @@ export default function JadwalPage() {
             <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
               <p className="text-marine-700 text-xs font-semibold">{activeWeek.full}</p>
               <span className="text-[11px] text-marine-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
-                { activeHari ? booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari).length : booking?.filter((i) => i.status === 'Terkonfirmasi')?.length} sesi
+                { activeHari ? booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long', month: 'long',
+              year: 'numeric',}) === activeHari).length : booking?.filter((i) => i.status === 'Terkonfirmasi')?.length} sesi
               </span>
             </div>
           )}
         </div>
 
         {/* ── Filter + View Toggle ── */}
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <p className="text-marine-600 text-sm font-semibold">
             {activeHari ? `Jadwal ${activeHari}` : 'Semua Jadwal'}
-            <span className="ml-2 text-marine-400 font-normal text-xs">(  { activeHari ?booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari).length :  booking?.filter((i) => i.status === 'Terkonfirmasi')?.length} sesi)</span>
+            <span className="ml-2 text-marine-400 font-normal text-xs">
+              (  {activeHari ? filtered.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long' }) === activeHari).length : filtered.length} sesi)
+            </span>
+
           </p>
+
+          <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={filterStartDate}
+                onChange={(e) => setFilterStartDate(e.target.value)}
+                className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer"
+                aria-label="Tanggal mulai"
+              />
+              <span className="text-[11px] text-marine-300">s/d</span>
+              <input
+                type="date"
+                value={filterEndDate}
+                onChange={(e) => setFilterEndDate(e.target.value)}
+                className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer"
+                aria-label="Tanggal berakhir"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setFilterStartDate('');
+                  setFilterEndDate('');
+                }}
+                className="text-xs text-slate-600 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors px-2.5 py-2 rounded-lg hover:bg-slate-50 border border-slate-200 bg-white"
+              >
+                Reset
+              </button>
+            </div>
+
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
             {(['grid', 'list'] as const).map((m) => (
               <button
@@ -150,12 +205,20 @@ export default function JadwalPage() {
             {activeHari ? 
             (
                <>
-            {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari)?.map((j) => {
+            {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long',
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",}) === activeHari)?.map((j) => {
            
-              const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long'}));
-                  
+             const dateInfo = weekDates.find((w) => w.full === new Date(j.start_date).toLocaleDateString("id-ID", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
+                  );
 
+                                    
               return (
                 <div key={j.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                   {/* Header */}
@@ -171,7 +234,12 @@ export default function JadwalPage() {
                         year: 'numeric',
                       })}</span>
                         )}
-                        {dateInfo?.isToday && (
+                        {dateInfo?.full ===  new Date(j.start_date).toLocaleDateString("id-ID", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })&& (
                           <span className="text-[9px] font-bold bg-aqua-500 text-white px-1.5 py-0.5 rounded-full">Hari ini</span>
                         )}
                       </div>
@@ -232,7 +300,7 @@ export default function JadwalPage() {
             (
 <> 
 
-            {booking?.filter((i) => i.status === 'Terkonfirmasi')?.map((j) => {
+            {filtered?.filter((i) => i.status === 'Terkonfirmasi')?.map((j) => {
            
               const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                        weekday: 'long'}));
@@ -253,7 +321,12 @@ export default function JadwalPage() {
                         year: 'numeric',
                       })}</span>
                         )}
-                        {dateInfo?.isToday && (
+                        {dateInfo?.full === new Date(j.start_date).toLocaleDateString("id-ID", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      }) && (
                           <span className="text-[9px] font-bold bg-aqua-500 text-white px-1.5 py-0.5 rounded-full">Hari ini</span>
                         )}
                       </div>
@@ -331,9 +404,11 @@ export default function JadwalPage() {
                   {activeHari ? (
 
                     <>
-                    
-                      {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long'}) === activeHari)?.map((j) => {
-                     
+                    {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long',
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",}) === activeHari)?.map((j) => {      
+
                     const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                        weekday: 'long',
                         day: 'numeric',
@@ -367,7 +442,7 @@ export default function JadwalPage() {
                     </>
                   ): (
                    <>
-                    {booking?.filter((i) => i.status === 'Terkonfirmasi').map((j) => {
+                    {filtered?.filter((i) => i.status === 'Terkonfirmasi' ).map((j) => {
                    
                     const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
                      weekday: 'long' }));

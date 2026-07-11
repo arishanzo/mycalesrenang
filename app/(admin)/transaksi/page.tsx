@@ -38,27 +38,72 @@ export default function TransaksiPage() {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterMetode, setFilterMetode] = useState('Semua');
+  const [filterStartDate, setFilterStartDate] = useState(''); // format: yyyy-mm-dd
+  const [filterEndDate, setFilterEndDate] = useState(''); // format: yyyy-mm-dd
   const [detail, setDetail] = useState<BookingSubmission | null>(null);
 
+  const toDateAtLocalStart = (dateStr: string) => {
+    // dateStr: yyyy-mm-dd from <input type="date">
+    if (!dateStr) return null;
+    const [y, m, d] = dateStr.split('-').map(Number);
+    if (!y || !m || !d) return null;
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+  };
 
   const filtered = booking?.filter((s) => {
-    const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
+    const matchSearch =
+      s.student_name.toLowerCase().includes(search.toLowerCase()) ||
+      s.phone.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'Semua' || s.status === filterStatus;
-    const matchProgram = filterMetode === 'Semua' ||   MYCA_PACKAGES.find(p => p.id === s?.package_id)?.type === filterMetode;
-    return matchSearch && matchStatus && matchProgram;
+    const matchProgram =
+      filterMetode === 'Semua' ||
+      MYCA_PACKAGES.find((p) => p.id === s?.package_id)?.type === filterMetode;
+
+    // Normalisasi tanggal supaya tidak kepengaruh jam/timezone dari Date parser
+    const tStart = new Date(s.start_date);
+    const startBoundary = toDateAtLocalStart(filterStartDate);
+    const endBoundary = toDateAtLocalStart(filterEndDate);
+
+    const normalizeToYMD = (d: Date) =>
+      new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+
+    const tStartYMD = isFinite(tStart.getTime()) ? normalizeToYMD(tStart) : null;
+
+    const matchStartDate =
+      !startBoundary || (tStartYMD !== null && tStartYMD >= startBoundary);
+
+    const matchEndDate =
+      !endBoundary ||
+      (tStartYMD !== null &&
+        tStartYMD <=
+          normalizeToYMD(new Date(endBoundary.getFullYear(), endBoundary.getMonth(), endBoundary.getDate(), 23, 59, 59, 999)));
+
+    return matchSearch && matchStatus && matchProgram && matchStartDate && matchEndDate;
   }) ?? [];
 
   const totalLunas = booking?.filter((t) => t.status ===  'Terkonfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
+    const totalBulanIni = booking?.filter((t) => {  const d = new Date(t.start_date); const now = new Date();
+        return (
+          t.status === "Terkonfirmasi" &&
+          d.getMonth() === now.getMonth() &&
+          d.getFullYear() === now.getFullYear()
+        );
+      }).reduce((a, t) => a + t.total_price, 0) ?? 0;
+
   const Pending = booking?.filter((t) => t.status ===  'Menunggu Konfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
   const Perpanjangan = booking?.filter((t) => t.status ===  'Perpanjangan - Menunggu Konfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
    
   const totalPending = Pending + Perpanjangan;
 
+ const date = new Date();
+const bulanNama = date.toLocaleDateString('id-ID', { month: 'long' });
+const tahun = date.getFullYear();
+
   const stats = [
     { label: 'Total Transaksi', value: `${booking?.length}`, sub: 'semua waktu', color: '#296da4' },
     { label: 'Pendapatan Lunas', value: fmt(totalLunas), sub: 'terkonfirmasi', color: '#059669' },
     { label: 'Menunggu', value: fmt(totalPending), sub: 'belum dikonfirmasi', color: '#d97706' },
-    { label: 'Bulan Ini', value: fmt(totalLunas), sub: 'Jun 2025', color: '#7c3aed' },
+    { label: 'Bulan Ini', value: fmt(totalBulanIni), sub: `${bulanNama}-${tahun}`, color: '#7c3aed' },
   ];
 
  const handleKonfirmasi = async (t: BookingSubmission) => {
@@ -168,7 +213,35 @@ const handleHapus = async (id: string) => {
               value={search} onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 outline-none focus:border-marine-400 focus:bg-white transition-all text-marine-900 placeholder:text-marine-300" />
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex gap-2 shrink-0 flex-wrap sm:flex-nowrap">
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={filterStartDate}
+                onChange={(e) => setFilterStartDate(e.target.value)}
+                className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer"
+                aria-label="Tanggal mulai"
+              />
+              <span className="text-[11px] text-marine-300">s/d</span>
+              <input
+                type="date"
+                value={filterEndDate}
+                onChange={(e) => setFilterEndDate(e.target.value)}
+                className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer"
+                aria-label="Tanggal berakhir"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setFilterStartDate('');
+                  setFilterEndDate('');
+                }}
+                className="text-xs text-slate-600 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors px-2.5 py-2 rounded-lg hover:bg-slate-50 border border-slate-200 bg-white"
+              >
+                Reset
+              </button>
+            </div>
+
             <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
               {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
@@ -268,7 +341,7 @@ const handleHapus = async (id: string) => {
                   </tr>
                 ))}
                 {filtered.length === 0 && (
-                  <tr><td colSpan={8} className="text-center py-10 text-marine-300 text-xs">Tidak ada transaksi ditemukan.</td></tr>
+                  <tr><td colSpan={11} className="text-center py-10 text-marine-300 text-xs">Tidak ada transaksi ditemukan.</td></tr>
                 )}
               </tbody>
             </table>
@@ -316,9 +389,9 @@ const handleHapus = async (id: string) => {
           <span className="text-slate-500 text-xs">Status</span>
           <span
             className={`text-[11px] font-semibold px-3 py-1 rounded-full 
-                        ${BADGE[detail.status]}`}
+                        ${detail ? BADGE[detail.status] : ''}`}
           >
-            {detail.status}
+            {detail?.status}
           </span>
         </div>
       </div>
