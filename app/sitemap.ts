@@ -23,6 +23,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+  url: `${baseUrl}/pendaftaran`,
+  lastModified: new Date(),
+  changeFrequency: 'weekly',
+  priority: 0.9,
+},
+ {
+  url: `${baseUrl}/perpanjangan`,
+  lastModified: new Date(),
+  changeFrequency: 'weekly',
+  priority: 0.9,
+},
+
+    {
       url: `${baseUrl}/#contact`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
