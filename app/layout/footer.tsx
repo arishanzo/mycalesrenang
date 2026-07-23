@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaInstagram, FaWhatsapp, FaYoutubeSquare } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaWhatsapp} from 'react-icons/fa';
 import { FaTiktok } from 'react-icons/fa6';
 import Image from 'next/image';
 
@@ -45,7 +45,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                  alt={'logo'}
                  width={80}
                  height={80}
-                 src={'/images/logo.png'}
+                 src={'/logo.png'}
                 />
               <div className="flex flex-col">
                 <span className="font-display font-bold tracking-wider text-2xl text-white">
@@ -77,7 +77,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                 <FaWhatsapp className="h-4 w-4" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/lesrenang.smg/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-lg bg-marine-900 hover:bg-cyan-500 hover:text-white transition-all shadow"
@@ -86,7 +86,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                 <FaInstagram className="h-4 w-4" />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/lesrenang.smg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-lg bg-marine-900 hover:bg-cyan-500 hover:text-white transition-all shadow"
@@ -95,7 +95,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                 <FaFacebook className="h-4 w-4" />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://www.tiktok.com/@mycalesrenang.smg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-lg bg-marine-900 hover:bg-cyan-500 hover:text-white transition-all shadow"
