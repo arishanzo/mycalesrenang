@@ -18,6 +18,15 @@ import {
   ];
 
 interface InvoiceStepProps {
+  selectedPackage: {
+    name: string;
+    pricePerPerson: number;
+    frequency: string;
+    maxKids: number;
+    type: string;
+    sessions: number;
+    category: string;
+  };
   paketBulanan: string;
   confirmedBooking: BookingSubmission;
   printError: string;
@@ -28,6 +37,7 @@ interface InvoiceStepProps {
 }
 
 export const InvoiceStep: React.FC<InvoiceStepProps> = ({
+  selectedPackage,
   paketBulanan,
   confirmedBooking,
   printError,
@@ -120,7 +130,7 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
           <div>
             <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Biaya Program</p>
             <p className="font-bold text-marine-800 mt-0.5 font-sans">
-              Rp {(MYCA_PACKAGES.find(p => p.id === confirmedBooking?.package_id)?.pricePerPerson || 100000).toLocaleString('id-ID')}
+              Rp {(selectedPackage?.pricePerPerson || 100000).toLocaleString('id-ID')}
             </p>
           </div>
 

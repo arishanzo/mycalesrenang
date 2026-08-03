@@ -344,6 +344,7 @@ const handleFinishPayment = async () => {
              {/* STEP 4: TAGIHAN INVOICE RESMI (Cetak PDF) */}
             {currentStep === 3 && confirmedBooking && (
               <InvoiceStep
+               selectedPackage={selectedPackage}
                 confirmedBooking={confirmedBooking}
                 paketBulanan={paketBulanan}
                 printError={printError}
@@ -360,6 +361,8 @@ const handleFinishPayment = async () => {
             {currentStep === 5 && confirmedBooking && (
 
               <ConfirmedBooking
+                paketBulanan={paketBulanan}
+                 selectedPackage={selectedPackage}
                 confirmedBooking={confirmedBooking}
                 resetForm={resetForm}
                 openWhatsApp={ () => openWhatsApp(confirmedBooking) }

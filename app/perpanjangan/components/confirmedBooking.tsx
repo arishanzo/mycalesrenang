@@ -17,6 +17,16 @@ import Image from "next/image";
   ];
 
 interface InvoiceStepProps {
+   paketBulanan: string,
+  selectedPackage: {
+    name: string;
+    pricePerPerson: number;
+    frequency: string;
+    maxKids: number;
+    type: string;
+    sessions: number;
+    category: string;
+  };
   confirmedBooking: BookingSubmission;
   handlePrint: () => void;
   openWhatsApp: () => void;
@@ -25,7 +35,7 @@ interface InvoiceStepProps {
    courseDays: CourseDays[];
 }
 
-const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsApp, handlePrint, invoicePrinted } : InvoiceStepProps) => {
+const ConfirmedBooking = ({  paketBulanan, selectedPackage ,confirmedBooking, courseDays, resetForm, openWhatsApp, handlePrint, invoicePrinted } : InvoiceStepProps) => {
     return (
 
         <>
@@ -93,6 +103,10 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
                        </div>
                      )}
            
+                <div>
+                    <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Paket Bulanan</p>
+                    <p className="font-bold text-marine-900 mt-0.5">{paketBulanan || '-'}</p>
+                  </div>
            
                      <div>
                        <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Tipe Kursus / Program</p>
@@ -104,8 +118,7 @@ const ConfirmedBooking = ({ confirmedBooking, courseDays, resetForm, openWhatsAp
                      <div>
                        <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Biaya Program</p>
                        <p className="font-bold text-marine-800 mt-0.5 font-sans">
-                         Rp {(MYCA_PACKAGES.find(p => p.id === confirmedBooking?.package_id)?.pricePerPerson || 100000).toLocaleString('id-ID')}
-                       </p>
+                         Rp {(selectedPackage?.pricePerPerson || 100000).toLocaleString('id-ID')} </p>
                      </div>
            
                      <div>
