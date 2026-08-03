@@ -35,6 +35,8 @@ const BookingForm = () => {
   const [courseDays, setCourseDays] = useState<CourseDays[]>([]);
   const [startDate, setStartDate] = useState('');
   const [notes, setNotes] = useState('');
+
+    const [paketBulanan, setPaketBulanan] = useState<string>('-')
   
   const [customLocation, setCustomLocation] = useState('');
 
@@ -52,7 +54,18 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
 
   const [discount, setDiscount] = useState(0);
 
-  const selectedPackage = MYCA_PACKAGES.find(p => p.id === packageId) || MYCA_PACKAGES[0];
+    const selectedPackage = MYCA_PACKAGES.map(p => {
+      if (paketBulanan === "3 bulan") {
+        return { ...p, pricePerPerson: p.pricePerPerson * 3 };
+      } else if (paketBulanan === "6 bulan") {
+        return { ...p, pricePerPerson: p.pricePerPerson * 6 };
+      } else {
+        return p; 
+      }}).find(p => p.id=== packageId) || MYCA_PACKAGES[0];
+
+
+
+
   const totalPrice = discount > 0 ? discount : selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
@@ -279,6 +292,8 @@ const handleFinishPayment = async () => {
             {/* ── STEP 2: LAYANAN & JADWAL ── */}
             {currentStep === 2 && (
              <LayananJadwal
+             paketBulanan  = {paketBulanan}
+              setPaketBulanan = {setPaketBulanan}
               setDiscount={setDiscount}
               discount={discount}
               packageId={packageId}
@@ -319,6 +334,7 @@ const handleFinishPayment = async () => {
              {/* STEP 4: TAGIHAN INVOICE RESMI (Cetak PDF) */}
             {currentStep === 3 && confirmedBooking && (
               <InvoiceStep
+                paketBulanan={paketBulanan}
                 confirmedBooking={confirmedBooking}
                 printError={printError}
                 setPrintError={setPrintError}

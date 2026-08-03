@@ -1,28 +1,11 @@
 'use client';
 import { useState } from 'react';
-import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
+import { CATEGORIES, DaysList, MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag, X, XCircle } from "lucide-react";
 import {  CourseDays, VouchersData } from '@/app/types/types';
 import { UseGetVoucher } from '@/app/(admin)/hook/useGetVouchers';
 
 
- const DaysList = [ 
-    { id: 1,name: 'Senin'},
-    { id: 2,name: 'Selasa'},
-    { id: 3,name: 'Rabu'},
-    { id: 4,name: 'Kamis'},
-    { id: 4,name: 'Jumat'},
-    { id: 4,name: 'Sabtu'},
-    { id: 4,name: 'Minggu'}
-  ];
-
-
-const CATEGORIES = [
-  { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
-  { id: 'dewasa',    label: 'Pricelist Dewasa' },
-  { id: 'homevisit', label: 'Pricelist Home Visit' },
-  { id: 'missyenny', label: 'Pricelist with Miss Yenny' },
-] as const;
 
 const TYPE_LABEL: Record<string, string> = {
   privat:     'Privat (1 on 1)',
@@ -45,7 +28,9 @@ for (let hour = 6; hour <= 18; hour++) {
 
 
 interface LayananJadwalProps {
-    setDiscount : (discount: number) => void;
+   paketBulanan : string;
+  setPaketBulanan : (paketBulanan: string) => void;
+  setDiscount : (discount: number) => void;
   discount: number;
     handleSubmitBooking: (e?: React.FormEvent) => void;
   packageId: string | number;
@@ -60,6 +45,7 @@ interface LayananJadwalProps {
   setStartDate: (date: string) => void;
   notes: string;
   setNotes: (value: string) => void;
+
   selectedPackage: {
     name: string;
     pricePerPerson: number;
@@ -76,6 +62,8 @@ interface LayananJadwalProps {
 }
 
 const LayananJadwal = ({
+  paketBulanan,
+  setPaketBulanan,
  handleSubmitBooking,
   packageId,
   setPackageId,
@@ -103,8 +91,21 @@ const LayananJadwal = ({
   const { voucher } = UseGetVoucher();
   const [searchVoucher, setSearchVocuher] = useState('');
 
-  const filteredPackages = MYCA_PACKAGES.filter(p => p.category === category);
-  const catLabel = CATEGORIES.find(c => c.id === category)?.label ?? '';
+ const filteredPackages = MYCA_PACKAGES
+  .filter(p => p.category === category) // ambil sesuai kategori
+  .map(p => {
+
+    if (paketBulanan === "3 bulan") {
+      return { ...p, pricePerPerson: p.pricePerPerson * 3 };
+    } else if (paketBulanan === "6 bulan") {
+      return { ...p, pricePerPerson: p.pricePerPerson * 6 };
+    } else {
+      return p;
+    }
+  });
+
+ 
+    const catLabel = CATEGORIES.find(c => c.id === category)?.label ?? '';
 
   // dropdown & search state for time picker
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -215,6 +216,25 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
             </select>
           </div>
 
+
+           {/* Dropdown Paket Bulanan */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
+                 Pilih Paket Bulanan <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="select-bulanan"
+              value={paketBulanan}
+              onChange={e => setPaketBulanan(e.target.value)}
+              className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+            >
+              <option value={'-'}>Pilih Paket Bulanan</option>
+              <option value={'3 bulan'}>Paket 3 Bulan</option>
+              <option value={'6 bulan'}>Paket 6 Bulan</option>
+               <option value={'-'}>Tidak Paket Bulanan</option>
+            </select>
+          </div>
+
           {/* Dropdown Paket */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider">
@@ -273,84 +293,84 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
 
            
          {/* Jam Les */}
-<div className="flex flex-col gap-2 relative">
-  <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
-    <Clock className="h-4 w-4 text-cyan-600" />
-    Jam Les <span className="text-red-500">*</span>
-  </label>
+          <div className="flex flex-col gap-2 relative">
+            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
+              <Clock className="h-4 w-4 text-cyan-600" />
+              Jam Les <span className="text-red-500">*</span>
+            </label>
 
-  {/* Trigger */}
-  <button
-    type="button"
-    onClick={() => setIsOpen(!isOpen)}
-    className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 text-left flex items-center justify-between"
-  >
-    <span>
-      {courseTime ? `${courseTime} WIB` : "-- Pilih Jam --"}
-    </span>
-
-    <svg
-      className={`w-4 h-4 transition-transform ${
-        isOpen ? "rotate-180" : ""
-      }`}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M19 9l-7 7-7-7"
-      />
-    </svg>
-  </button>
-
-  {/* Dropdown */}
-  {isOpen && (
-    <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-marine-100 rounded-xl shadow-lg overflow-hidden">
-      {/* Search */}
-      <div className="p-2 border-b">
-        <input
-          type="text"
-          placeholder="Cari jam..."
-          value={searchTime}
-          onChange={(e) => setSearchTime(e.target.value)}
-          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-cyan-500"
-          autoFocus
-        />
-      </div>
-
-      {/* Options */}
-      <div className="max-h-60 overflow-y-auto">
-        {filteredTimeSlots.length > 0 ? (
-          filteredTimeSlots.map((t) => (
+            {/* Trigger */}
             <button
-              key={t}
               type="button"
-              onClick={() => {
-                setCourseTime(t);
-                setSearchTime("");
-                setIsOpen(false);
-              }}
-              className={`w-full text-left px-4 py-3 text-sm hover:bg-cyan-50 transition-colors ${
-                courseTime === t
-                  ? "bg-cyan-100 text-cyan-700 font-medium"
-                  : ""
-              }`}
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 text-left flex items-center justify-between"
             >
-              {t} WIB
+              <span>
+                {courseTime ? `${courseTime} WIB` : "-- Pilih Jam --"}
+              </span>
+
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </button>
-          ))
-        ) : (
-          <div className="px-4 py-3 text-sm text-gray-500">
-            Jam tidak ditemukan
-          </div>
-        )}
-      </div>
-    </div>
-  )}
-</div>
+
+                {/* Dropdown */}
+                {isOpen && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-marine-100 rounded-xl shadow-lg overflow-hidden">
+                    {/* Search */}
+                    <div className="p-2 border-b">
+                      <input
+                        type="text"
+                        placeholder="Cari jam..."
+                        value={searchTime}
+                        onChange={(e) => setSearchTime(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-cyan-500"
+                        autoFocus
+                      />
+                    </div>
+
+                    {/* Options */}
+                    <div className="max-h-60 overflow-y-auto">
+                      {filteredTimeSlots.length > 0 ? (
+                        filteredTimeSlots.map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => {
+                              setCourseTime(t);
+                              setSearchTime("");
+                              setIsOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 text-sm hover:bg-cyan-50 transition-colors ${
+                              courseTime === t
+                                ? "bg-cyan-100 text-cyan-700 font-medium"
+                                : ""
+                            }`}
+                          >
+                            {t} WIB
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-4 py-3 text-sm text-gray-500">
+                          Jam tidak ditemukan
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
             {/* Hari Les */}
           <div className="flex flex-col gap-2">

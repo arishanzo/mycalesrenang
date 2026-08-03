@@ -18,6 +18,7 @@ import {
   ];
 
 interface InvoiceStepProps {
+  paketBulanan: string
   confirmedBooking: BookingSubmission;
   printError: string;
   setPrintError: (msg: string) => void;
@@ -27,6 +28,7 @@ interface InvoiceStepProps {
 }
 
 export const InvoiceStep: React.FC<InvoiceStepProps> = ({
+  paketBulanan,
   confirmedBooking,
   printError,
   setCurrentStep,
@@ -103,6 +105,10 @@ export const InvoiceStep: React.FC<InvoiceStepProps> = ({
             </div>
           )}
 
+             <div>
+              <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider">Paket Bulanan</p>
+              <p className="font-bold text-marine-900 mt-0.5">{paketBulanan || '-'}</p>
+            </div>
 
           <div>
             <p className="text-[10px] text-marine-500 font-mono uppercase tracking-wider font-semibold">Tipe Kursus / Program</p>

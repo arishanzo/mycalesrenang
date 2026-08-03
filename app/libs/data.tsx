@@ -4,6 +4,24 @@ import { SwimmingPackage, SemarangLocation, SwimTestimonial,  } from '../types/t
 import { User, Users, Waves, BookOpen, Award, Smile, Anchor,  Phone, Mail,Clock, Layers, Trophy,} from 'lucide-react';
 
 
+ export const DaysList = [ 
+    { id: 1,name: 'Senin'},
+    { id: 2,name: 'Selasa'},
+    { id: 3,name: 'Rabu'},
+    { id: 4,name: 'Kamis'},
+    { id: 4,name: 'Jumat'},
+    { id: 4,name: 'Sabtu'},
+    { id: 4,name: 'Minggu'}
+  ];
+
+
+export const CATEGORIES = [
+  { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
+  { id: 'dewasa',    label: 'Pricelist Dewasa' },
+  { id: 'homevisit', label: 'Pricelist Home Visit' },
+  { id: 'missyenny', label: 'Pricelist with Miss Yenny' },
+] as const;
+
 
 export const CONTACT_ITEMS = [
   {

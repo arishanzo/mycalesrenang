@@ -35,6 +35,7 @@ const BookingForm = () => {
   const [courseDays, setCourseDays] = useState<CourseDays[]>([]);
   const [startDate, setStartDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [paketBulanan, setPaketBulanan] = useState<string>('-')
   
   const [customLocation, setCustomLocation] = useState('');
 
@@ -54,7 +55,15 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
   const [printError, setPrintError] = useState('');
 
 
-  const selectedPackage = MYCA_PACKAGES.find(p => p.id === packageId) || MYCA_PACKAGES[0];
+  const selectedPackage = MYCA_PACKAGES.map(p => {
+    if (paketBulanan === "3 bulan") {
+      return { ...p, pricePerPerson: p.pricePerPerson * 3 };
+    } else if (paketBulanan === "6 bulan") {
+      return { ...p, pricePerPerson: p.pricePerPerson * 6 };
+    } else {
+      return p; 
+    }}).find(p => p.id=== packageId) || MYCA_PACKAGES[0];
+
   const totalPrice = discount > 0 ? discount : selectedPackage.pricePerPerson;
 
   const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
@@ -213,6 +222,7 @@ const handleFinishPayment = async () => {
       });
     }
   } catch (err) {
+    console.error(err);
     Swal.fire({
       icon: "error",
       title: "Error!",
@@ -292,7 +302,9 @@ const handleFinishPayment = async () => {
             {/* ── STEP 2: LAYANAN & JADWAL ── */}
             {currentStep === 2 && (
              <LayananJadwal
-               setDiscount={setDiscount}
+              paketBulanan  = {paketBulanan}
+              setPaketBulanan = {setPaketBulanan}
+              setDiscount={setDiscount}
               discount={discount}
               packageId={packageId}
               setPackageId={setPackageId}
@@ -333,6 +345,7 @@ const handleFinishPayment = async () => {
             {currentStep === 3 && confirmedBooking && (
               <InvoiceStep
                 confirmedBooking={confirmedBooking}
+                paketBulanan={paketBulanan}
                 printError={printError}
                 setPrintError={setPrintError}
                 setCurrentStep={setCurrentStep}

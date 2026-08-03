@@ -1,7 +1,7 @@
 export interface SwimmingPackage {
   id: string;
   name: string;
-  category: 'asisten' | 'dewasa' | 'homevisit' | 'missyenny';
+  category: 'asisten' | 'dewasa' | 'homevisit' | 'missyenny' | '3 bulan' | '6 bulan';
   type: 'privat' | 'semiprivat' | 'grup' | 'oncecourse';
   sessions: number;
   frequency: string;

@@ -1,28 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
+import { CATEGORIES, DaysList, MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Clock, GraduationCap, MapPin, Tag, X, XCircle } from "lucide-react";
 import {  CourseDays, VouchersData } from '@/app/types/types';
 import { UseGetVoucher } from '@/app/(admin)/hook/useGetVouchers';
 
-
- const DaysList = [ 
-    { id: 1,name: 'Senin'},
-    { id: 2,name: 'Selasa'},
-    { id: 3,name: 'Rabu'},
-    { id: 4,name: 'Kamis'},
-    { id: 4,name: 'Jumat'},
-    { id: 4,name: 'Sabtu'},
-    { id: 4,name: 'Minggu'}
-  ];
-
-
-const CATEGORIES = [
-  { id: 'asisten',   label: 'Pricelist Asisten (Anak)' },
-  { id: 'dewasa',    label: 'Pricelist Dewasa' },
-  { id: 'homevisit', label: 'Pricelist Home Visit' },
-  { id: 'missyenny', label: 'Pricelist with Miss Yenny' },
-] as const;
 
 const TYPE_LABEL: Record<string, string> = {
   privat:     'Privat (1 on 1)',
@@ -45,6 +27,8 @@ for (let hour = 6; hour <= 18; hour++) {
 
 
 interface LayananJadwalProps {
+  paketBulanan : string;
+  setPaketBulanan : (paketBulanan: string) => void;
     setDiscount : (discount: number) => void;
   discount: number;
     handleSubmitBooking: (e?: React.FormEvent) => void;
@@ -76,6 +60,8 @@ interface LayananJadwalProps {
 }
 
 const LayananJadwal = ({
+    paketBulanan,
+  setPaketBulanan,
  handleSubmitBooking,
   packageId,
   setPackageId,
@@ -212,6 +198,25 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
               {CATEGORIES.map(c => (
                 <option key={c.id} value={c.id}>{c.label}</option>
               ))}
+            </select>
+          </div>
+
+          
+           {/* Dropdown Kategori */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider flex items-center gap-1">
+                 Pilih Paket Bulanan <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="select-bulanan"
+              value={paketBulanan}
+              onChange={e => setPaketBulanan(e.target.value)}
+              className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+            >
+              <option value={'-'}>Pilih Paket Bulanan</option>
+              <option value={'3 bulan'}>Paket 3 Bulan</option>
+              <option value={'6 bulan'}>Paket 6 Bulan</option>
+               <option value={'-'}>Tidak Paket Bulanan</option>
             </select>
           </div>
 
