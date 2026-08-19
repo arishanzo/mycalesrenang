@@ -62,7 +62,10 @@ export default function AdminLogin() {
       const res = await login({ email: form.email, password: form.password });
       if (res?.token) {
         router.push("/dashboard");
-      }
+       } else {
+      // login gagal, tampilkan pesan dari API
+      setError(res?.user?.message || 'Login gagal.');
+    }
     } catch {
       setError('Terjadi kesalahan saat menghubungkan ke server.');
       setLoading(false);
