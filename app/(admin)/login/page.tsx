@@ -66,8 +66,9 @@ export default function AdminLogin() {
       // login gagal, tampilkan pesan dari API
       setError(res?.user?.message || 'Login gagal.');
     }
-    } catch {
-      setError('Terjadi kesalahan saat menghubungkan ke server.');
+    } catch(err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat menghubungkan ke server.';
+      setError(errorMessage || 'Terjadi kesalahan saat menghubungkan ke server.');
       setLoading(false);
     }
   };
