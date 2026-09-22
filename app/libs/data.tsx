@@ -118,6 +118,9 @@ export const MYCA_LOCATIONS: SemarangLocation[] = [
   { id: 'hotel-stay-maja', name: 'Hotel Stay Maja', address: 'Semarang', facilities: ['Kolam Hotel Nyaman', 'Kamar Bilas', 'Parkir'] },
   { id: 'hotel-grasia', name: 'Hotel Grasia', address: 'Semarang', facilities: ['Kolam Hotel Bersih', 'Fasilitas Lengkap', 'Kamar Bilas'] },
   { id: 'hotel-quest', name: 'Hotel Quest', address: 'Semarang', facilities: ['Kolam Hotel Modern', 'Kamar Bilas', 'Parkir Tersedia'] },
+  { id: 'hotel-khassmg', name: 'Hotel Khas Semarang', address: 'Semarang', facilities: ['Kolam Villa / Resort', 'Instruktur Tersertifikasi', 'Jadwal Fleksibel'] },
+  { id: 'hotel-khasjogja', name: 'Hotel Khas Tugu Yogyakarta', address: 'Tugu-Jogja', facilities: ['Kolam Villa / Resort', 'Instruktur Tersertifikasi', 'Jadwal Fleksibel'] },
+
   { id: 'pandanaran-hills', name: 'Pandanaran Hills', address: 'Pandanaran, Semarang', facilities: ['Kolam Outdoor View Hills', 'Udara Sejuk', 'Area Parkir'] },
   { id: 'wujil-resort', name: 'Wujil Resort Ungaran', address: 'Ungaran, Kabupaten Semarang', facilities: ['Kolam Resort Premium', 'Suasana Alam', 'Fasilitas Resort Lengkap'] },
   { id: 'bali', name: 'Provinsi Bali', address: 'Bali', facilities: ['Kolam Villa / Resort', 'Instruktur Tersertifikasi', 'Jadwal Fleksibel'] },
