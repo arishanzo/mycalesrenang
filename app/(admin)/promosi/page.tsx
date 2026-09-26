@@ -188,7 +188,14 @@ const handleHapus = async (id: string) => {
                      <td className="px-3 py-2.5 text-marine-600">{s.subject}</td>
                    
 
-                    <td className="px-3 py-2.5 text-marine-600 whitespace-nowrap">{s.message}</td>
+                    <td className="px-3 py-2.5 text-marine-600">
+                    <div
+                      className="max-w-[350px] truncate text-sm leading-6"
+                      title={s.message}
+                    >
+                      {s.message}
+                    </div>
+                  </td>
                     
                     <td className="px-3 py-2.5 text-marine-600">{format(new Date(s.schedule), `dd MM yyyy h:m`)} WIB</td>
                     
