@@ -480,7 +480,7 @@ export default function VoucherAddModal({
               <p className="mt-1.5 text-xs text-slate-400">
                 Ketik untuk mencari pelanggan. Klik email yang
                 muncul atau tekan Enter untuk menambahkan email
-                baru.
+                baru. <p className="text-xs font-semibold text-red-400" >Maksimal 300 email per hari </p>
               </p>
             </div>
 

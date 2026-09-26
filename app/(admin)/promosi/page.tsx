@@ -92,7 +92,7 @@ const handleHapus = async (id: string) => {
 };
 
   return (
-    <AdminShell title="booking Promosi" subtitle="Kelola Promosi terdaftar">
+    <AdminShell title="Halaman Promosi" subtitle="Kelola Promosi terdaftar">
       <div className="space-y-3">
 
         {/* Stat strip */}
