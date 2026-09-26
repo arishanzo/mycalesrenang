@@ -30,7 +30,9 @@ export default function PromosiPage() {
   // const [selected, setSelected] = useState<(number | string)[]>([]);
 
   const filtered = promosi?.filter((s) => {
-  const matchSearch = s.email.toLowerCase().includes(search.toLowerCase());
+  const matchSearch = (Array.isArray(s.email) ? s.email.join(' ') : s.email)
+    .toLowerCase()
+    .includes(search.toLowerCase());
     return matchSearch;
   }) ?? [];
 
