@@ -103,9 +103,13 @@ export default function VoucherEditModal({
         title: "Gagal!",
         text: error instanceof Error ? error.message : "Terjadi kesalahan saat menjadwalkan email.",
       });
-    } finally {
-      setIsSubmitting(false);
-    }
+    }finally {
+    onClose();
+    setTimeout(() => {
+            window.location.reload();
+    }, 3000);
+  
+  }
   };
 
   if (!isOpen) return null;

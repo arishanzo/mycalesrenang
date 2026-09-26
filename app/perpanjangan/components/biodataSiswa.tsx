@@ -1,12 +1,14 @@
 import { UseGetBooking } from "@/app/(admin)/hook/useGetBooking";
 import { BookingSubmission } from "@/app/types/types";
-import { ChevronRight, Search, User } from "lucide-react";
+import { ChevronRight, Mail, Search, User } from "lucide-react";
 import { useState } from "react";
 
 interface BiodataProps {
   
   setId: (id: string) => void;
   studentName: string;
+    setEmail: (email: string) => void;
+  email: string;
   setStudentName: (id: string) => void;
   namaPanggilan: string;
   setNamaPanggilan: (id: string) => void;
@@ -32,7 +34,7 @@ const BiodataSiswa = ({
   birthDate, setBirthDate,
   setAge, setPhone, phone,
   handleNextStep, parentName, setParentName,
-  age, isStep1Valid,
+  age, isStep1Valid, setEmail, email
 }: BiodataProps) => {
 
 
@@ -210,6 +212,27 @@ const selectStudent = (student : BookingSubmission) => {
           className="w-full bg-gray-50 py-3 px-4 rounded-xl border"
         />
       </div>
+
+
+         {/* Email */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider">
+             Email Aktif <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <input
+                id="input-student-email"
+                type="tel"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Contoh: arif@gmail.com "
+                className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 pl-11 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+              />
+              <Mail className="absolute left-4 top-3.5 h-4 w-4 text-marine-400" />
+            </div>
+          </div>
+
 
         <div>
         <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider">

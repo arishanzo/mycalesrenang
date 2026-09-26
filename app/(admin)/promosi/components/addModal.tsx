@@ -250,9 +250,14 @@ export default function VoucherAddModal({
             ? error.message
             : "Terjadi kesalahan saat menjadwalkan email.",
       });
-    } finally {
-      setIsSubmitting(false);
     }
+    finally {
+    onClose();
+     setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+  
+  }
   };
 
 

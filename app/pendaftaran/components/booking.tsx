@@ -26,6 +26,7 @@ const BookingForm = () => {
   const [gender, setGender] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [age, setAge] = useState<number | ''>('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
   // Step 2 – Layanan & Jadwal
@@ -66,7 +67,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
 
   const totalPrice = discount > 0 ? discount : selectedPackage.pricePerPerson;
 
-  const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && phone.trim().length >= 9;
+  const isStep1Valid = studentName.trim().length >= 3 && gender !== '' && birthDate !== '' && Number(age) > 0 && email !== '' && phone.trim().length >= 9;
   const isStep2Valid = packageId !== '' && locationId !== ''  && courseTime !== '' && startDate !== '' && courseDays.length > 0;
   const isStep3Valid = confirmedBooking !== null;
   const isStep4Valid = paymentProof !== null;
@@ -95,6 +96,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
 
     const newBooking: BookingSubmission = {
       id: Math.random().toString(36).substr(2, 9),
+      
       booking_code: randomCode,
       student_name: studentName,
       nama_panggilan: namaPanggilan,
@@ -103,6 +105,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
       birth_date: birthDate,
       age: Number(age),
       phone,
+      email: email,
       package_id: packageId,
       location_id: customLocation ? customLocation : locationId,
       course_day: courseDays.map(i => i.name).join(','),
@@ -127,7 +130,7 @@ const [paymentProof, setPaymentProof] = useState<globalThis.File | null>(null);
   
 
   const resetForm = () => {
-    setStudentName(''); setParentName(''); setAge(''); setPhone(''); setGender(''); setBirthDate('');
+    setStudentName(''); setParentName(''); setAge(''); setPhone(''); setEmail(''); setGender(''); setBirthDate('');
      setCourseTime(''); setStartDate(''); setNotes('');
     setPaymentProof(null); setConfirmedBooking(null); setCurrentStep(1);
   };
@@ -149,6 +152,7 @@ Saya ingin konfirmasi pendaftaran.
 *Tanggal Lahir:* ${booking.birth_date ?  new Date(booking.birth_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-'}
 *Umur:* ${booking.age}
 *No Hp / WA:* ${booking.phone}
+*Email:* ${booking.email}
 *Nama Orang Tua:* ${booking.parent_name ?? '-'}
 *Progam Kelas:* ${pkgid || '-'}
 *Jenis Progam Kelas:* ${pkg}
@@ -282,6 +286,8 @@ const handleFinishPayment = async () => {
               <BiodataSiswa
                 setStudentName={setStudentName}
                 studentName={studentName}
+                setEmail={setEmail}
+                email={email}
                 namaPanggilan={namaPanggilan}
                 setNamaPanggilan={setNamaPanggilan}
                 gender={gender}
