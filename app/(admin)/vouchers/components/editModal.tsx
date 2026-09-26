@@ -2,7 +2,7 @@
 import { update } from "@/app/services/vourchers.services";
 import { VouchersData } from "@/app/types/types";
 import { format } from "date-fns";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import Swal from "sweetalert2";
 
 
@@ -14,34 +14,21 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
 }) {
  
 
-     const [form, setForm] = useState<VouchersData>({
-    id: "",
-    code: "",
-    discount_type: "percentage",
-    discount_value: Number(''),
-    start_date: "",
-    end_date: "",
-    is_active: true,
+ const [form, setForm] = useState<VouchersData>({
+    id: voucher?.id || "",
+      code: voucher?.code ?? "",
+      discount_type: voucher?.discount_type ?? "percentage",
+      discount_value: Number(voucher?.discount_value ?? 0),
+      start_date: voucher?.start_date
+        ? format(new Date(voucher.start_date), "yyyy-MM-dd")
+        : "",
+      end_date: voucher?.end_date
+        ? format(new Date(voucher.end_date), "yyyy-MM-dd")
+        : "",
+      is_active: voucher?.is_active ?? true,
   });
 
   
-
-  useEffect(() => {
-  if (voucher) {
-
-    
-    setForm({
-      id: voucher.id ?? "",
-      code: voucher.code ?? "",
-      discount_type: voucher.discount_type ?? "percentage",
-      discount_value: Number(voucher?.discount_value ?? 0),
-      start_date: format(new Date(voucher.start_date), "yyyy-MM-dd") ?? "",
-      end_date:  format(new Date(voucher.end_date), "yyyy-MM-dd") ?? "",
-      is_active: voucher.is_active ?? true,
-    });
-  }
-}, [voucher]);
-
   
   const handleChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
 
@@ -56,7 +43,7 @@ export default function VoucherEditModal({  onClose, voucher, isOpen }: {
      try {
 
         const res = await update(id, form);
-         console.log("RES:", res);
+   
     
        if(res){
         Swal.fire({

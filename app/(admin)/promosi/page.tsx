@@ -2,37 +2,35 @@
 
 import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
-import { Edit, Trash } from 'lucide-react';
-import VoucherEditModal from './components/editModal';
-import { VouchersData } from '@/app/types/types';
-import VoucherAddModal from './components/addModal';
-import { UseGetVoucher } from '../hook/useGetVouchers';
+import { Eye, Trash } from 'lucide-react';
+import PromosiAddModal from './components/addModal';
 import Swal from 'sweetalert2';
-import { deleteVoucher } from '@/app/services/vourchers.services';
 import { format } from 'date-fns';
+import { UseGetPromosi } from '../hook/useGetPromosi';
+import { deletePromosi } from '@/app/services/promosi.service';
+import StatusModal from './components/statusModel';
 
 
 
-export default function VouchersPage() {
+export default function PromosiPage() {
 
 
-      const [showEditModal, setShowEditModal] = useState(false);
         const [showAddModal, setShowAddModal] = useState(false);
+        const [showStatusModal, setShowStatusModal] = useState(false);
+        const [selectedStatusId, setSelectedStatusId] = useState('');
+      
 
-      const [selectedVoucher, setSelectedVoucher] = useState<VouchersData | null>(null);
-
-
-     const { voucher }  = UseGetVoucher();
+     const { promosi }  = UseGetPromosi();
 
   
 
   const [search, setSearch] = useState('');
   // const [filterStatus, setFilterStatus] = useState('Semua');
-  const [filterProgram, setFilterProgram] = useState('Semua');
-  const [selected] = useState<(number | string)[]>([]);
+  // const [filterProgram, setFilterProgram] = useState('Semua');
+  // const [selected, setSelected] = useState<(number | string)[]>([]);
 
-  const filtered = voucher?.filter((s) => {
-    const matchSearch = s.code.toLowerCase().includes(search.toLowerCase()) || s.discount_type.toLowerCase().includes(search.toLowerCase());
+  const filtered = promosi?.filter((s) => {
+  const matchSearch = s.email.toLowerCase().includes(search.toLowerCase());
     return matchSearch;
   }) ?? [];
 
@@ -42,27 +40,23 @@ export default function VouchersPage() {
   // const toggleSelect = (id: string) =>
   //   setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
 
-  const now = new Date();
-
   const stats = [
-    { label: 'Total Voucher', value: voucher?.length, color: '#296da4' },
-    { label: 'Aktif', value: voucher?.filter((s) => new Date(s.end_date) > now).length, color: '#059669' },
-    { label: 'Nonaktif', value: voucher?.filter((s) => new Date(s.end_date) < now).length, color: '#dc2626' },
+    { label: 'Total Promosi', value: promosi?.length, color: '#296da4' },
+    { label: 'Terkirim', value: promosi?.filter((s) => String(s.status) === 'sent').length, color: '#059669' },
+    { label: 'Pending', value: promosi?.filter((s) => String(s.status) === 'pending').length, color: '#122193' },
+     { label: 'Gagal', value: promosi?.filter((s) => String(s.status) === 'failed').length, color: '#970e0e' },
   ];
-    
-  const handleEdit = (e: VouchersData) => {
 
-    setSelectedVoucher(e)
-    setShowEditModal(true)
+  const handleStatus = (id: string) => {
+      setSelectedStatusId(id);
+      setShowStatusModal(true);
+
   }
-
-
-  ;
-
+    
 const handleHapus = async (id: string) => {
   Swal.fire({
     title: "Yakin hapus?",
-    text: "Data voucher ini akan dihapus permanen.",
+    text: "Data Promosi ini akan dihapus permanen.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#d33",
@@ -72,11 +66,11 @@ const handleHapus = async (id: string) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        await deleteVoucher(id); // panggil API delete
+        await deletePromosi(id); // panggil API delete
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
-          text: "Voucher berhasil dihapus.",
+          text: "Promosi berhasil dihapus.",
           timer: 2000,
           showConfirmButton: false,
         });
@@ -84,7 +78,7 @@ const handleHapus = async (id: string) => {
         Swal.fire({
           icon: "error",
           title: "Gagal!",
-          text: "Terjadi kesalahan saat menghapus voucher.",
+          text: "Terjadi kesalahan saat menghapus Promosi.",
         });
       } finally{
          setTimeout(() => {
@@ -96,7 +90,7 @@ const handleHapus = async (id: string) => {
 };
 
   return (
-    <AdminShell title="booking Voucher" subtitle="Kelola semua booking Voucher terdaftar">
+    <AdminShell title="booking Promosi" subtitle="Kelola Promosi terdaftar">
       <div className="space-y-3">
 
         {/* Stat strip */}
@@ -123,7 +117,7 @@ const handleHapus = async (id: string) => {
             </span>
             <input
               type="text"
-              placeholder="Cari  Voucher..."
+              placeholder="Cari  Promosi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 outline-none focus:border-marine-400 focus:bg-white transition-all text-marine-900 placeholder:text-marine-300"
@@ -132,11 +126,11 @@ const handleHapus = async (id: string) => {
           {/* Filters */}
           <div className="flex gap-2 shrink-0">
          
-
+{/* 
             <select value={filterProgram} onChange={(e) => setFilterProgram(e.target.value)}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Privat', 'Semi Privat', 'Grup'].map((o) => <option key={o}>{o}</option>)}
-            </select>
+              {['Semua', 'Pending', 'Sukses', 'Gagal'].map((o) => <option key={o}>{o}</option>)}
+            </select> */}
 
                <button
                 onClick={() => setShowAddModal(true)} 
@@ -163,7 +157,7 @@ const handleHapus = async (id: string) => {
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50">
             <p className="text-marine-500 text-[11px] font-semibold uppercase tracking-wider">
-              {filtered?.length} Voucher ditemukan
+              {filtered?.length} Promosi ditemukan
             </p>
 
           </div>
@@ -172,7 +166,7 @@ const handleHapus = async (id: string) => {
               <thead>
                 <tr className="border-b border-slate-100">
                 
-                  {[ 'No', 'Nama Lengkap Voucher' ,'Tipe Diskon', 'Nilai Diskon', 'Tanggal Mulai', 'Tanggal Berakhir', 'Action'].map((h) => (
+                  {[ 'No', 'Email' ,'Subject', 'Message', 'Tanggal', 'status', 'Action'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -181,32 +175,33 @@ const handleHapus = async (id: string) => {
                 {filtered.map((s, i) =>  { 
                     const no = i + 1;
                     return (
-                  <tr key={s.id} className={`hover:bg-marine-50/40 transition-colors ${selected.includes(s.id) ? 'bg-marine-50/60' : ''}`}>
+                  <tr key={s.id} className="hover:bg-marine-50/40 transition-colors">
                        <td className="px-3 py-2.5 text-marine-600">{no}</td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-marine-900 font-semibold whitespace-nowrap">{s.code}</span>
+                        <span className="text-marine-900 font-semibold whitespace-nowrap">{s.email}</span>
                       </div>
                     </td>
                     
-                     <td className="px-3 py-2.5 text-marine-600">{s.discount_type}</td>
+                     <td className="px-3 py-2.5 text-marine-600">{s.subject}</td>
                    
 
-                    <td className="px-3 py-2.5 text-marine-600">{s.discount_type === 'percentage' ? `${Number(s.discount_value)}%` : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", }).format(s.discount_value)}</td>
+                    <td className="px-3 py-2.5 text-marine-600 whitespace-nowrap">{s.message}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{format(new Date(s.start_date), "dd MM yyyy")}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{format(new Date(s.schedule), `dd MM yyyy h:m`)} WIB</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{format(new Date(s.end_date), "dd MMMM yyyy")}</td>
+                    <td className="px-3 py-2.5 text-marine-600">
+                        <button
+                            onClick={() => handleStatus(s.id)}
+                            className="rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors"
+                            >
+                          <Eye />
+                            </button>
+                     </td>
                   
                    
                    <td className="px-3 py-2.5">
                         <div className="flex items-center gap-2">
-                            <button
-                            onClick={() => handleEdit(s)}
-                            className="rounded-lg hover:bg-marine-100 text-marine-400 hover:text-marine-700 transition-colors"
-                            >
-                            <Edit />
-                            </button>
 
                             <button
                             onClick={() => handleHapus(s.id)}
@@ -222,7 +217,7 @@ const handleHapus = async (id: string) => {
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={8} className="text-center py-10 text-marine-300 text-xs">
-                      Tidak ada data Voucher ditemukan.
+                      Tidak ada data Promosi ditemukan.
                     </td>
                   </tr>
                 )}
@@ -232,13 +227,17 @@ const handleHapus = async (id: string) => {
         </div>
       </div>
 
-        <VoucherEditModal
-        isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        voucher={selectedVoucher}
+      
+  {showStatusModal && (
+  <StatusModal
+        isOpen={showStatusModal}
+        onClose={() => setShowStatusModal(false)}
+        id={selectedStatusId}
       />
 
-      <VoucherAddModal
+  )}
+  
+      <PromosiAddModal
       isOpen={showAddModal}
       onClose={() => setShowAddModal(false)}
       />

@@ -2,7 +2,7 @@
 
 import Footer from "../layout/footer";
 import Header from "../layout/navbar";
-import { useState, useEffect, type ComponentType } from "react";
+import { useState, useEffect} from "react";
 import BookingForm from "./components/booking";
 
 export default function Home() {

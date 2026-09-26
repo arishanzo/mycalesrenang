@@ -131,7 +131,7 @@ const tahun = date.getFullYear();
     Swal.fire({
       icon: "error",
       title: "Error!",
-      text: "Terjadi kesalahan server.",
+      text: "Terjadi kesalahan server." + err,
     })
 
   } finally {

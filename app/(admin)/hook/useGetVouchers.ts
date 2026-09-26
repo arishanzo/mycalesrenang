@@ -21,12 +21,33 @@ export const UseGetVoucher = () => {
           // pastikan ambil array
           setVoucher( result || []);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (isMounted) {
-          if (error?.response?.status === 404) {
+          const response =
+            typeof error === "object" && error !== null && "response" in error
+              ? error.response
+              : undefined;
+          const status =
+            typeof response === "object" && response !== null && "status" in response
+              ? response.status
+              : undefined;
+          const data =
+            typeof response === "object" && response !== null && "data" in response
+              ? response.data
+              : undefined;
+          const message =
+            typeof data === "object" && data !== null && "message" in data
+              ? data.message
+              : undefined;
+
+          if (status === 404) {
             setVoucher([]);
           } else {
-            setError(error?.response?.data?.message || error?.message || "Gagal memuat Booking");
+            setError(
+              (typeof message === "string" && message) ||
+                (error instanceof Error ? error.message : undefined) ||
+                "Gagal memuat Booking",
+            );
           }
         }
       } finally {

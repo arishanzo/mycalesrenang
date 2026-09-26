@@ -5,7 +5,6 @@ import Header from "./layout/navbar";
 import Hero from "./components/hero";
 import About from "./components/about";
 import Layanan from "./components/layanan";
-import BookingForm from "./pendaftaran/components/booking";
 import Testimonials from "./components/testimoni";
 import { useState, useEffect } from "react";
 import Contact from "./components/contact";
@@ -13,7 +12,7 @@ import Contact from "./components/contact";
 export default function Home() {
 
     const [activeSection, setActiveSection] = useState('home');
-  const [selectedPackageId, setSelectedPackageId] = useState('');
+  const [, setSelectedPackageId] = useState('');
 
   // Track active section for high UX navbar highlight
   useEffect(() => {
@@ -66,18 +65,18 @@ export default function Home() {
     setActiveSection(sectionId === 'services' ? 'services' : sectionId);
   };
 
-  const handleScrollToBooking = () => {
-    const el = document.getElementById('booking-form');
-    if (el) {
-      const headerOffset = 80;
-      const elementPosition = el.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
+  // const handleScrollToBooking = () => {
+  //   const el = document.getElementById('booking-form');
+  //   if (el) {
+  //     const headerOffset = 80;
+  //     const elementPosition = el.getBoundingClientRect().top;
+  //     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+  //     window.scrollTo({
+  //       top: offsetPosition,
+  //       behavior: 'smooth'
+  //     });
+  //   }
+  // };
 
   const handleScrollToServices = () => {
     const el = document.getElementById('services');
@@ -103,7 +102,7 @@ export default function Home() {
         
         {/* HERO SECTION */}
         <Hero
-          onJoinClick={handleScrollToBooking}
+          // onJoinClick={handleScrollToBooking}
           onExploreClick={handleScrollToServices}
         />
 

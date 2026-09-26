@@ -27,7 +27,8 @@ const router = useRouter();
     : pathname.includes('transaksi') ? 'transaksi'
     : pathname.includes('setting-akun') ? 'setting-akun'
     : pathname.includes('jadwal') ? 'jadwal'
-     : pathname.includes('vouchers') ? 'vouchers'
+     : pathname.includes('vouchers') ? 'vouchers' :
+      pathname.includes('promosi') ? 'promosi'
     : 'dashboard';
 
     const handleLogout = async () => {

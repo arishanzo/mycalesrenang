@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ArrowRight, Waves, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import { ArrowRight, Waves, ShieldCheck, Star } from 'lucide-react';
+import Image from 'next/image';
 
 interface HeroProps {
-  onJoinClick: () => void;
   onExploreClick: () => void;
 }
 
-export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
+export default function Hero({  onExploreClick }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
@@ -189,12 +189,14 @@ export default function Hero({ onJoinClick, onExploreClick }: HeroProps) {
               {/* Overlay Glass effect */}
               <div className="absolute inset-0 bg-gradient-to-t from-marine-950/70 via-transparent to-transparent opacity-60 pointer-events-none" />
 
-              <img
+              <Image
                 id="hero-img-asset"
                 src="/images/gambar4.jpeg"
                 alt="MYCA Les Renang Premium Swimming Center Pool Semarang"
                 className="w-full h-[320px] sm:h-[420px] object-cover transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
+                width={100}
+                height={100}
               />
 
               {/* Floating review card inside image for design premium depth */}

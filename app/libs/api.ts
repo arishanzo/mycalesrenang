@@ -1,16 +1,17 @@
 
 
-type SessionResponse = {
-  loggedIn: boolean;
-  user?: {email: string };
-};
+// type SessionResponse = {
+//   loggedIn: boolean;
+//   user?: {email: string };
+// };
 
 
 export async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const apiUrl = 'https://api.lesrenangmyca.com/api';
+  // const apiUrl = 'https://api.lesrenangmyca.com/api';
+  const apiUrl = 'http://localhost:5000/api';
   const res = await fetch(`${apiUrl}${endpoint}`, {
     ...options,
     cache: options?.cache || "no-store",

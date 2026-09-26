@@ -1,35 +1,38 @@
 import { getFetchCache } from "@/app/libs/fetchCahceh";
-import { getAllBooking } from "@/app/services/transaksi.services";
 import { useEffect, useState } from "react";
-import { BookingSubmission } from "../../types/types";
+import { EmailStatus} from "../../types/types";
+import { getEmailLogs } from "@/app/services/promosi.service";
 
 
-export const UseGetBooking = () => {
-  const [booking, setBooking] = useState<BookingSubmission[]>([]);
+export const UseGetEmailLogs = (id : string) => {
+  const [emailLogs, setemailLogs] = useState<EmailStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchBooking = async () => {
+    const fetchPromosi = async () => {
       try {
         setLoading(true);
-        const result = await getFetchCache(() => getAllBooking(), 5, 3000);
+        const result = await getFetchCache(() => getEmailLogs(id), 5, 3000);
 
         if (isMounted) {
           // pastikan ambil array
-          setBooking( result || []);
+          setemailLogs( result || []);
         }
       } catch (error: unknown) {
         if (isMounted) {
           const err = error as {
-            response?: { status?: number; data?: { message?: string } };
+            response?: {
+              status?: number;
+              data?: { message?: string };
+            };
             message?: string;
           };
 
           if (err.response?.status === 404) {
-            setBooking([]);
+            setemailLogs([]);
           } else {
             setError(err.response?.data?.message || err.message || "Gagal memuat Booking");
           }
@@ -39,13 +42,13 @@ export const UseGetBooking = () => {
       }
     };
 
-    const timer = setTimeout(fetchBooking, 100);
+    const timer = setTimeout(fetchPromosi, 100);
 
     return () => {
       isMounted = false;
       clearTimeout(timer);
     };
-  }, []);
+  }, [id]);
 
-  return { booking, loading, error };
+  return { emailLogs, loading, error };
 };

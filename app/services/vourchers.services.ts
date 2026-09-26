@@ -24,7 +24,6 @@ export const createVouchers= async (
 };
 
 
-
 export const update = async (
   id: string,
   data: Partial<VouchersData>

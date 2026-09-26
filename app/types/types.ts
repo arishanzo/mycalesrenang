@@ -28,6 +28,28 @@ export interface SwimTestimonial {
 }
 
 
+
+export interface EmailStatus{
+  id: string;
+  job_id: number;
+  recipient: string;
+  status: "pending" | "sent" | "failed";
+}
+
+
+
+
+export interface PromosiData{
+  id: string;
+  email: string[];
+  subject: string;
+  message: string;
+  schedule: string;
+  status: "pending" | "sent" | "failed";
+}
+
+
+
 export interface VouchersData{
   id: string;
   code: string;
@@ -48,6 +70,7 @@ export interface BookingSubmission {
   birth_date: string;
   age: number;
   phone: string;
+  email: string;
   package_id: string;
   location_id: string;
   course_day: string,
