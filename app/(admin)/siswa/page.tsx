@@ -154,7 +154,7 @@ export default function SiswaPage() {
                     
                     <td className="px-3 py-2.5 text-marine-600">{s.age}</td>
                     
-                    <td className="px-3 py-2.5 text-marine-600">{ new Date(s.start_date).toLocaleDateString('id-ID')}</td>
+                    <td className="px-3 py-2.5 text-marine-600">{ new Date(s.birth_date).toLocaleDateString('id-ID')}</td>
                        <td className="px-3 py-2.5">
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${PROGRAM_COLOR[s.package_id]}`}>{s.package_id}</span>
                     </td>
