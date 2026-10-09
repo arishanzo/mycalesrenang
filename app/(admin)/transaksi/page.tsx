@@ -41,6 +41,8 @@ export default function TransaksiPage() {
   const [filterStartDate, setFilterStartDate] = useState(''); // format: yyyy-mm-dd
   const [filterEndDate, setFilterEndDate] = useState(''); // format: yyyy-mm-dd
   const [detail, setDetail] = useState<BookingSubmission | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   const toDateAtLocalStart = (dateStr: string) => {
     // dateStr: yyyy-mm-dd from <input type="date">
@@ -80,6 +82,9 @@ export default function TransaksiPage() {
 
     return matchSearch && matchStatus && matchProgram && matchStartDate && matchEndDate;
   }) ?? [];
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const totalLunas = booking?.filter((t) => t.status ===  'Terkonfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
     const totalBulanIni = booking?.filter((t) => {  const d = new Date(t.start_date); const now = new Date();
@@ -210,7 +215,7 @@ const handleHapus = async (id: string) => {
               </svg>
             </span>
             <input type="text" placeholder="Cari nama atau ID transaksi..."
-              value={search} onChange={(e) => setSearch(e.target.value)}
+              value={search} onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
               className="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 outline-none focus:border-marine-400 focus:bg-white transition-all text-marine-900 placeholder:text-marine-300" />
           </div>
           <div className="flex gap-2 shrink-0 flex-wrap sm:flex-nowrap">
@@ -235,6 +240,7 @@ const handleHapus = async (id: string) => {
                 onClick={() => {
                   setFilterStartDate('');
                   setFilterEndDate('');
+                  setCurrentPage(1);
                 }}
                 className="text-xs text-slate-600 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors px-2.5 py-2 rounded-lg hover:bg-slate-50 border border-slate-200 bg-white"
               >
@@ -242,11 +248,11 @@ const handleHapus = async (id: string) => {
               </button>
             </div>
 
-            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
+            <select value={filterStatus} onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
               {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
             </select>
-            <select value={filterMetode} onChange={(e) => setFilterMetode(e.target.value)}
+            <select value={filterMetode} onChange={(e) => { setFilterMetode(e.target.value); setCurrentPage(1); }}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
               {['Semua', 'privat', 'semiprivat', 'grup'].map((o) => <option key={o}>{o}</option>)}
             </select>
@@ -256,8 +262,9 @@ const handleHapus = async (id: string) => {
 
         {/* Table */}
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-slate-100 bg-slate-50">
+          <div className="px-4 py-2.5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
             <p className="text-marine-500 text-[11px] font-semibold uppercase tracking-wider">{filtered.length} transaksi</p>
+            <p className="text-marine-400 text-[10px]">Halaman {currentPage} dari {totalPages || 1}</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -269,7 +276,7 @@ const handleHapus = async (id: string) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filtered.map((t) => (
+                {paginated.map((t) => (
                   <tr key={t.id} className="hover:bg-marine-50/40 transition-colors">
                     <td className="px-3 py-2.5">
                       <span className="font-mono text-[10px] text-marine-500 bg-marine-50 px-1.5 py-0.5 rounded">{t.booking_code}</span>
@@ -347,6 +354,50 @@ const handleHapus = async (id: string) => {
             </table>
           </div>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-1 py-3">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 text-marine-600 hover:bg-marine-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              ‹ Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+              .reduce<(number | string)[]>((acc, p, idx, arr) => {
+                if (idx > 0 && (p as number) - (arr[idx - 1] as number) > 1) acc.push('...');
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((p, idx) =>
+                p === '...' ? (
+                  <span key={`e-${idx}`} className="px-2 text-marine-300 text-xs">…</span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => setCurrentPage(p as number)}
+                    className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
+                      currentPage === p
+                        ? 'bg-marine-600 text-white border-marine-600'
+                        : 'border-slate-200 text-marine-600 hover:bg-marine-50'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 text-marine-600 hover:bg-marine-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Next ›
+            </button>
+          </div>
+        )}
       </div>
 
    {/* Detail Modal */}

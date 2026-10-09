@@ -36,7 +36,7 @@ export default function JadwalPage() {
   const { booking }  = UseGetBooking();
   const weekDates = getWeekDates();
   const todayNama = weekDates.find((w) => w.isToday)?.full ?? null;
-  const [activeHari, setActiveHari] = useState<string | null>('');
+  const [activeHari, setActiveHari] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const [filterStartDate, setFilterStartDate] = useState(''); // format: yyyy-mm-dd
@@ -49,23 +49,29 @@ export default function JadwalPage() {
     return new Date(y, m - 1, d, 0, 0, 0, 0);
   };
 
-  const filtered = (activeHari ? (booking ?? []).filter((i) => i.status === 'Terkonfirmasi') : (booking ?? [])).filter((i) => {
+  // Helper: format tanggal booking ke string 'full' yang sama dengan weekDates
+  const toFullStr = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('id-ID', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    });
+
+  const activeWeek = weekDates.find((w) => w.nama === activeHari);
+
+  const filtered = (booking ?? []).filter((i) => {
     const tStart = new Date(i.start_date);
     const startBoundary = toDateAtLocalStart(filterStartDate);
     const endBoundary = toDateAtLocalStart(filterEndDate);
 
-    const matchStartDate = !startBoundary || (isFinite(tStart.getTime()) && tStart >= startBoundary);
+    const matchHari = !activeHari || toFullStr(i.start_date) === activeWeek?.full;
 
+    const matchStartDate = !startBoundary || (isFinite(tStart.getTime()) && tStart >= startBoundary);
     const matchEndDate =
       !endBoundary ||
       (isFinite(tStart.getTime()) &&
         tStart <= new Date(endBoundary.getFullYear(), endBoundary.getMonth(), endBoundary.getDate(), 23, 59, 59, 999));
 
-    return matchStartDate && matchEndDate;
+    return matchHari && matchStartDate && matchEndDate;
   });
-
-
-  const activeWeek = weekDates.find((w) => w.nama === activeHari);
 
   return (
     <AdminShell title="Jadwal Renang" subtitle="Kelola jadwal sesi renang mingguan">
@@ -132,8 +138,7 @@ export default function JadwalPage() {
             <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
               <p className="text-marine-700 text-xs font-semibold">{activeWeek.full}</p>
               <span className="text-[11px] text-marine-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
-                { activeHari ? booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long', month: 'long',
-              year: 'numeric',}) === activeHari).length : booking?.filter((i) => i.status === 'Terkonfirmasi')?.length} sesi
+                {filtered.length} sesi
               </span>
             </div>
           )}
@@ -143,10 +148,7 @@ export default function JadwalPage() {
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <p className="text-marine-600 text-sm font-semibold">
             {activeHari ? `Jadwal ${activeHari}` : 'Semua Jadwal'}
-            <span className="ml-2 text-marine-400 font-normal text-xs">
-              (  {activeHari ? filtered.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long' }) === activeHari).length : filtered.length} sesi)
-            </span>
-
+            <span className="ml-2 text-marine-400 font-normal text-xs">({filtered.length} sesi)</span>
           </p>
 
           <div className="flex items-center gap-2">
@@ -201,51 +203,21 @@ export default function JadwalPage() {
         {/* ── Grid View ── */}
         {viewMode === 'grid' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-
-            {activeHari ? 
-            (
-               <>
-            {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long',
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",}) === activeHari)?.map((j) => {
-           
-             const dateInfo = weekDates.find((w) => w.full === new Date(j.start_date).toLocaleDateString("id-ID", {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                  );
-
-                                    
+            {filtered.map((j) => {
+              const fullStr = toFullStr(j.start_date);
+              const dateInfo = weekDates.find((w) => w.full === fullStr);
               return (
                 <div key={j.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-                  {/* Header */}
                   <div className="px-4 pt-4 pb-3 flex items-start justify-between" style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
                     <div>
                       <div className="flex items-center gap-1.5 mb-4">
                         <span className="text-[11px] font-bold text-marine-400 uppercase tracking-widest">{j.student_name}</span>
-                        {dateInfo && (
-                          <span className="text-[10px] text-marine-300">· {new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}</span>
-                        )}
-                        {dateInfo?.full ===  new Date(j.start_date).toLocaleDateString("id-ID", {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })&& (
+                        <span className="text-[10px] text-marine-300">· {fullStr}</span>
+                        {dateInfo?.isToday && (
                           <span className="text-[9px] font-bold bg-aqua-500 text-white px-1.5 py-0.5 rounded-full">Hari ini</span>
                         )}
                       </div>
-                      <p className="text-marine-950 font-bold text-lg leading-none">
-                        {j.course_time} 
-                      </p>
+                      <p className="text-marine-950 font-bold text-lg leading-none">{j.course_time}</p>
                     </div>
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `#4f46e515` }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill='#4f46e5' viewBox="0 0 16 16">
@@ -253,138 +225,29 @@ export default function JadwalPage() {
                       </svg>
                     </div>
                   </div>
-                           
-
-
-                {/* Body */}
-                <div className="px-4 pb-4 pt-3 space-y-2.5">
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">
-                      {j.package_id}
-                    </span>
-                  </div>
-
-                  {/* Hari Les */}
-                  <div className="flex flex-wrap gap-1.5">
-                  
-                      <span
-                        className="text-[11px] font-medium px-2.5 py-1 rounded-full 
-                                  bg-cyan-50 text-cyan-700 border border-cyan-100"
-                      >
-                        {j?.course_day}
-                      </span>
-                
-                  </div>
-
-                  <div className="space-y-1.5 text-[11px]">
-                    <div className="flex items-center gap-2 text-marine-500">
-                      <Phone className="w-3 h-3 text-marine-500" />
-                      <span>{j.phone}</span>
+                  <div className="px-4 pb-4 pt-3 space-y-2.5">
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">{j.package_id}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-marine-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-                      </svg>
-                      <span>{j.location_id}</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-100">{j?.course_day}</span>
                     </div>
-                  </div>
-                </div>
-
-                </div>
-              );
-            })}
-               </>
-            )
-            
-            :
-            (
-<> 
-
-            {filtered?.filter((i) => i.status === 'Terkonfirmasi')?.map((j) => {
-           
-              const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long'}));
-                  
-
-              return (
-                <div key={j.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-                  {/* Header */}
-                  <div className="px-4 pt-4 pb-3 flex items-start justify-between" style={{ background: 'linear-gradient(135deg,#f8fafc,#f1f5f9)' }}>
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-4">
-                        <span className="text-[11px] font-bold text-marine-400 uppercase tracking-widest">{j.student_name}</span>
-                        {dateInfo && (
-                          <span className="text-[10px] text-marine-300">· {new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}</span>
-                        )}
-                        {dateInfo?.full === new Date(j.start_date).toLocaleDateString("id-ID", {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      }) && (
-                          <span className="text-[9px] font-bold bg-aqua-500 text-white px-1.5 py-0.5 rounded-full">Hari ini</span>
-                        )}
+                    <div className="space-y-1.5 text-[11px]">
+                      <div className="flex items-center gap-2 text-marine-500">
+                        <Phone className="w-3 h-3 text-marine-500" />
+                        <span>{j.phone}</span>
                       </div>
-                      <p className="text-marine-950 font-bold text-lg leading-none">
-                        {j.course_time} 
-                      </p>
-                    </div>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `#4f46e515` }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill='#4f46e5' viewBox="0 0 16 16">
-                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                      </svg>
+                      <div className="flex items-center gap-2 text-marine-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                        <span>{j.location_id}</span>
+                      </div>
                     </div>
                   </div>
-
-
-
-                {/* Body */}
-                <div className="px-4 pb-4 pt-3 space-y-2.5">
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">
-                      {j.package_id}
-                    </span>
-                  </div>
-
-                  {/* Hari Les */}
-                  <div className="flex flex-wrap gap-1.5">
-                  
-                      <span
-                        className="text-[11px] font-medium px-2.5 py-1 rounded-full 
-                                  bg-cyan-50 text-cyan-700 border border-cyan-100"
-                      >
-                        {j?.course_day}
-                      </span>
-                
-                  </div>
-
-                  <div className="space-y-1.5 text-[11px]">
-                    <div className="flex items-center gap-2 text-marine-500">
-                      <Phone className="w-3 h-3 text-marine-500" />
-                      <span>{j.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-marine-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-                      </svg>
-                      <span>{j.location_id}</span>
-                    </div>
-                  </div>
-                </div>
-
                 </div>
               );
             })}
-
-</>
-            )
-          }
-
           </div>
         )}
 
@@ -401,78 +264,26 @@ export default function JadwalPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {activeHari ? (
-
-                    <>
-                    {booking?.filter((i) => new Date(i.start_date).toLocaleDateString('id-ID', { weekday: 'long',
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",}) === activeHari)?.map((j) => {      
-
-                    const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      }));
+                  {filtered.map((j) => {
+                    const fullStr = toFullStr(j.start_date);
+                    const dateInfo = weekDates.find((w) => w.full === fullStr);
                     return (
                       <tr key={j.id} className="hover:bg-marine-50/40 transition-colors">
-                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums"></td>
-                          <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.phone}</td>
+                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.student_name}</td>
+                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.phone}</td>
                         <td className="px-4 py-3">
-                          <p className="text-marine-400 ">{new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}</p>
+                          <p className="text-marine-400">{fullStr}</p>
                           {dateInfo?.isToday && <span className="text-[9px] font-bold text-aqua-600">Hari ini</span>}
                         </td>
-                        
-                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_day}</td>
+                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_day}</td>
                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_time}</td>
-                         <td className="px-4 py-3 text-marine-600">{MYCA_PACKAGES.find(p => p.id === j?.package_id)?.name} - {MYCA_PACKAGES.find(p => p.id === j?.package_id)?.type}</td>
-                    <td className="px-4 py-3 text-marine-600">{MYCA_PACKAGES.find(p => p.id === j?.package_id)?.category}</td>
-                 
-                       
-                        <td className="px-4 py-3 text-marine-600">{j.package_id}</td>
-                      </tr>
-                    );
-                  })}
-                    </>
-                  ): (
-                   <>
-                    {filtered?.filter((i) => i.status === 'Terkonfirmasi' ).map((j) => {
-                   
-                    const dateInfo = weekDates.find((w) => w.nama === new Date(j.start_date).toLocaleDateString('id-ID', {
-                     weekday: 'long' }));
-                    return (
-                      <tr key={j.id} className="hover:bg-marine-50/40 transition-colors">
-                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.student_name}</td>
-                          <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.phone}</td>
-                        <td className="px-4 py-3">
-                          <p className="text-marine-400 ">{new Date(j.start_date).toLocaleDateString('id-ID', {
-                       weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}</p>
-                          {dateInfo?.isToday && <span className="text-[9px] font-bold text-aqua-600">Hari ini</span>}
-                        </td>
-                         <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_day}</td>
-                        <td className="px-4 py-3 font-semibold text-marine-700 tabular-nums">{j.course_time}</td>
-                       <td className="px-4 py-3 text-marine-600">{MYCA_PACKAGES.find(p => p.id === j?.package_id)?.name} - {MYCA_PACKAGES.find(p => p.id === j?.package_id)?.type}</td>
-                    <td className="px-4 py-3 text-marine-600">{MYCA_PACKAGES.find(p => p.id === j?.package_id)?.category}</td>
-                 
-                       
+                        <td className="px-4 py-3 text-marine-600">{MYCA_PACKAGES.find(p => p.id === j?.package_id)?.name} - {MYCA_PACKAGES.find(p => p.id === j?.package_id)?.type}</td>
+                        <td className="px-4 py-3 text-marine-600">{MYCA_PACKAGES.find(p => p.id === j?.package_id)?.category}</td>
                         <td className="px-4 py-3 text-marine-600">{j.package_id}</td>
                         <td className="px-4 py-3 text-marine-500">{j.location_id}</td>
                       </tr>
                     );
                   })}
-                   
-                   </>
-                  )}
                  
                 </tbody>
               </table>

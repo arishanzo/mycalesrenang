@@ -32,6 +32,8 @@ export default function SiswaPage() {
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterProgram, setFilterProgram] = useState('Semua');
   const [selected, setSelected] = useState<(number | string)[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 1;
 
   const filtered = booking?.filter((s) => {
     const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
@@ -41,6 +43,9 @@ export default function SiswaPage() {
   }).filter((item, index, self) =>
     index === self.findIndex(t => t.student_name.toLowerCase() === item.student_name.toLowerCase())
   ) ?? [];
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
 
   const stats = [
@@ -80,17 +85,17 @@ export default function SiswaPage() {
               type="text"
               placeholder="Cari nama atau Phone siswa..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
               className="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 outline-none focus:border-marine-400 focus:bg-white transition-all text-marine-900 placeholder:text-marine-300"
             />
           </div>
           {/* Filters */}
           <div className="flex gap-2 shrink-0">
-            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
+            <select value={filterStatus} onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
               {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
             </select>
-            <select value={filterProgram} onChange={(e) => setFilterProgram(e.target.value)}
+            <select value={filterProgram} onChange={(e) => { setFilterProgram(e.target.value); setCurrentPage(1); }}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
                {['Semua', 'privat', 'semiprivat', 'grup'].map((o) => <option key={o}>{o}</option>)}
 
@@ -107,6 +112,7 @@ export default function SiswaPage() {
             <p className="text-marine-500 text-[11px] font-semibold uppercase tracking-wider">
               {filtered?.length} Siswa ditemukan
             </p>
+            <p className="text-marine-400 text-[10px]">Halaman {currentPage} dari {totalPages || 1}</p>
             {selected.length > 0 && (
               <button onClick={() => { (booking || []).filter((s) => !selected.includes(s.id)); setSelected([]); }}
                 className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition-colors">
@@ -129,10 +135,10 @@ export default function SiswaPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filtered.map((s, i) => 
+                {paginated.map((s, i) => 
                 
                   { 
-                    const no = i + 1;
+                    const no = (currentPage - 1) * PAGE_SIZE + i + 1;
                     return (
                   <tr key={s.id} className={`hover:bg-marine-50/40 transition-colors ${selected.includes(s.id) ? 'bg-marine-50/60' : ''}`}>
                    
@@ -186,6 +192,50 @@ export default function SiswaPage() {
             </table>
           </div>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-1 py-3">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 text-marine-600 hover:bg-marine-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              ‹ Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+              .reduce<(number | string)[]>((acc, p, idx, arr) => {
+                if (idx > 0 && (p as number) - (arr[idx - 1] as number) > 1) acc.push('...');
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((p, idx) =>
+                p === '...' ? (
+                  <span key={`e-${idx}`} className="px-2 text-marine-300 text-xs">…</span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => setCurrentPage(p as number)}
+                    className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
+                      currentPage === p
+                        ? 'bg-marine-600 text-white border-marine-600'
+                        : 'border-slate-200 text-marine-600 hover:bg-marine-50'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 text-marine-600 hover:bg-marine-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Next ›
+            </button>
+          </div>
+        )}
       </div>
 
     </AdminShell>
