@@ -42,7 +42,7 @@ export default function TransaksiPage() {
   const [filterEndDate, setFilterEndDate] = useState(''); // format: yyyy-mm-dd
   const [detail, setDetail] = useState<BookingSubmission | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 40;
 
   const toDateAtLocalStart = (dateStr: string) => {
     // dateStr: yyyy-mm-dd from <input type="date">

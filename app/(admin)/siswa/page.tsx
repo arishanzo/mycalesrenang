@@ -8,12 +8,28 @@ import { Eye } from 'lucide-react';
 import { MYCA_PACKAGES } from '@/app/libs/data';
 
 const BADGE: Record<string, string> = {
- 'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+  'Terkonfirmasi': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+  'Perpanjangan - Terkonfirmasi': 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200',
   'Menunggu Konfirmasi': 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+  'Perpanjangan - Menunggu Konfirmasi': 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
   'Pembayaran Diterima': 'bg-red-50 text-red-600 ring-1 ring-red-200',
-   "Perpanjangan - Terkonfirmasi":
-    "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200",
+  'Nonaktif': 'bg-slate-100 text-slate-500 ring-1 ring-slate-200',
 };
+
+const AKTIF_STATUS = ['Terkonfirmasi', 'Perpanjangan - Terkonfirmasi'];
+
+function isExpired(b: { start_date: string; end_date?: string; package_id: string }): boolean {
+  // Jika API kirim end_date, pakai itu
+  if (b.end_date) return new Date(b.end_date) < new Date();
+  // Fallback: hitung dari start_date + sessions paket
+  const pkg = MYCA_PACKAGES.find((p) => p.id === b.package_id);
+  if (!pkg || !b.start_date) return false;
+  const weeksPerSession = pkg.frequency.includes('2x') ? 0.5 : 1; // minggu per sesi
+  const totalWeeks = pkg.sessions * weeksPerSession;
+  const end = new Date(b.start_date);
+  end.setDate(end.getDate() + Math.round(totalWeeks * 7));
+  return end < new Date();
+}
 
 const PROGRAM_COLOR: Record<string, string> = {
   privat: 'bg-marine-100 text-marine-700',
@@ -33,11 +49,13 @@ export default function SiswaPage() {
   const [filterProgram, setFilterProgram] = useState('Semua');
   const [selected, setSelected] = useState<(number | string)[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const PAGE_SIZE = 1;
+  const PAGE_SIZE = 40;
 
   const filtered = booking?.filter((s) => {
     const matchSearch = s.student_name.toLowerCase().includes(search.toLowerCase()) || s.phone.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = filterStatus === 'Semua' || s.status === filterStatus;
+    const expired = isExpired(s);
+    const displayStatus = expired ? 'Nonaktif' : AKTIF_STATUS.includes(s.status) ? 'Aktif' : 'Pending';
+    const matchStatus = filterStatus === 'Semua' || displayStatus === filterStatus;
     const matchProgram = filterProgram === 'Semua' || MYCA_PACKAGES.find(p => p.id === s?.package_id)?.type === filterProgram;
     return matchSearch && matchStatus && matchProgram;
   }).filter((item, index, self) =>
@@ -50,9 +68,9 @@ export default function SiswaPage() {
 
   const stats = [
     { label: 'Total Siswa', value: booking?.length, color: '#296da4' },
-    { label: 'Aktif', value: booking?.filter((s) => s.status === 'Terkonfirmasi').length, color: '#059669' },
-    { label: 'Pending', value: booking?.filter((s) => s.status === 'Menunggu Konfirmasi').length, color: '#d97706' },
-    { label: 'Nonaktif', value: booking?.filter((s) => s.status === 'Pembayaran Diterima').length, color: '#dc2626' },
+    { label: 'Aktif', value: booking?.filter((s) => AKTIF_STATUS.includes(s.status) && !isExpired(s)).length, color: '#059669' },
+    { label: 'Pending', value: booking?.filter((s) => !AKTIF_STATUS.includes(s.status) && !isExpired(s)).length, color: '#d97706' },
+    { label: 'Nonaktif', value: booking?.filter((s) => isExpired(s)).length, color: '#dc2626' },
   ];
 
   return (
@@ -93,7 +111,7 @@ export default function SiswaPage() {
           <div className="flex gap-2 shrink-0">
             <select value={filterStatus} onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
-              {['Semua', 'Terkonfirmasi', 'Menunggu Konfirmasi'].map((o) => <option key={o}>{o}</option>)}
+              {['Semua', 'Aktif', 'Pending', 'Nonaktif'].map((o) => <option key={o}>{o}</option>)}
             </select>
             <select value={filterProgram} onChange={(e) => { setFilterProgram(e.target.value); setCurrentPage(1); }}
               className="text-xs border border-slate-200 rounded-lg px-2.5 py-2 bg-slate-50 text-marine-700 outline-none focus:border-marine-400 cursor-pointer">
@@ -129,7 +147,7 @@ export default function SiswaPage() {
               <thead>
                 <tr className="border-b border-slate-100">
                  
-                  {['No', 'Nama Lengkap Siswa' ,'Nama Panggilan Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
+                  {['No', 'Nama Lengkap Siswa' , 'email', 'Nama Panggilan Siswa', 'Nama Orang Tua', 'Umur', 'Tanggal Lahir', 'Program', 'Jenis Kelamin', 'Telepon', 'Status', 'Detail'].map((h) => (
                     <th key={h} className="text-left px-3 py-2.5 text-marine-400 font-semibold uppercase tracking-wide text-[10px] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -153,6 +171,8 @@ export default function SiswaPage() {
                       </div>
                     </td>
                     
+                      <td className="px-3 py-2.5 text-marine-600">{s.email === 'undefined' ? '-' : s.email}</td>
+                   
                      <td className="px-3 py-2.5 text-marine-600">{s.nama_panggilan === 'undefined' ? '-' : s.nama_panggilan}</td>
                    
 
@@ -170,7 +190,9 @@ export default function SiswaPage() {
                     
                     <td className="px-3 py-2.5 text-marine-600">{s.phone}</td>
                     <td className="px-3 py-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${BADGE[s.status]}`}>{s.status}</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${BADGE[isExpired(s) ? 'Nonaktif' : s.status] ?? 'bg-slate-100 text-slate-500'}`}>
+                        {isExpired(s) ? 'Nonaktif' : s.status}
+                      </span>
                     </td>
                    
                     <td className="px-3 py-2.5">
