@@ -61,6 +61,10 @@ interface LayananJadwalProps {
   setCourseDays: (days: CourseDays[]) => void;
 }
 
+const err = (msg: string) => (
+  <p className="text-[11px] text-red-500 mt-1 font-medium">{msg}</p>
+);
+
 const LayananJadwal = ({
   paketBulanan,
   setPaketBulanan,
@@ -87,6 +91,13 @@ const LayananJadwal = ({
   
 }: LayananJadwalProps) => {
   const [category, setCategory] = useState<string>('asisten');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleNext = () => {
+    setSubmitted(true);
+    if (!isStep2Valid) return;
+    handleSubmitBooking();
+  };
 
   const { voucher } = UseGetVoucher();
   const [searchVoucher, setSearchVocuher] = useState('');
@@ -303,7 +314,7 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 text-left flex items-center justify-between"
+              className={`w-full bg-marine-50/50 hover:bg-white text-sm py-3 px-4 rounded-xl border text-left flex items-center justify-between ${submitted && !courseTime ? 'border-red-400 bg-red-50/30' : 'border-marine-100'}`}
             >
               <span>
                 {courseTime ? `${courseTime} WIB` : "-- Pilih Jam --"}
@@ -371,6 +382,7 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
                   </div>
                 )}
               </div>
+            {submitted && !courseTime && err('Jam les wajib dipilih')}
 
             {/* Hari Les */}
           <div className="flex flex-col gap-2">
@@ -404,10 +416,8 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
                 ✓ Dipilih: {courseDays.map(d => d.name).join(', ')}
               </p>
             )}
-
-            
+            {submitted && courseDays.length === 0 && err('Hari les wajib dipilih minimal 1 hari')}
           </div>
-          
 
           {/* Tanggal Mulai */}
           <div className="flex flex-col gap-2">
@@ -420,9 +430,10 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
               type="date"
               min={today}
               value={startDate}
-             onChange={e => setStartDate(e.target.value)}
-              className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+              onChange={e => setStartDate(e.target.value)}
+              className={`w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 rounded-xl border focus:outline-none transition-colors ${submitted && !startDate ? 'border-red-400 bg-red-50/30' : 'border-marine-100 focus:border-cyan-500'}`}
             />
+            {submitted && !startDate && err('Tanggal mulai les wajib diisi')}
           </div>
 
           {/* Catatan */}
@@ -572,9 +583,8 @@ const [voucherDiskon, setVoucherDiskon] = useState<VouchersData>();
           <button
             id="btn-step2-next"
             type="button"
-            disabled={!isStep2Valid}
-            onClick={() =>  handleSubmitBooking() }
-            className="flex items-center gap-1.5 py-3 px-6 text-xs md:text-sm font-semibold text-white bg-marine-800 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition duration-300"
+            onClick={handleNext}
+            className="flex items-center gap-1.5 py-3 px-6 text-xs md:text-sm font-semibold text-white bg-marine-800 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition duration-300"
           >
             Lanjut Invoice
             <ChevronRight className="h-4 w-4" />

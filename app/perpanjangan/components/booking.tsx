@@ -289,6 +289,10 @@ const handleFinishPayment = async () => {
                 setParentName={setParentName}
                 age={age}
                 isStep1Valid={isStep1Valid}
+                setPackageId={setPackageId}
+                setLocationId={setLocationId}
+                setCourseTime={setCourseTime}
+                setCourseDays={setCourseDays}
               />
             )}
 

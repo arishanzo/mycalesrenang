@@ -4,10 +4,9 @@ import { ChevronRight, Mail, Search, User } from "lucide-react";
 import { useState } from "react";
 
 interface BiodataProps {
-  
   setId: (id: string) => void;
   studentName: string;
-    setEmail: (email: string) => void;
+  setEmail: (email: string) => void;
   email: string;
   setStudentName: (id: string) => void;
   namaPanggilan: string;
@@ -24,6 +23,10 @@ interface BiodataProps {
   setParentName: (name: string) => void;
   handleNextStep: () => void;
   isStep1Valid: boolean;
+  setPackageId: (id: string) => void;
+  setLocationId: (id: string) => void;
+  setCourseTime: (time: string) => void;
+  setCourseDays: (days: import('@/app/types/types').CourseDays[]) => void;
 }
 
 const BiodataSiswa = ({
@@ -34,16 +37,26 @@ const BiodataSiswa = ({
   birthDate, setBirthDate,
   setAge, setPhone, phone,
   handleNextStep, parentName, setParentName,
-  age, isStep1Valid, setEmail, email
+  age, isStep1Valid, setEmail, email,
+  setPackageId, setLocationId, setCourseTime, setCourseDays,
 }: BiodataProps) => {
 
-
   const { booking } = UseGetBooking()
+  const [submitted, setSubmitted] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchResults, setSearchResults] = useState<BookingSubmission[] | null>([]);
+  const [selectedStudent, setSelectedStudent] = useState<BookingSubmission | null>(null);
+  const [selectedNoStudent, setSelectedNoStudent] = useState<string>('');
 
-  const [searchKeyword, setSearchKeyword] = useState("");
-const [searchResults, setSearchResults] = useState<BookingSubmission[] | null>([]);
-const [selectedStudent, setSelectedStudent] = useState<BookingSubmission | null>(null);
-const [selectedNoStudent, setSelectedNoStudent] = useState<string> ('')
+  const handleNext = () => {
+    setSubmitted(true);
+    if (!isStep1Valid) return;
+    handleNextStep();
+  };
+
+  const err = (msg: string) => (
+    <p className="text-[11px] text-red-500 mt-1 font-medium">{msg}</p>
+  );
 
 
 const handleSearchStudent = async (keyword: string) => {
@@ -54,26 +67,27 @@ const handleSearchStudent = async (keyword: string) => {
     return;
   }
 
-const filter = booking
-  ?.filter(i =>
-    i.student_name.toLowerCase().includes(keyword.toLowerCase())
-  ).filter((item, index, self) =>
-    index === self.findIndex(t => t.student_name.toLowerCase() === item.student_name.toLowerCase())
-  );
+  const filter = booking
+    ?.filter(i =>
+      i.status === 'Terkonfirmasi' &&
+      i.student_name.toLowerCase().includes(keyword.toLowerCase())
+    )
+    .filter((item, index, self) =>
+      index === self.findIndex(t => t.student_name.toLowerCase() === item.student_name.toLowerCase())
+    );
 
-if (filter.length > 0) {
-  setSearchResults(filter);
-  setSelectedNoStudent('');
-} else {
-  setSearchResults([]);
-  setSelectedNoStudent('Data Siswa Tidak Ada');
-}
-  
+  if (filter.length > 0) {
+    setSearchResults(filter);
+    setSelectedNoStudent('');
+  } else {
+    setSearchResults([]);
+    setSelectedNoStudent('Data Siswa Tidak Ada');
+  }
 };
 
 
-const selectStudent = (student : BookingSubmission) => {
-  setId(student.id)
+const selectStudent = (student: BookingSubmission) => {
+  setId(student.id);
   setSelectedStudent(student);
 
   setStudentName(student.student_name);
@@ -82,10 +96,20 @@ const selectStudent = (student : BookingSubmission) => {
   setBirthDate(student.birth_date);
   setAge(student.age);
   setPhone(student.phone);
-  setParentName(student.parent_name || "");
-  
+  setEmail(student.email);
+  setParentName(student.parent_name || '');
+
+  // Pre-fill data dari database
+  if (student.package_id) setPackageId(student.package_id);
+  if (student.location_id) setLocationId(student.location_id);
+  if (student.course_time) setCourseTime(student.course_time);
+  if (student.course_day) {
+    const days = student.course_day.split(',').map((name, idx) => ({ id: idx + 1, name: name.trim() }));
+    setCourseDays(days);
+  }
+
   setSearchResults([]);
-  setSearchKeyword("");
+  setSearchKeyword('');
 };
 
   return (
@@ -214,23 +238,23 @@ const selectStudent = (student : BookingSubmission) => {
       </div>
 
 
-         {/* Email */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold text-marine-900 uppercase tracking-wider">
              Email Aktif <span className="text-red-500">*</span>
             </label>
             <div className="relative">
+              <Mail className="absolute left-4 top-3.5 h-4 w-4 text-marine-400" />
               <input
                 id="input-student-email"
-                type="tel"
+                type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="Contoh: arif@gmail.com "
-                className="w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 pl-11 rounded-xl border border-marine-100 focus:border-cyan-500 focus:outline-none transition-colors"
+                placeholder="Contoh: arif@gmail.com"
+                className={`w-full bg-marine-50/50 hover:bg-white focus:bg-white text-sm py-3 px-4 pl-11 rounded-xl border focus:outline-none transition-colors ${submitted && !email.trim() ? 'border-red-400 bg-red-50/30' : 'border-marine-100 focus:border-cyan-500'}`}
               />
-              <Mail className="absolute left-4 top-3.5 h-4 w-4 text-marine-400" />
             </div>
+            {submitted && !email.trim() && err('Email wajib diisi')}
           </div>
 
 
@@ -247,11 +271,9 @@ const selectStudent = (student : BookingSubmission) => {
 
         <div className="flex justify-end pt-6 border-t border-marine-50">
           <button
-            id="btn-step1-next"
             type="button"
-            disabled={!isStep1Valid}
-            onClick={handleNextStep}
-            className="flex items-center gap-1.5 py-3 px-6 text-sm font-semibold text-white bg-marine-800 disabled:opacity-50 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition-all duration-300"
+            onClick={handleNext}
+            className="flex items-center gap-1.5 py-3 px-6 text-sm font-semibold text-white bg-marine-800 hover:bg-cyan-500 rounded-xl cursor-pointer shadow transition-all duration-300"
           >
             Lanjut Pilih Layanan
             <ChevronRight className="h-4 w-4" />
