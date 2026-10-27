@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { AdminShell } from '../components/AdminShell';
 import { fetchAPI } from '@/app/libs/api';
 import { ubahPassword } from '@/app/services/auth.service';
@@ -38,7 +38,7 @@ export default function SettingPage() {
         komfirmpassword: passwords.confirm,
       };
 
-      const updateRes: any = await ubahPassword(payload);
+      const updateRes = await ubahPassword(payload) as { message?: string } | null;
 
       if (updateRes) {
         Swal.fire({
@@ -55,16 +55,16 @@ export default function SettingPage() {
         Swal.fire({
           icon: "error",
           title: "Gagal!",
-          text: updateRes?.message,
+          text: "Gagal memperbarui password.",
         });
       }
     }
 
-    }catch(err: any){
+        }catch(err: unknown){
           Swal.fire({
           icon: "error",
           title: "Gagal!",
-          text: err?.message,
+          text: err instanceof Error ? err.message : undefined,
         });
     }
 

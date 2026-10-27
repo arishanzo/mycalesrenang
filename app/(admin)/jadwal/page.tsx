@@ -35,7 +35,7 @@ function getWeekDates() {
 export default function JadwalPage() {
   const { booking }  = UseGetBooking();
   const weekDates = getWeekDates();
-  const todayNama = weekDates.find((w) => w.isToday)?.full ?? null;
+  // const todayNama = weekDates.find((w) => w.isToday)?.full ?? null;
   const [activeHari, setActiveHari] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
