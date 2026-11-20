@@ -6,7 +6,7 @@
 // };
 
 export const API_BASE_URL = (
-  process.env.PUBLIC_API_URL ?? 'http://localhost:8080/api'
+  process.env.PUBLIC_API_URL ?? 'https://api.lesrenangmyca.com/api'
 ).replace(/\/+$/, '');
 
 export async function fetchAPI<T>(
