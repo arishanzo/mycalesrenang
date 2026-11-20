@@ -42,6 +42,8 @@ const BiodataSiswa = ({
 }: BiodataProps) => {
 
   const { booking } = UseGetBooking()
+
+  
   const [submitted, setSubmitted] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchResults, setSearchResults] = useState<BookingSubmission[] | null>([]);

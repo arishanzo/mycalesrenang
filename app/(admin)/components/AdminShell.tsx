@@ -1,11 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { NAV } from '@/app/libs/data';
 import { logout } from '@/app/services/auth.service';
+
+const subscribeToNothing = () => () => {};
+const getServerDate = () => '';
+const getCurrentDate = () => new Intl.DateTimeFormat('id-ID', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'Asia/Jakarta',
+}).format(new Date());
 
 
 
@@ -21,13 +31,15 @@ const router = useRouter();
  
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const currentDate = useSyncExternalStore(subscribeToNothing, getCurrentDate, getServerDate);
   const pathname = usePathname();
 
   const activeId = pathname.includes('siswa') ? 'siswa'
     : pathname.includes('transaksi') ? 'transaksi'
     : pathname.includes('setting-akun') ? 'setting-akun'
     : pathname.includes('jadwal') ? 'jadwal'
-     : pathname.includes('vouchers') ? 'vouchers' :
+     : pathname.includes('vouchers') ? 'vouchers' 
+    : pathname.includes('sertifikat') ? 'sertifikat' :
       pathname.includes('promosi') ? 'promosi'
     : 'dashboard';
 
@@ -110,9 +122,11 @@ const router = useRouter();
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden md:block text-marine-400 text-xs border border-marine-100 rounded-lg px-2.5 py-1.5 bg-marine-50">
-              {new Date().toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
-            </span>
+            {currentDate && (
+              <span className="hidden md:block text-marine-400 text-xs border border-marine-100 rounded-lg px-2.5 py-1.5 bg-marine-50">
+                {currentDate}
+              </span>
+            )}
           
             <div className="flex items-center gap-2 pl-2 border-l border-marine-100">
               <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold"

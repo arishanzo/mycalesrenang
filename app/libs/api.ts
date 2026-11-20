@@ -5,14 +5,15 @@
 //   user?: {email: string };
 // };
 
+export const API_BASE_URL = (
+   'http://localhost:8080/api'
+).replace(/\/+$/, '');
 
 export async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const apiUrl = 'https://api.lesrenangmyca.com/api';
-  // const apiUrl = 'http://localhost:5000/api';
-  const res = await fetch(`${apiUrl}${endpoint}`, {
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     cache: options?.cache || "no-store",
   });

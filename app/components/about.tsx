@@ -127,13 +127,13 @@ export default function About() {
               <div className="absolute -top-4 -left-4 w-72 h-72 bg-cyan-200/40 rounded-full blur-3xl -z-10" />
               <div className="absolute -bottom-6 -right-6 w-1/2 h-1/2 bg-marine-200/40 rounded-3xl -z-10" />
   <div className="relative w-full max-w-lg mx-auto">
-      <div className="rounded-3xl overflow-hidden shadow-xl border-4 border-white transform hover:rotate-1 transition-transform duration-500">
+      <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-xl border-4 border-white transform hover:rotate-1 transition-transform duration-500">
         <Image
-          width={400}
-          height={400}
+          fill
+          sizes="(max-width: 1024px) 100vw, 512px"
           src={images[current].src}
           alt={images[current].alt}
-          className="w-full h-[400px] object-cover"
+          className="object-cover"
           referrerPolicy="no-referrer"
         />
       </div>

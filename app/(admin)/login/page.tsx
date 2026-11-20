@@ -285,7 +285,7 @@ export default function AdminLogin() {
 
             {/* Divider hint */}
             <div className="mt-6 pt-5 border-t border-marine-100 flex items-center justify-between">
-              <p className="text-marine-300 text-xs">© {new Date().getFullYear()} MYCA Center of Aquatic</p>
+              <p className="text-marine-300 text-xs">© {new Date().toLocaleDateString('id-ID', { year: 'numeric', timeZone: 'Asia/Jakarta' })} MYCA Center of Aquatic</p>
               <span className="text-marine-200 text-xs">v1.0.0</span>
             </div>
           </div>

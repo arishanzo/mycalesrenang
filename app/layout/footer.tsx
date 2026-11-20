@@ -25,7 +25,10 @@ export default function Footer({ onNavigate }: FooterProps) {
     }
   };
 
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().toLocaleDateString('id-ID', {
+    year: 'numeric',
+    timeZone: 'Asia/Jakarta',
+  });
 
   return (
     <footer

@@ -58,6 +58,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${baloo.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
     >
     <head>
       <script

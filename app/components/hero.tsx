@@ -8,9 +8,10 @@ interface HeroProps {
 }
 
 export default function Hero({  onExploreClick }: HeroProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
-  const tagRef = useRef<HTMLSpanElement>(null);
+  const waveRef = useRef<SVGSVGElement>(null);
+  const badgeGroupRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
   const btnGroupRef = useRef<HTMLDivElement>(null);
@@ -22,23 +23,17 @@ export default function Hero({  onExploreClick }: HeroProps) {
       const tl = gsap.timeline();
       
       // Floating wave animation
-      gsap.to('.hero-wave', {
-        y: '12px',
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
-      });
+      if (waveRef.current) {
+        gsap.to(waveRef.current, {
+          y: '12px',
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
+      }
 
       // Staggered reveal
-      tl.from(tagRef.current, {
-        opacity: 0,
-        y: 20,
-        scale: 0.8,
-        duration: 0.6,
-        ease: 'back.out(1.7)'
-      });
-
       tl.from(titleRef.current, {
         opacity: 0,
         y: 35,
@@ -60,13 +55,15 @@ export default function Hero({  onExploreClick }: HeroProps) {
         ease: 'power2.out'
       }, '-=0.4');
 
-      tl.from('.hero-badge-item', {
-        opacity: 0,
-        scale: 0.8,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: 'back.out(1.4)'
-      }, '-=0.3');
+      if (badgeGroupRef.current?.children.length) {
+        tl.from(badgeGroupRef.current.children, {
+          opacity: 0,
+          scale: 0.8,
+          stagger: 0.1,
+          duration: 0.6,
+          ease: 'back.out(1.4)'
+        }, '-=0.3');
+      }
 
       tl.from(statsRef.current, {
         opacity: 0,
@@ -106,7 +103,7 @@ export default function Hero({  onExploreClick }: HeroProps) {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-marine-600 to-cyan-500 relative">
                 Berenang itu Seru!
                 {/* Visual undercurl effect */}
-                <Waves className="absolute -bottom-4 right-0 w-32 h-6 text-cyan-300/70 hero-wave" />
+                <Waves ref={waveRef} className="absolute -bottom-4 right-0 w-32 h-6 text-cyan-300/70" />
               </span>
             </h1>
 
@@ -120,7 +117,7 @@ export default function Hero({  onExploreClick }: HeroProps) {
             </p>
 
             {/* Micro Badges for SEO/Credibility */}
-            <div className="flex flex-wrap gap-3 mt-1">
+            <div ref={badgeGroupRef} className="flex flex-wrap gap-3 mt-1">
               <span className="hero-badge-item inline-flex items-center gap-1.5 text-xs bg-white text-marine-800 border border-marine-200 py-1 px-3 rounded-lg shadow-sm">
                 <ShieldCheck className="h-3.5 w-3.5 text-cyan-500" /> Tempat Kolam Bekerjasama Dengan Kami
               </span>
@@ -185,18 +182,18 @@ export default function Hero({  onExploreClick }: HeroProps) {
             <div className="absolute top-[10%] left-[-5%] w-10 h-10 bg-cyan-400 rounded-full animate-bounce" style={{ animationDuration: '4s' }} />
             <div className="absolute -bottom-4 right-[10%] w-[110%] h-[110%] border-2 border-dashed border-cyan-300/50 rounded-[2.5rem] pointer-events-none -z-10 transform rotate-1" />
 
-            <div className="w-full h-full rounded-[2.5rem] overflow-hidden shadow-2xl relative border-4 border-white transform hover:scale-[1.02] transition-transform duration-500 group">
+            <div className="w-full h-[320px] sm:h-[420px] rounded-[2.5rem] overflow-hidden shadow-2xl relative border-4 border-white transform hover:scale-[1.02] transition-transform duration-500 group">
               {/* Overlay Glass effect */}
               <div className="absolute inset-0 bg-gradient-to-t from-marine-950/70 via-transparent to-transparent opacity-60 pointer-events-none" />
 
               <Image
                 id="hero-img-asset"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 src="/images/gambar4.jpeg"
                 alt="MYCA Les Renang Premium Swimming Center Pool Semarang"
-                className="w-full h-[320px] sm:h-[420px] object-cover transition-transform duration-1000 group-hover:scale-105"
+                className="object-cover transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
-                width={100}
-                height={100}
               />
 
               {/* Floating review card inside image for design premium depth */}

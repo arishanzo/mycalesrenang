@@ -4,21 +4,49 @@ import { UseGetBooking } from "@/app/(admin)/hook/useGetBooking";
 import { MYCA_LOCATIONS, MYCA_PACKAGES } from "@/app/libs/data";
 import { BookingSubmission } from "@/app/types/types";
 import { BadgeCheck, History, Hourglass } from "lucide-react";
+import { useSyncExternalStore } from "react";
+
+const subscribeToBookingStorage = (callback: () => void) => {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+};
+
+const getStoredBookingId = (): string | null => {
+  const savedBooking = localStorage.getItem("bookings");
+  if (!savedBooking) return null;
+
+  let parsedBooking: unknown;
+  try {
+    parsedBooking = JSON.parse(savedBooking);
+  } catch (error) {
+    console.error("Failed to parse saved booking history:", error);
+    return null;
+  }
+
+  if (
+    typeof parsedBooking !== "object" ||
+    parsedBooking === null ||
+    !("id" in parsedBooking) ||
+    typeof parsedBooking.id !== "string"
+  ) {
+    console.error("Saved booking history has an invalid format.");
+    return null;
+  }
+
+  return parsedBooking.id;
+};
+
+const getServerBookingId = () => null;
 
 const HistoryModal = ({  onClose, onSelectBooking }: { onClose: () => void; onSelectBooking: (booking: BookingSubmission) => void }) => {
-
-
-const getBooking = localStorage.getItem('bookings');
-const bookings = getBooking ? JSON.parse(getBooking) : [];
-
+const targetId = useSyncExternalStore(
+  subscribeToBookingStorage,
+  getStoredBookingId,
+  getServerBookingId,
+);
 
 const { booking } = UseGetBooking();
-
-// ambil id dari localStorage (misalnya hanya simpan satu object)
-const targetId = bookings.id; 
-
-// cari object di array booking
-const filter = booking?.filter((i) => i.id === targetId);
+const filteredBookings = (booking ?? []).filter((item) => item.id === targetId);
 
 
 
@@ -74,13 +102,13 @@ window.open(
               </button>
             </div>
 
-            {bookings.length === 0 ? (
+            {targetId === null ? (
               <div className="text-center py-10">
                 <p className="text-sm text-marine-600">Belum ada pendaftaran tersimpan.</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {filter.map((book: BookingSubmission) => (
+                {filteredBookings.map((book) => (
                   <div key={book.id} className="p-4 border border-marine-150 rounded-2xl hover:border-cyan-500/60 bg-marine-50/30">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold font-mono tracking-wider text-cyan-600">{book.booking_code}</span>

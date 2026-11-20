@@ -60,6 +60,18 @@ export interface VouchersData{
   is_active: boolean;
 }
 
+export interface SertifikatData {
+  id: string;
+  no_sertifikat: string;
+  student_name: string;
+  tgl_sertifikat: Date;
+  level_sertifikat: number;
+  fileproof_sertifikat: string;
+  fileproof_laporanbulanan: string;
+}
+
+export type SertifikatInput = Omit<SertifikatData, 'id'>;
+
 export interface BookingSubmission {
   id: string;
   booking_code: string;

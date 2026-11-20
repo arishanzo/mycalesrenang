@@ -1,40 +1,61 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { AdminShell } from '../components/AdminShell';
 import { UseGetBooking } from '../hook/useGetBooking';
 import { Phone } from 'lucide-react';
 import { MYCA_PACKAGES } from '@/app/libs/data';
 
 const HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+const subscribeToNothing = () => () => {};
+const getServerDateKey = () => '';
 
+function getJakartaDateKey() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? '';
 
+  return `${part('year')}-${part('month')}-${part('day')}`;
+}
 
 // Hitung tanggal Senin minggu ini lalu map tiap hari
-function getWeekDates() {
-  const today = new Date();
-  const day = today.getDay(); // 0=Minggu
+function getWeekDates(todayKey: string) {
+  if (!todayKey) return [];
+  const [year, month, date] = todayKey.split('-').map(Number);
+  const jakartaToday = new Date(Date.UTC(year, month - 1, date));
+  const day = jakartaToday.getUTCDay(); // 0=Minggu
   const diffToMonday = day === 0 ? -6 : 1 - day;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() + diffToMonday);
+  const monday = new Date(jakartaToday);
+  monday.setUTCDate(jakartaToday.getUTCDate() + diffToMonday);
 
   return HARI.map((nama, i) => {
     const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
+    d.setUTCDate(monday.getUTCDate() + i);
     return {
       nama,
-      tanggal: d.getDate(),
-      bulan: d.toLocaleDateString('id-ID', { month: 'short' }),
-     isToday: d.getDate() === today.getDate() && d.getMonth() === today.getMonth() &&
-  d.getFullYear() === today.getFullYear(),
-      full: d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+      tanggal: d.getUTCDate(),
+      bulan: d.toLocaleDateString('id-ID', { month: 'short', timeZone: 'UTC' }),
+      isToday: d.getTime() === jakartaToday.getTime(),
+      full: d.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }),
     };
   });
 }
 
 export default function JadwalPage() {
   const { booking }  = UseGetBooking();
-  const weekDates = getWeekDates();
+  const todayKey = useSyncExternalStore(subscribeToNothing, getJakartaDateKey, getServerDateKey);
+  const weekDates = getWeekDates(todayKey);
   // const todayNama = weekDates.find((w) => w.isToday)?.full ?? null;
   const [activeHari, setActiveHari] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -53,6 +74,7 @@ export default function JadwalPage() {
   const toFullStr = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString('id-ID', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      timeZone: 'Asia/Jakarta',
     });
 
   const activeWeek = weekDates.find((w) => w.nama === activeHari);
@@ -117,7 +139,7 @@ export default function JadwalPage() {
                   className={`flex flex-col items-center py-2.5 px-1 rounded-xl transition-all duration-200 ${
                     isActive
                       ? 'text-white shadow-lg shadow-marine-200' 
-                      : w.nama === new Date().toLocaleDateString('id-ID', { weekday: 'long' })
+                      : w.isToday
                       ? ' text-marine-700 ring-1 ring-marine-200'
                       : 'hover:bg-slate-50 text-marine-500'
                   }`}

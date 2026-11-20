@@ -87,11 +87,16 @@ export default function TransaksiPage() {
   const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const totalLunas = booking?.filter((t) => t.status ===  'Terkonfirmasi').reduce((a, t) => a + t.total_price, 0) ?? 0;
-    const totalBulanIni = booking?.filter((t) => {  const d = new Date(t.start_date); const now = new Date();
+    const monthKey = (date: Date) => date.toLocaleDateString('en-US', {
+      month: 'numeric',
+      year: 'numeric',
+      timeZone: 'Asia/Jakarta',
+    });
+    const now = new Date();
+    const totalBulanIni = booking?.filter((t) => {  const d = new Date(t.start_date);
         return (
           t.status === "Terkonfirmasi" &&
-          d.getMonth() === now.getMonth() &&
-          d.getFullYear() === now.getFullYear()
+            monthKey(d) === monthKey(now)
         );
       }).reduce((a, t) => a + t.total_price, 0) ?? 0;
 
@@ -100,9 +105,8 @@ export default function TransaksiPage() {
    
   const totalPending = Pending + Perpanjangan;
 
- const date = new Date();
-const bulanNama = date.toLocaleDateString('id-ID', { month: 'long' });
-const tahun = date.getFullYear();
+const bulanNama = now.toLocaleDateString('id-ID', { month: 'long', timeZone: 'Asia/Jakarta' });
+const tahun = now.toLocaleDateString('id-ID', { year: 'numeric', timeZone: 'Asia/Jakarta' });
 
   const stats = [
     { label: 'Total Transaksi', value: `${booking?.length}`, sub: 'semua waktu', color: '#296da4' },
