@@ -6,6 +6,8 @@ import type { SertifikatData, SertifikatInput } from '../types';
 import type { BookingSubmission } from '@/app/types/types';
 import { createSertifikat } from '@/app/services/sertifikat.services';
 import Swal from 'sweetalert2';
+import { v4 as uuidv4 } from "uuid";
+
 
 type CertificateFormState = {
   student_name: string;
@@ -137,6 +139,7 @@ export default function CertificateAddModal({
     };
     const formData = new FormData();
 
+    formData.append('id_sertifikat', uuidv4())
     formData.append('no_sertifikat', sertifikat.no_sertifikat);
     formData.append('student_name', sertifikat.student_name);
     formData.append('tgl_sertifikat', form.tgl_sertifikat);

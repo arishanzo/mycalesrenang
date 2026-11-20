@@ -145,6 +145,12 @@ export default function SertifikatPage() {
     setDeletingCertificateId(certificate.id);
     try {
       await deleteSertifikat(certificate.id);
+      const remainingFilteredCount = filteredCertificates.filter(
+        (item) => item.id !== certificate.id,
+      ).length;
+      setCurrentPage((page) =>
+        Math.min(page, Math.max(1, Math.ceil(remainingFilteredCount / PAGE_SIZE))),
+      );
       setCertificates((current) =>
         current.filter((item) => item.id !== certificate.id),
       );

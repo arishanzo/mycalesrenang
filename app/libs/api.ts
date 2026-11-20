@@ -6,7 +6,7 @@
 // };
 
 export const API_BASE_URL = (
-   'http://localhost:8080/api'
+  process.env.PUBLIC_API_URL ?? 'http://localhost:8080/api'
 ).replace(/\/+$/, '');
 
 export async function fetchAPI<T>(
